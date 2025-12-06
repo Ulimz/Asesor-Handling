@@ -1,0 +1,26 @@
+[
+    {
+        "id": "iberia-art-beneficios",
+        "title": "Beneficios Sociales: Billetes Free y con Descuento",
+        "content": "El personal de plantilla con una antigüedad superior a 6 meses tendrá derecho a la utilización de billetes con descuento (ID90/ID50) en la red de la compañía, así como cupos de billetes gratuitos (free) según antigüedad y categoría, sujetos a disponibilidad de plaza (sujeto a espacio).",
+        "tags": [
+            "billetes",
+            "vuelos",
+            "viajar",
+            "gratis",
+            "descuento",
+            "avión"
+        ]
+    },
+    {
+        "id": "iberia-art-vacaciones",
+        "title": "Vacaciones Iberia Tierra",
+        "content": "La duración de las vacaciones anuales será de 30 días naturales. Se podrán fraccionar en hasta tres periodos. Se garantiza el disfrute de al menos una quincena en los meses de verano para el personal con hijos en edad escolar, mediante sistema de rotación.",
+        "tags": [
+            "vacaciones",
+            "verano",
+            "hijos",
+            "días libres"
+        ]
+    }
+]

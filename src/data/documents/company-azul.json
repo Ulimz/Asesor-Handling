@@ -1,0 +1,23 @@
+[
+    {
+        "id": "azul-art-25",
+        "title": "Artículo 25. Vacaciones",
+        "content": "El personal incluido en el ámbito de este convenio tendrá derecho a disfrutar de un periodo de vacaciones anuales retribuidas de 30 días naturales. El periodo de disfrute se organizará garantizando el servicio, procurando que al menos 15 días se disfruten en periodo estival (junio a septiembre), siempre supeditado a las necesidades operativas.",
+        "tags": [
+            "vacaciones",
+            "días libres",
+            "verano",
+            "30 días"
+        ]
+    },
+    {
+        "id": "azul-art-jornada",
+        "title": "Jornada Laboral (Azul Handling)",
+        "content": "La jornada máxima anual ordinaria será de 1712 horas de trabajo efectivo. Dada la naturaleza de la actividad de handling, la distribución de la jornada será irregular.",
+        "tags": [
+            "jornada",
+            "horas",
+            "horario"
+        ]
+    }
+]
