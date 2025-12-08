@@ -7,3 +7,6 @@ python-dotenv
 pydantic
 httpx
 pytest
+pgvector
+sentence-transformers
+torch
