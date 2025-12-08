@@ -1,5 +1,10 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## 📚 Project Documentation
+For detailed documentation and rules, please refer to the **[Documentation Index](docs/active/DOCUMENTATION_INDEX.md)**.
+- [MANTRA (Rules)](docs/active/MANTRA.md)
+- [Backend Overview](docs/active/BACKEND_OVERVIEW.md)
+
 ## Getting Started
 
 First, run the development server:

@@ -1,9 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { companies, CompanyId } from '@/data/knowledge-base';
-import { ChevronDown, Check, Building2 } from 'lucide-react';
+import { ChevronDown, Check, Building2, Loader2 } from 'lucide-react';
+import { CompanyId } from '@/data/knowledge-base';
+
+interface Company {
+    id: number;
+    slug: CompanyId;
+    name: string;
+    description: string;
+    color: string;
+}
 
 interface CompanyDropdownProps {
     selectedCompanyId: CompanyId | null;
@@ -12,26 +20,54 @@ interface CompanyDropdownProps {
 
 export default function CompanyDropdown({ selectedCompanyId, onSelect }: CompanyDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const selectedCompany = companies.find(c => c.id === selectedCompanyId);
+    const [companies, setCompanies] = useState<Company[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchCompanies() {
+            try {
+                const res = await fetch('/api/convenios');
+                if (res.ok) {
+                    const data = await res.json();
+                    setCompanies(data);
+                }
+            } catch (error) {
+                console.error("Failed to load companies", error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchCompanies();
+    }, []);
+
+    const selectedCompany = companies.find(c => c.slug === selectedCompanyId);
 
     const toggleOpen = () => setIsOpen(!isOpen);
+
+    if (isLoading && companies.length === 0) {
+        return (
+            <div className="w-full h-14 bg-slate-800/50 rounded-xl animate-pulse flex items-center justify-center">
+                <Loader2 className="animate-spin text-slate-500" />
+            </div>
+        );
+    }
 
     return (
         <div className="relative w-full z-50">
             {/* Trigger Button */}
             <button
                 onClick={toggleOpen}
-                className="w-full flex items-center justify-between p-3 bg-white border border-slate-200 rounded-xl shadow-sm hover:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-left"
+                className="w-full flex items-center justify-between p-3 bg-slate-800/50 backdrop-blur-md border border-white/10 rounded-xl shadow-lg hover:border-cyan-500/50 hover:bg-slate-800/80 transition-all text-left group"
             >
                 <div className="flex items-center gap-3">
                     <div
-                        className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-sm"
-                        style={{ backgroundColor: selectedCompany ? selectedCompany.color : '#64748b' }}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-[0_0_10px_rgba(0,0,0,0.2)] border border-white/10"
+                        style={{ backgroundColor: selectedCompany ? selectedCompany.color : '#334155' }}
                     >
                         {selectedCompany ? selectedCompany.name.charAt(0) : <Building2 size={16} />}
                     </div>
                     <div>
-                        <span className="block text-sm font-semibold text-slate-700">
+                        <span className="block text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
                             {selectedCompany ? selectedCompany.name : 'Seleccionar Empresa'}
                         </span>
                         <span className="block text-[10px] text-slate-400 uppercase tracking-wide">
@@ -41,7 +77,7 @@ export default function CompanyDropdown({ selectedCompanyId, onSelect }: Company
                 </div>
                 <ChevronDown
                     size={16}
-                    className={`text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                    className={`text-slate-400 group-hover:text-cyan-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
                 />
             </button>
 
@@ -51,37 +87,37 @@ export default function CompanyDropdown({ selectedCompanyId, onSelect }: Company
                     <>
                         {/* Backdrop to close on click outside */}
                         <div
-                            className="fixed inset-0 z-40"
+                            className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm"
                             onClick={() => setIsOpen(false)}
                         />
 
                         <motion.div
-                            initial={{ opacity: 0, y: 5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 5 }}
-                            className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50"
+                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                            className="absolute top-full left-0 right-0 mt-2 bg-slate-900/95 backdrop-blur-xl rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden z-50 max-h-64 overflow-y-auto scrollbar-thin"
                         >
-                            <div className="p-1">
+                            <div className="p-1.5 space-y-1">
                                 {companies.map((company) => (
                                     <button
                                         key={company.id}
                                         onClick={() => {
-                                            onSelect(company.id);
+                                            onSelect(company.slug);
                                             setIsOpen(false);
                                         }}
-                                        className="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 transition-colors group relative"
+                                        className="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-white/5 hover:border-white/5 border border-transparent transition-all group relative"
                                     >
                                         <div
-                                            className="w-6 h-6 rounded-md flex items-center justify-center text-white text-xs font-bold"
+                                            className="w-6 h-6 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm"
                                             style={{ backgroundColor: company.color }}
                                         >
                                             {company.name.charAt(0)}
                                         </div>
-                                        <span className="flex-1 text-left text-sm font-medium text-slate-700 group-hover:text-slate-900">
+                                        <span className="flex-1 text-left text-sm font-medium text-slate-300 group-hover:text-white">
                                             {company.name}
                                         </span>
-                                        {selectedCompanyId === company.id && (
-                                            <Check size={16} className="text-blue-500" />
+                                        {selectedCompanyId === company.slug && (
+                                            <Check size={16} className="text-cyan-400 drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]" />
                                         )}
                                     </button>
                                 ))}

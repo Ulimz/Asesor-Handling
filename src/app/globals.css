@@ -1,44 +1,51 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #0f172a;
-  /* Slate 900 */
-  --primary: #2563eb;
-  --muted: #f1f5f9;
-  /* Slate 100 */
-
-  --sidebar-bg: #f8fafc;
-  /* Slate 50 */
-  --border-color: #e2e8f0;
-  /* Slate 200 */
+@theme {
+  --color-midnight-900: #0a0f1e;
+  --color-midnight-950: #020617;
+  --color-brand-cyan: #00e5ff;
+  --color-brand-purple: #d500f9;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  height: 100vh;
-  overflow: hidden;
-  /* App-like feel */
+@layer base {
+  body {
+    @apply bg-slate-950 text-slate-100 antialiased selection:bg-cyan-500/30 selection:text-cyan-200;
+  }
 }
 
-/* Custom Scrollbar for Chat Area */
-.scrollbar-thin::-webkit-scrollbar {
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl;
+  }
+  
+  .glass-card {
+    @apply bg-slate-900/40 backdrop-blur-lg border border-white/5 hover:border-white/10 transition-all duration-300;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+  }
+  
+  .text-glow-purple {
+    text-shadow: 0 0 10px rgba(213, 0, 249, 0.5);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
-.scrollbar-thin::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.scrollbar-thin::-webkit-scrollbar-thumb {
-  background-color: #cbd5e1;
-  border-radius: 20px;
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 10px;
 }
 
-.scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background-color: #94a3b8;
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
 }

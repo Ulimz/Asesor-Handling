@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Send, Menu, X, MessageSquare, ShieldCheck } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Send, Menu, X, MessageSquare, ShieldCheck, Sparkles, BrainCircuit } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import MessageBubble from './MessageBubble';
 import CompanyDropdown from './CompanyDropdown';
 import { askAI } from '@/lib/ai-service';
-import { companies, type KnowledgeItem, type CompanyId } from '@/data/knowledge-base';
+import { type KnowledgeItem, type CompanyId } from '@/data/knowledge-base';
 
 interface Message {
     id: string;
@@ -20,10 +20,7 @@ export default function ChatInterface() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
-
-    const selectedCompany = companies.find(c => c.id === selectedCompanyId);
 
     // Auto-mensaje al cambiar empresa
     const handleCompanySelect = (companyId: CompanyId) => {
@@ -32,7 +29,7 @@ export default function ChatInterface() {
             {
                 id: `welcome-${Date.now()}`,
                 role: 'assistant',
-                content: `Cargando normativa de ${companies.find(c => c.id === companyId)?.name}... Todo listo. ¿Qué quieres saber?`
+                content: `Sistema conectado. Estoy listo para analizar tu convenio.` // Simplified as we don't have company name here easily yet
             }
         ]);
     };
@@ -49,9 +46,8 @@ export default function ChatInterface() {
         e.preventDefault();
         if (!input.trim() || isLoading) return;
 
-        // Validación visual si no hay empresa seleccionada
         if (!selectedCompanyId) {
-            alert("Por favor selecciona una empresa primero en el menú superior izquieda.");
+            alert("Por favor selecciona una empresa primero.");
             return;
         }
 
@@ -72,16 +68,21 @@ export default function ChatInterface() {
                 id: (Date.now() + 1).toString(),
                 role: 'assistant',
                 content: response.answer,
-                sources: response.sources
+                sources: response.sources.map((s: any, i: number) => ({
+                    ...s,
+                    id: s.id || `source-${Date.now()}-${i}`,
+                    keywords: s.keywords || [],
+                    scope: s.scope || 'global'
+                }))
             };
-
             setMessages(prev => [...prev, aiMessage]);
         } catch (error) {
-            console.error(error);
+            console.error("Error AI:", error);
+            // Fallback message
             setMessages(prev => [...prev, {
                 id: Date.now().toString(),
                 role: 'assistant',
-                content: 'Error de conexión. Inténtalo de nuevo.'
+                content: "Lo siento, hubo un error de conexión con el núcleo de IA. Inténtalo de nuevo."
             }]);
         } finally {
             setIsLoading(false);
@@ -89,73 +90,77 @@ export default function ChatInterface() {
     };
 
     return (
-        <div className="flex h-screen bg-white overflow-hidden">
+        <div className="flex h-full rounded-3xl overflow-hidden glass-panel border-0 shadow-2xl relative">
+            {/* Background Effects */}
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-950/90 to-slate-900/80 -z-10"></div>
 
             {/* SIDEBAR (Desktop) */}
-            <aside className="hidden md:flex flex-col w-80 bg-slate-50 border-r border-slate-200 h-full">
+            <aside className="hidden md:flex flex-col w-80 bg-black/20 backdrop-blur-md border-r border-white/5 h-full">
                 <div className="p-6">
-                    <div className="flex items-center gap-2 mb-8">
-                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
-                            <ShieldCheck size={18} />
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="w-10 h-10 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
+                            <BrainCircuit size={22} />
                         </div>
-                        <h1 className="font-bold text-slate-800 tracking-tight">Legal AI Assistant</h1>
+                        <div>
+                            <h1 className="font-bold text-lg text-white tracking-tight leading-none">LegalAI</h1>
+                            <span className="text-[10px] text-cyan-400 font-medium tracking-wider uppercase">Enterprise Edition</span>
+                        </div>
                     </div>
 
-                    <div className="mb-6">
-                        <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 block">
-                            Empresa Activa
+                    <div className="mb-8 space-y-2">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">
+                            Contexto Legal
                         </label>
                         <CompanyDropdown selectedCompanyId={selectedCompanyId} onSelect={handleCompanySelect} />
                     </div>
 
-                    <div className="flex-1 overflow-y-auto">
-                        <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                            Historial
+                    <div className="flex-1 overflow-y-auto pr-2 scrollbar-thin">
+                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">
+                            Memoria Reciente
                         </div>
-                        <div className="p-3 bg-white border border-slate-100 rounded-xl text-sm text-slate-500 text-center py-8">
-                            Sin historial reciente
+                        <div className="p-4 rounded-xl border border-white/5 bg-white/[0.02] text-xs text-slate-500 text-center py-6">
+                            No hay consultas previas en esta sesión.
                         </div>
                     </div>
                 </div>
-
-                <div className="p-4 border-t border-slate-200 text-xs text-slate-400 text-center">
-                    v2.1.0 · Connected
+                <div className="p-4 border-t border-white/5">
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                        Sistema Operativo v2.1
+                    </div>
                 </div>
             </aside>
 
             {/* MAIN CONTENT */}
             <main className="flex-1 flex flex-col h-full relative">
-
                 {/* MOBILE HEADER */}
-                <header className="md:hidden flex items-center justify-between p-4 border-b border-slate-100 bg-white z-20">
+                <header className="md:hidden flex items-center justify-between p-4 border-b border-white/5 bg-slate-950/50 backdrop-blur-md z-20">
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
-                            <ShieldCheck size={18} />
+                        <div className="w-8 h-8 bg-cyan-600 rounded-lg flex items-center justify-center text-white">
+                            <BrainCircuit size={18} />
                         </div>
-                        <h1 className="font-bold text-slate-800">Legal AI</h1>
+                        <span className="font-bold text-white">LegalAI</span>
                     </div>
-
-                    {/* Mobile Dropdown Wrapper */}
-                    <div className="w-48">
+                    <div className="w-40">
                         <CompanyDropdown selectedCompanyId={selectedCompanyId} onSelect={handleCompanySelect} />
                     </div>
                 </header>
 
                 {/* CHAT AREA */}
-                <div className="flex-1 bg-white relative flex flex-col overflow-hidden">
-                    {/* Background Pattern */}
-                    <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:20px_20px] opacity-30 pointer-events-none"></div>
+                <div className="flex-1 relative flex flex-col overflow-hidden">
 
                     {!selectedCompanyId && messages.length === 0 ? (
-                        // Empty State
                         <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400 z-10">
-                            <MessageSquare size={48} className="mb-4 text-slate-200" />
-                            <h3 className="text-lg font-semibold text-slate-600 mb-2">Bienvenido al Asistente</h3>
-                            <p className="max-w-xs mx-auto">Selecciona tu empresa en el menú {isMobileMenuOpen ? 'superior' : 'de la izquierda'} para comenzar.</p>
+                            <div className="w-20 h-20 bg-slate-900 rounded-full flex items-center justify-center mb-6 border border-white/5 shadow-2xl shadow-cyan-500/10">
+                                <Sparkles size={32} className="text-cyan-400" />
+                            </div>
+                            <h3 className="text-2xl font-bold text-white mb-2">Asistente Jurídico Conectado</h3>
+                            <p className="max-w-xs mx-auto text-slate-500 text-sm leading-relaxed">
+                                Selecciona el convenio colectivo (empresa) para cargar la normativa vigente y comenzar el análisis.
+                            </p>
                         </div>
                     ) : (
-                        // Messages List
-                        <div className="flex-1 overflow-y-auto p-4 md:p-10 z-10 scrollbar-thin">
+                        <div className="flex-1 overflow-y-auto p-4 md:p-8 z-10 scrollbar-thin">
                             <div className="max-w-3xl mx-auto space-y-6">
                                 {messages.map((msg) => (
                                     <MessageBubble
@@ -166,9 +171,13 @@ export default function ChatInterface() {
                                     />
                                 ))}
                                 {isLoading && (
-                                    <div className="flex items-center gap-2 text-slate-400 text-sm ml-4">
-                                        <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-                                        Escribiendo...
+                                    <div className="flex items-center gap-3 text-cyan-400 text-sm ml-4">
+                                        <div className="flex gap-1">
+                                            <span className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"></span>
+                                            <span className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                                            <span className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                                        </div>
+                                        Analizando normativa...
                                     </div>
                                 )}
                                 <div ref={messagesEndRef} />
@@ -177,25 +186,30 @@ export default function ChatInterface() {
                     )}
 
                     {/* Input Area */}
-                    <div className="p-4 md:p-6 bg-white/80 backdrop-blur-lg border-t border-slate-100 z-20">
-                        <div className="max-w-3xl mx-auto relative group">
-                            <form onSubmit={handleSubmit} className="relative flex items-center bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-400 transition-all shadow-sm">
+                    <div className="p-4 md:p-6 z-20">
+                        <div className="max-w-3xl mx-auto">
+                            <form onSubmit={handleSubmit} className="relative flex items-center bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-2 focus-within:ring-1 focus-within:ring-cyan-500/50 focus-within:border-cyan-500/50 transition-all shadow-xl">
                                 <input
                                     type="text"
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
-                                    placeholder={selectedCompany ? `Pregunta sobre ${selectedCompany.name}...` : "Selecciona una empresa primero..."}
-                                    className="flex-1 bg-transparent border-none focus:outline-none text-slate-800 placeholder:text-slate-400"
+                                    placeholder={selectedCompanyId ? "Escribe tu pregunta..." : "Selecciona una empresa para activar el chat..."}
+                                    className="flex-1 bg-transparent border-none focus:outline-none text-slate-200 placeholder:text-slate-600 px-4 py-3 text-base"
                                     disabled={isLoading}
                                 />
                                 <button
                                     type="submit"
                                     disabled={!input.trim() || isLoading}
-                                    className="p-2 bg-white text-blue-600 rounded-xl hover:bg-blue-50 transition-colors shadow-sm border border-slate-100 disabled:opacity-50 disabled:cursor-not-allowed ml-2"
+                                    className="p-3 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-xl hover:shadow-[0_0_15px_rgba(6,182,212,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                                 >
-                                    <Send size={18} />
+                                    <Send size={20} />
                                 </button>
                             </form>
+                            <div className="text-center mt-3">
+                                <p className="text-[10px] text-slate-600 uppercase tracking-wider">
+                                    IA entrenada con normativas oficiales BOE
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>

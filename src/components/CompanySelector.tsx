@@ -24,7 +24,7 @@ export default function CompanySelector({ onSelect }: CompanySelectorProps) {
                     Select Your Organization
                 </h2>
                 <p className="text-slate-400 text-lg max-w-xl mx-auto font-light leading-relaxed">
-                    Access specialized legal intelligence tailored to your company's specific collective agreement.
+                    Access specialized legal intelligence tailored to your company&apos;s specific collective agreement.
                 </p>
             </motion.div>
 
