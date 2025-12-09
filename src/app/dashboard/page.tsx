@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import CompanyDropdown from '@/components/CompanyDropdown';
+import MobileNav from '@/components/MobileNav';
 import ChatInterface from "@/components/ChatInterface";
 import SalaryCalculator from '@/features/calculadoras/components/SalaryCalculator';
 import AlertsPanel from '@/components/alerts/AlertsPanel';
@@ -165,6 +166,8 @@ export default function DashboardPage() {
                     </div>
                 </main>
             </div>
+
+            <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
     );
 }
