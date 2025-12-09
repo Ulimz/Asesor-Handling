@@ -16,12 +16,12 @@ class RagEngine:
         self.gen_model = None
         if api_key:
             genai.configure(api_key=api_key)
-            self.gen_model = genai.GenerativeModel('gemini-1.5-flash')
+            self.gen_model = genai.GenerativeModel('gemini-2.0-flash')
 
     def generate_embedding(self, text: str):
         return self.model.encode(text)
 
-    def search(self, query: str, company_slug: str = None, db: Session = None, limit: int = 5):
+    def search(self, query: str, company_slug: str = None, db: Session = None, limit: int = 10):
         """
         Semantic search using PgVector cosine similarity.
         """

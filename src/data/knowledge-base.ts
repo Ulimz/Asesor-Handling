@@ -1,4 +1,4 @@
-export type CompanyId = 'azul' | 'iberia' | 'groundforce' | 'swissport' | 'menzies' | 'wfs' | 'clece' | 'acciona' | 'aviapartner';
+export type CompanyId = 'azul' | 'iberia' | 'groundforce' | 'swissport' | 'menzies' | 'wfs' | 'aviapartner' | 'easyjet';
 
 export interface Company {
     id: CompanyId;
@@ -8,11 +8,13 @@ export interface Company {
 
 export const companies: Company[] = [
     { id: 'azul', name: 'Azul Handling', color: '#004481' },
-    { id: 'iberia', name: 'Iberia', color: '#D7192D' },
+    { id: 'iberia', name: 'South (antes Iberia)', color: '#D7192D' },
     { id: 'groundforce', name: 'Groundforce', color: '#0033A0' },
     { id: 'swissport', name: 'Swissport', color: '#FF6600' },
     { id: 'menzies', name: 'Menzies', color: '#2B3E50' },
     { id: 'wfs', name: 'WFS', color: '#E31837' },
+    { id: 'aviapartner', name: 'Aviapartner', color: '#00965E' },
+    { id: 'easyjet', name: 'easyJet', color: '#FF6600' },
 ];
 
 export interface KnowledgeItem {
