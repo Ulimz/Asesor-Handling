@@ -34,7 +34,7 @@ Este documento resume el propósito, arquitectura y estado actual del proyecto. 
 | **Calculadoras** | ✅ Completo | ✅ Completo | Nómina con IRPF/SS |
 | **Alertas** | ✅ Completo | ✅ Completo | Feed de novedades |
 | **Reclamaciones** | ✅ Completo | ✅ Completo | Generador de escritos |
-| **IA/RAG** | ✅ Completo | ✅ Completo | Local + PgVector |
+| **IA/RAG** | ✅ Completo | ✅ Completo | **Google Gemini (Free)** + PgVector |
 
 ## 📦 Fases Completadas
 

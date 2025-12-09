@@ -1,18 +1,13 @@
 from sentence_transformers import SentenceTransformer
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from app.db.models import DocumentChunk
+from app.db.models import DocumentChunk, LegalDocument
 import numpy as np
+import google.generativeai as genai
+import os
 
-class RagEngine:
-    def __init__(self):
-        # Load free local model (384 dimensions)
-        self.model = SentenceTransformer('all-MiniLM-L6-v2')
-    
-    def generate_embedding(self, text: str):
-        """Convert text to vector using local model"""
-        return self.model.encode(text).tolist()
-    
+# ... (rest of class until search method)
+
     def search(self, query: str, company_slug: str = None, db: Session = None, limit: int = 5):
         """
         Semantic search using PgVector cosine similarity.
@@ -39,9 +34,19 @@ class RagEngine:
         
         # PgVector cosine similarity search
         # Using <=> operator for cosine distance (lower is better)
-        stmt = select(DocumentChunk).order_by(
+        stmt = select(DocumentChunk).join(LegalDocument).order_by(
             DocumentChunk.embedding.cosine_distance(query_embedding)
-        ).limit(limit)
+        )
+        
+        if company_slug:
+            # Filter by specific company OR global documents (company IS NULL or 'general')
+            stmt = stmt.filter(
+                (LegalDocument.company == company_slug) | 
+                (LegalDocument.company.is_(None)) |
+                (LegalDocument.company == 'general')
+            )
+
+        stmt = stmt.limit(limit)
         
         results = db.execute(stmt).scalars().all()
         
@@ -52,10 +57,36 @@ class RagEngine:
                 "id": chunk.id,
                 "content": chunk.content,
                 "article_ref": chunk.article_ref,
-                "document_id": chunk.document_id,
-                "score": 1.0  # Placeholder, actual distance not exposed here
+                "document_id": chunk.document.category if chunk.document else "unknown", # Access parent doc if needed
+                "score": 1.0  # Placeholder
             })
         
         return formatted_results
+
+    def generate_answer(self, query: str, context_chunks: list):
+        """
+        Generate answer using Gemini based on provided context
+        """
+        if not self.gen_model:
+            return "Error: GOOGLE_API_KEY no configurada en el servidor."
+            
+        context_text = "\n\n".join([c['content'] for c in context_chunks])
+        
+        prompt = f"""Actúa como un Asistente Legal experto en Handling Aeroportuario en España.
+Responde a la pregunta del usuario basándote EXCLUSIVAMENTE en el siguiente contexto proporcionado.
+Si la respuesta no está en el contexto, indica que no tienes esa información.
+Menciona explícitamente qué artículo o convenio usas si aparece en el contexto.
+
+CONTEXTO:
+{context_text}
+
+PREGUNTA:
+{query}
+"""
+        try:
+            response = self.gen_model.generate_content(prompt)
+            return response.text
+        except Exception as e:
+            return f"Error generando respuesta: {str(e)}"
 
 rag_engine = RagEngine()

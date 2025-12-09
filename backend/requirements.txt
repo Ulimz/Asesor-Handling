@@ -10,3 +10,4 @@ pytest
 pgvector
 sentence-transformers
 torch
+google-generativeai
