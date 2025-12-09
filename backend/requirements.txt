@@ -11,3 +11,6 @@ pgvector
 sentence-transformers
 torch
 google-generativeai
+email-validator
+PyJWT
+python-multipart

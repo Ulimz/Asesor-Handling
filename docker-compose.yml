@@ -4,15 +4,15 @@ services:
   db:
     image: ankane/pgvector:latest
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: handling_secure_pass
-      POSTGRES_DB: asistente_handling
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: asistentehandling
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U admin" ]
+      test: [ "CMD-SHELL", "pg_isready -U usuario" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -21,9 +21,9 @@ services:
     build: ./backend
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
-      - ./backend:/code
+      - ./backend:/app
     environment:
-      DATABASE_URL: postgresql://admin:handling_secure_pass@db/asistente_handling
+      DATABASE_URL: postgresql://usuario:12345@db/asistentehandling
     depends_on:
       db:
         condition: service_healthy

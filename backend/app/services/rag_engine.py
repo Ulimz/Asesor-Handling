@@ -6,7 +6,20 @@ import numpy as np
 import google.generativeai as genai
 import os
 
-# ... (rest of class until search method)
+class RagEngine:
+    def __init__(self):
+        # Initialize local embedding model (free)
+        self.model = SentenceTransformer('all-MiniLM-L6-v2')
+        
+        # Initialize Gemini (free tier) if key is present
+        api_key = os.getenv("GOOGLE_API_KEY")
+        self.gen_model = None
+        if api_key:
+            genai.configure(api_key=api_key)
+            self.gen_model = genai.GenerativeModel('gemini-1.5-flash')
+
+    def generate_embedding(self, text: str):
+        return self.model.encode(text)
 
     def search(self, query: str, company_slug: str = None, db: Session = None, limit: int = 5):
         """

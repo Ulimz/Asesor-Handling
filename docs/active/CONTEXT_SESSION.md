@@ -1,62 +1,50 @@
-# 📝 Session Context - December 9, 2025
+# 📝 Session Context - December 9, 2025 (Session 2)
 
 ## 🎯 What Was Accomplished Today
 
-### Phase 6 Enhanced: Google Gemini Integration ✅
-- **Google AI Studio (Free)** integrated for Generative AI (RAG).
-- **Backend**: 
-  - Updated `rag_engine.py` to use `google-generativeai`.
-  - Added company-aware filtering (Contextual RAG).
-  - Created `POST /api/articulos/search/chat` endpoint.
-- **Frontend**:
-  - Updated `ChatInterface.tsx` to display Answers + Sources.
-  - Configured `ai-service.ts` to send `company_slug` context.
+### Phase 6 Maintenance & Repairs ✅
+- **Emergency Backend Repair**:
+  - Resolved `ModuleNotFoundError` for `app.main` by fixing directory structure.
+  - Fixed **Pydantic V2 compatibility** issues in `reclamaciones` and `articulos` schemas (aliased `datetime.date`).
+  - Restored corrupted `rag_engine.py` (missing class definition).
+  - Added missing dependencies: `email-validator`, `PyJWT`, `python-multipart`.
 
-### Documentation ✅
-- Updated `DOCKER_SETUP.md` with AI Key instructions.
-- Updated `PROJECT_STATUS.md` reflecting new capabilities.
+- **Database Recovery**:
+  - Recovered lost credentials (`usuario`/`12345`) by inspecting `.env`.
+  - Wiped and re-initialized database volume to resolve authentication loops.
+  - **Seeding**: Successfully seeded `convenios`. Vector seeding skipped (missing JSONs).
 
-### DevOps ✅
-- **Docker**: Rebuilt backend to include new dependencies.
-- **GitHub**: Pushed all changes to `Ulimz/Asesor-Handling`.
+- **Infrastructure**:
+  - Fixed `docker-compose.yml` volume mapping (`./backend:/app`) to enable hot-reloading.
+  - Frontend launched on **Port 3002** (3000 was busy).
 
 ## 📊 Current Project State
 
-### Key Features
-1. **Contextual Chat**: Responds based on specific collective agreements (Iberia, Azul, etc.).
-2. **Hybrid Search**: PgVector (Semantic) + Gemini (Generative).
-3. **Cost**: 100% Free (Gemini Free Tier + Local Embeddings).
+### Services
+- **Frontend**: Running @ `http://localhost:3002`
+- **Backend**: Running @ `http://localhost:8000` (Healthy)
+- **Database**: PostgreSQL + PgVector (Initialized & Authenticated)
 
-### Architecture Update
-- **LLM Provider**: Google Gemini 1.5 Flash
-- **Embeddings**: sentence-transformers (Local)
-- **Database**: PostgreSQL 15 + PgVector (Port 5432 in code / *User noted 5433 in docs*)
+### Known Issues
+- **Missing Data**: `seed_vectors.py` failed because `backend/data/*.json` files are missing. Contextual RAG won't return results until this is fixed.
+- **Frontend Port**: Defaults to 3000, but forced to 3002.
 
-## ⚠️ Important Notes for Next Session
+## ⚠️ Checkpoints for Next Session
 
-### 1. API Key Required
-The project **WILL NOT WORK** without a valid `GOOGLE_API_KEY` in `backend/.env`.
-- Ensure this key is present in any new environment.
+### 1. Restore Vector Data
+- **CRITICAL**: The RAG system is currently empty.
+- **Action**: Locate or regenerate the JSON files for `backend/data/` and run `python scripts/seed_vectors.py`.
 
-### 2. Port Mismatch Warning
-- `docker-compose.yml` defines Postgres on port **5432**.
-- `DOCKER_SETUP.md` was manually updated to **5433**.
-- **Action**: Check if you have a local Postgres conflict and adjust `docker-compose.yml` if 5433 is intended.
-
-### 3. Database Migration
-- Migration from Elasticsearch to PgVector is still pending for legacy data.
-- Current chat works with *seeded* data in PgVector.
+### 2. Frontend Connection
+- Verify `frontend/.env` points to `localhost:8000`.
+- Ensure frontend can talk to backend (CORS is configured for 3000 and 3002).
 
 ## 🚀 Recommended Next Steps
 
-### Immediate
-1. **Unit Testing**: Create tests for the new `rag_engine` logic.
-2. **Authentication**: Implement JWT to save user chat history.
-
-### Maintenance
-1. **Resolve Port Conflict**: Align `docker-compose.yml` with documentation (5432 vs 5433).
-2. **Data Migration**: Script to move all Elasticsearch documents to PgVector.
+1. **Populate RAG**: Fix the missing JSON data issue.
+2. **Auth Integration**: Now that `PyJWT` is installed, complete the JWT authentication flow.
+3. **Unit Tests**: Add tests to prevent regression of the Pydantic bugs.
 
 ## 💾 Backup Status
-- ✅ Code pushed to GitHub (Commit: `6fea0a1`)
-- ✅ Docs updated.
+- Critical files (`rag_engine.py`, `router.py`, `docker-compose.yml`) patched and saved locally.
+- **Action Required**: Commit and push these fixes to GitHub immediately.

@@ -21,7 +21,7 @@ def create_reclamacion(reclamacion: ReclamacionCreate, db: Session = Depends(get
     db.refresh(db_reclamacion)
     return db_reclamacion
 
-from datetime import date
+from datetime import date as dt_date
 from pydantic import BaseModel
 
 class GenerateClaimInput(BaseModel):
@@ -29,7 +29,7 @@ class GenerateClaimInput(BaseModel):
     user_name: str
     company_name: str
     details: str
-    date: date = date.today()
+    date: dt_date = dt_date.today()
 
 class GenerateClaimOutput(BaseModel):
     title: str
