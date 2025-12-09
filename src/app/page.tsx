@@ -26,10 +26,10 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
+            <Link href="/login" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
               Login
             </Link>
-            <Link href="/dashboard" className="px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-sm font-bold rounded-full hover:shadow-lg hover:shadow-cyan-500/25 transition-all flex items-center gap-2">
+            <Link href="/login" className="px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-sm font-bold rounded-full hover:shadow-lg hover:shadow-cyan-500/25 transition-all flex items-center gap-2">
               Empezar Gratis
             </Link>
           </div>
@@ -76,7 +76,7 @@ export default function LandingPage() {
             transition={{ delay: 0.3 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-6"
           >
-            <Link href="/dashboard" className="group w-full sm:w-auto px-8 py-4 bg-white text-slate-950 rounded-full font-bold text-lg hover:bg-cyan-50 transition-all shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:shadow-[0_0_60px_rgba(0,229,255,0.4)] flex items-center justify-center gap-3">
+            <Link href="/login" className="group w-full sm:w-auto px-8 py-4 bg-white text-slate-950 rounded-full font-bold text-lg hover:bg-cyan-50 transition-all shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:shadow-[0_0_60px_rgba(0,229,255,0.4)] flex items-center justify-center gap-3">
               <MessageSquare size={20} className="group-hover:text-cyan-600 transition-colors" />
               Hablar con la IA
             </Link>

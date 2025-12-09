@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CompanyDropdown from '@/components/CompanyDropdown';
 import MobileNav from '@/components/MobileNav';
 import ChatInterface from "@/components/ChatInterface";
@@ -10,14 +10,39 @@ import ClaimGenerator from '@/components/claims/ClaimGenerator';
 import { CompanyId, companies } from '@/data/knowledge-base';
 import { type KnowledgeItem } from '@/data/knowledge-base';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Calculator, Settings, LogOut, User, Bell, PenTool } from 'lucide-react';
+import { MessageSquare, Calculator, Settings, LogOut, User, Bell, PenTool, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
+    const router = useRouter();
     const [selectedCompanyId, setSelectedCompanyId] = useState<CompanyId | null>(null);
     const [activeTab, setActiveTab] = useState<'chat' | 'calculator' | 'alerts' | 'claims'>('chat');
+    const [isAuthorized, setIsAuthorized] = useState(false);
+
+    useEffect(() => {
+        const token = localStorage.getItem('auth_token');
+        if (!token) {
+            router.push('/login');
+        } else {
+            setIsAuthorized(true);
+        }
+    }, [router]);
+
+    if (!isAuthorized) {
+        return (
+            <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+                <Loader2 className="w-8 h-8 text-cyan-500 animate-spin" />
+            </div>
+        );
+    }
 
     const handleCompanySelect = (companyId: CompanyId) => {
         setSelectedCompanyId(companyId);
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('auth_token');
+        router.push('/login');
     };
 
     const selectedCompanyName = companies.find(c => c.id === selectedCompanyId)?.name;
@@ -74,10 +99,17 @@ export default function DashboardPage() {
                         </button>
                     </nav>
 
-                    <div className="p-4 border-t border-white/5">
+                    <div className="p-4 border-t border-white/5 space-y-2">
                         <button className="flex items-center gap-3 w-full px-4 py-3 text-slate-400 hover:text-white transition-colors">
                             <Settings size={20} />
                             <span className="hidden lg:block">Configuración</span>
+                        </button>
+                        <button
+                            onClick={handleLogout}
+                            className="flex items-center gap-3 w-full px-4 py-3 text-slate-400 hover:text-red-400 transition-colors"
+                        >
+                            <LogOut size={20} />
+                            <span className="hidden lg:block">Cerrar Sesión</span>
                         </button>
                     </div>
                 </aside>
