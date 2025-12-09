@@ -1,0 +1,23 @@
+{
+    "title": "Compendio de Jurisprudencia Clave Handling",
+    "category": "Jurisprudencia",
+    "url": "https://www.poderjudicial.es/search/",
+    "articles": [
+        {
+            "article": "STS 3674/2025 - Garantías en Subrogación",
+            "content": "Sentencia del Tribunal Supremo núm. 722/2025 (12 Sept 2025). Doctrina: Se refuerzan las garantías de los trabajadores subrogados en el sector de handling. El Supremo determina que la empresa entrante debe respetar íntegramente los derechos de antigüedad y condiciones salariales consolidadas (ad personam) que el trabajador traía de la empresa saliente, prohibiendo 'reformatio in peius' o recortes injustificados bajo la excusa del nuevo convenio de empresa. Referencia: III Convenio Colectivo General del Sector."
+        },
+        {
+            "article": "STS 96/2023 - Alcance Subrogación en Subcontratas",
+            "content": "Sentencia del Tribunal Supremo núm. 96/2023 (1 Feb 2023). Doctrina: La obligación de subrogación por sucesión de contratas (Art. 44 ET y Convenio) se extiende no solo a la empresa principal adjudicataria, sino también a las subcontratas que presten el servicio. Esto es vital para el handling, donde operar con filiales o ETTs encadenadas no exime de la responsabilidad solidaria y la obligación de mantener el empleo si se dan los requisitos de transmisión de unidad productiva autónoma."
+        },
+        {
+            "article": "STS 22/04/2025 - Nulidad de Recortes Retroactivos",
+            "content": "Sentencia del Tribunal Supremo de 22 de Abril de 2025. Doctrina: Se declara la NULIDAD PARCIAL del Artículo 26 y Anexo II del V Convenio Colectivo General del Sector Handling. El Tribunal considera ilegal que el convenio modifique con carácter retroactivo los incrementos salariales ya devengados bajo la vigencia del IV Convenio. Los trabajadores tienen derecho a percibir los atrasos correspondientes sin que el nuevo convenio pueda 'borrar' deudas salariales previas."
+        },
+        {
+            "article": "STS 27/09/2018 - Sucesión de Plantilla",
+            "content": "Sentencias del TS de 27 sept y 24 oct 2018. Doctrina: En sectores intensivos en mano de obra como el handling, si la nueva empresa asume una parte esencial de la plantilla (en términos de número y competencia) de la anterior, se produce una 'Sucesión de Plantilla' que activa el Art. 44 ET. Esto implica que la nueva empresa responde solidariamente de las deudas de Seguridad Social y Salarios de la anterior, y debe mantener las condiciones laborales, incluso si el convenio sectorial dijera lo contrario."
+        }
+    ]
+}

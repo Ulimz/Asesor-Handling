@@ -13,7 +13,8 @@ def get_db():
     finally:
         db.close()
 
-@router.get("/", response_model=list[Convenio])
+@router.get("", response_model=list[Convenio])
+@router.get("/", response_model=list[Convenio], include_in_schema=False)
 def get_convenios(db: Session = Depends(get_db)):
     return db.query(ConvenioModel).filter(ConvenioModel.is_active == True).all()
 

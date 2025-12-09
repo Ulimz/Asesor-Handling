@@ -22,17 +22,23 @@ export default function CompanyDropdown({ selectedCompanyId, onSelect }: Company
     const [isOpen, setIsOpen] = useState(false);
     const [companies, setCompanies] = useState<Company[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         async function fetchCompanies() {
             try {
-                const res = await fetch('/api/convenios');
-                if (res.ok) {
-                    const data = await res.json();
-                    setCompanies(data);
+                const res = await fetch(`/api/convenios/?t=${Date.now()}`);
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
                 }
+                const data = await res.json();
+                setCompanies(data);
+                setError(null);
             } catch (error) {
-                console.error("Failed to load companies", error);
+                if (process.env.NODE_ENV !== 'production') {
+                    console.error("Failed to load companies", error);
+                }
+                setError("No se pudieron cargar las empresas");
             } finally {
                 setIsLoading(false);
             }
@@ -48,6 +54,20 @@ export default function CompanyDropdown({ selectedCompanyId, onSelect }: Company
         return (
             <div className="w-full h-14 bg-slate-800/50 rounded-xl animate-pulse flex items-center justify-center">
                 <Loader2 className="animate-spin text-slate-500" />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="w-full p-3 bg-red-900/20 border border-red-500/30 rounded-xl">
+                <p className="text-xs text-red-400">{error}</p>
+                <button
+                    onClick={() => window.location.reload()}
+                    className="text-xs text-red-300 underline mt-1"
+                >
+                    Recargar página
+                </button>
             </div>
         );
     }

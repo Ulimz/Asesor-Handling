@@ -14,3 +14,7 @@ google-generativeai
 email-validator
 PyJWT
 python-multipart
+
+beautifulsoup4
+lxml
+tenacity

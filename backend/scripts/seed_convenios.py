@@ -1,4 +1,4 @@
-from app.db.base import Base
+from app.db.models import Base
 from app.db.database import engine, SessionLocal
 from app.modules.convenios.models import Convenio
 from sqlalchemy.orm import Session

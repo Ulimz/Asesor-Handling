@@ -14,6 +14,8 @@ from app.modules.articulos.search_router import router as articulos_search_route
 
 from app.db.database import engine
 from app.db.base import Base
+# Importar modelos para que Base los reconozca en create_all
+from app.db import models
 
 # Crear tablas en la base de datos
 Base.metadata.create_all(bind=engine)

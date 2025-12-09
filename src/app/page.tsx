@@ -12,17 +12,16 @@ export default function LandingPage() {
       <nav className="fixed top-0 inset-x-0 z-50 h-20 flex items-center bg-slate-950/50 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-7xl mx-auto w-full px-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
-              <ShieldCheck size={20} strokeWidth={2.5} />
+            <div className="w-10 h-10 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-cyan-500/20 font-bold text-[10px] leading-tight text-center tracking-tighter">
+              AH<br />IA
             </div>
             <span className="font-bold text-xl tracking-tight text-white">
-              Legal<span className="text-cyan-400">AI</span>
+              Asistente<span className="text-cyan-400">IA</span>
             </span>
           </div>
 
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
-            <a href="#features" className="hover:text-cyan-400 transition-colors">Funcionalidades</a>
-            <a href="#how-it-works" className="hover:text-cyan-400 transition-colors">Cómo funciona</a>
+            {/* Links removed as per user request */}
           </div>
 
           <div className="flex items-center gap-4">
@@ -46,7 +45,7 @@ export default function LandingPage() {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-xs font-bold mb-8 backdrop-blur-md"
           >
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_rgba(34,211,238,0.5)]"></span>
-            IA Jurídica para Handling Aeroportuario
+            IA Asistente Handling Aeroportuario
           </motion.div>
 
           <motion.h1
@@ -80,9 +79,7 @@ export default function LandingPage() {
               <MessageSquare size={20} className="group-hover:text-cyan-600 transition-colors" />
               Hablar con la IA
             </Link>
-            <a href="#demo" className="text-slate-400 hover:text-white font-medium flex items-center gap-2 transition-colors">
-              Ver Demo <ArrowRight size={18} />
-            </a>
+            {/* Demo link removed */}
           </motion.div>
         </div>
       </section>
@@ -122,9 +119,61 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* CONVENIOS SECTION */}
+      <section className="py-20 px-6 border-t border-white/5 bg-slate-900/20" id="convenios">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-3xl font-bold text-white mb-12">Convenios Disponibles</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 opacity-100 max-w-5xl mx-auto">
+            {/* Updated list based on DB data - Corrected per user feedback */}
+            {['AZUL HANDLING', 'EASYJET', 'GROUNDFORCE', 'MENZIES', 'RYANAIR', 'SOUTH (IBERIA)', 'SWISSPORT', 'WFS'].map((company) => (
+              <div key={company} className="px-6 py-3 rounded-xl border border-white/10 bg-slate-800/50 text-slate-300 font-bold tracking-wider hover:border-cyan-500/30 hover:text-white transition-all cursor-default shadow-lg shadow-black/20">
+                {company}
+              </div>
+            ))}
+          </div>
+          <p className="mt-8 text-slate-500 text-sm">
+            ¿No encuentras el tuyo?{' '}
+            <a href="mailto:soporte_asistentehandling@outlook.es?subject=Solicitud de Nuevo Convenio" className="text-cyan-400 cursor-pointer hover:underline hover:text-cyan-300 transition-colors">
+              Solicita que lo añadamos.
+            </a>
+          </p>
+        </div>
+      </section>
+
+      {/* FAQ SECTION */}
+      <section className="py-24 px-6 relative" id="faq">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-3xl font-bold text-white mb-12 text-center">Preguntas Frecuentes</h2>
+          <div className="space-y-6">
+            {[
+              {
+                q: "¿La información tiene validez legal?",
+                a: "No. Esta es una herramienta informativa. Aunque entrenada con los convenios oficiales, puede cometer errores. Para acciones legales, consulta siempre con tu sindicato."
+              },
+              {
+                q: "¿Guardáis mis conversaciones?",
+                a: "No almacenamos datos personales. Tu historial se guarda localmente en tu navegador para que puedas consultarlo durante la sesión, pero priorizamos tu privacidad."
+              },
+              {
+                q: "¿Es gratuito?",
+                a: "Sí, la versión básica de consulta de convenios es totalmente gratuita para los trabajadores del sector."
+              }
+            ].map((faq, i) => (
+              <div key={i} className="bg-slate-900/40 border border-white/5 rounded-2xl p-6 hover:border-cyan-500/20 transition-colors">
+                <h3 className="font-bold text-white mb-2 text-lg">{faq.q}</h3>
+                <p className="text-slate-400 leading-relaxed text-sm">{faq.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* FOOTER */}
       <footer className="py-12 border-t border-white/5 text-center text-slate-500 text-sm">
-        <p>© 2024 LegalAI Handling. Inteligencia Artificial al servicio del trabajador.</p>
+        <p className="mb-2">© 2024 Asistente IA Handling. Inteligencia Artificial al servicio del trabajador.</p>
+        <p className="text-xs text-slate-600 max-w-2xl mx-auto">
+          AVISO: Esta herramienta no tiene validez jurídica. Las respuestas son generadas por Inteligencia Artificial basada en convenios y están destinadas únicamente a fines informativos y de orientación. Ante duda legal, consulte con un representante sindical o abogado.
+        </p>
       </footer>
 
     </div>

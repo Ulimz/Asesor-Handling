@@ -1,38 +1,43 @@
-# 📝 Session Context - December 9, 2025 (Session 2 - Final)
+# 📝 Session Context - December 10, 2025 (Session 3 - UI Polish & Branding)
 
 ## 🎯 What Was Accomplished Today
 
-### 1. 🛡️ Authentication System Complete
-- **Login Flow**: Implemented `/login` with JWT storage and session persistence (Local Storage).
-- **Registration**: Created `/register` for new user sign-ups.
-- **Security**: Protected `/dashboard` route (client-side redirect if no token).
-- **User Management**: Successfully created test user `test@handling.com` via backend.
+### 1. 🎨 Global Rebranding
+- **App Name**: Renamed to "**Asistente IA Handling**".
+- **Logo**: Updated to new "**AH-IA**" stacked text logo.
+- **Consistency**: Applied Branding across Dashboard, Mobile Header, Login Page, and Landing Page.
 
-### 2. 📱 Mobile Experience Upgrade
-- **Mobile Navigation**: Added native-app style bottom bar for screens < 768px.
-- **Responsiveness**: Fixed "trapped in chat" issue on mobile devices.
+### 2. � Critical UI Fixes
+- **Duplicate Dropdown**: Resolved UI duplication of `CompanyDropdown`.
+- **"Failed to Fetch"**: Fixed trailing slash issue in API call (`/api/convenios/`) and implemented cache-busting (`?t=...`) to resolve persistent redirect loops.
+- **Mobile Friendly**: Layout adjusted for better mobile experience.
 
-### 3. 🔧 Backend & Infrastructure
-- **Critical Repairs**: Fixed startup crashes (Pydantic V2), recovered DB credentials, and restored corrupted `rag_engine.py`.
-- **RAG Data**: Created `backend/data/iberia_convenio.json` (sample) and successfully seeded the vector database.
-- **API**: Backend fully operational at `http://localhost:8000`.
+### 3. ✨ Landing Page Overhaul
+- **Content**: Removed broken links ("Funcionalidades", "Demo").
+- **New Sections**: Added "**Convenios Disponibles**" (Grid 2x4) and "**Preguntas Frecuentes**".
+- **Real Data**: Synced company list with database (Added EasyJet, Merged South/Iberia).
+- **Functionality**: Fixed "Solicita que lo añadamos" link (mailto to `soporte_asistentehandling@outlook.es`).
+- **Legal Compliance**: Added clear footer disclaimer regarding lack of legal validity.
+
+### 4. 🧠 Feature Completion
+- **Recent Memory**: Implemented functional history sidebar in Chat Interface (persists session queries).
 
 ## 📊 Current Project State
 
 ### Services
-- **Frontend**: `http://localhost:3002` (Secure & Mobile-Ready)
-- **Backend**: `http://localhost:8000` (Auth & RAG enabled)
-- **Database**: PostgreSQL + PgVector (Seeded with sample data)
+- **Frontend**: `http://localhost:3002` (Brand & Content Updated)
+- **Backend**: `http://localhost:8000` (Stable)
+- **Database**: PostgreSQL (Contains full company list)
 
 ### Known Issues / Warnings ⚠️
-- **RAG Data Quality**: The vector database currently uses *sample* data for Iberia. Real PDF/JSON extraction is needed for production accuracy.
-- **SSL/HTTPS**: Running on HTTP for development. Future production deployment requires HTTPS (Let's Encrypt).
+- **Mailto**: Support link relies on user having a default email client configured.
+- **Data Persistence**: "Recent Memory" is currently session-based (React State). Hard refresh clears it (expected for MVP).
 
 ## 📋 Task List for Next Session
 
-- [ ] **Data Ingestion**: Scrape or parse real PDF convenios to replace sample data.
+- [ ] **Data Ingestion**: Scrape or parse real PDF convenios to replace sample data (Phase 6).
 - [ ] **Chat UI Polish**: Improve displaying of "Sources" (citations) in the chat response.
-- [ ] **Deploy Prep**: Configure production environment variables.
+- [ ] **Deploy Prep**: Configure production environment variables and HTTPS.
 
 ## 💾 Backup Status
-- All features (MobileNav, Auth, Backend Fixes) committed and pushed to GitHub main branch.
+- Branding, UI Fixes, Landing Page, and Recent Memory features committed.

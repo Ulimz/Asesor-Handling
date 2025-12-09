@@ -74,8 +74,8 @@ export default function LoginPage() {
                 <div className="absolute -top-10 -right-10 w-20 h-20 bg-cyan-500/20 rounded-full blur-xl animate-pulse"></div>
 
                 <div className="text-center mb-10">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-2xl shadow-lg shadow-cyan-500/20 mb-6">
-                        <ShieldCheck size={32} className="text-white" strokeWidth={2.5} />
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-2xl shadow-lg shadow-cyan-500/20 mb-6 font-bold text-lg leading-tight text-center tracking-tighter text-white">
+                        AH<br />IA
                     </div>
                     <h1 className="text-3xl font-bold text-white mb-2">Bienvenido</h1>
                     <p className="text-slate-400 text-sm">Accede a tu asistente legal personal</p>

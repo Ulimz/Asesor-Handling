@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship, declarative_base
 from pgvector.sqlalchemy import Vector
 from datetime import datetime
 
-Base = declarative_base()
+from app.db.base import Base
 
 class LegalDocument(Base):
     """Parent document (Convenio, Estatuto, etc.)"""
@@ -26,7 +26,7 @@ class DocumentChunk(Base):
     document_id = Column(Integer, ForeignKey("legal_documents.id"))
     content = Column(Text)  # El texto del artículo
     embedding = Column(Vector(384))  # Vector de sentence-transformers (all-MiniLM-L6-v2)
-    article_ref = Column(String)  # "Art. 45"
+    article_ref = Column(String, index=True)  # "Art. 45" - indexed for faster lookups
     
     # Relationship
     document = relationship("LegalDocument", back_populates="chunks")

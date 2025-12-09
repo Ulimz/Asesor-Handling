@@ -9,7 +9,13 @@ from sqlalchemy.orm import sessionmaker
 DATABASE_URL = os.getenv('DATABASE_URL')
 if not DATABASE_URL:
     DATABASE_URL = f"postgresql://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_DB')}"
-print(f"[DEBUG] DATABASE_URL: {DATABASE_URL}")
+
+# Sanitize URL for logging (hide password)
+if '@' in DATABASE_URL:
+    safe_url = DATABASE_URL.split('@')[1]  # Get host/db part only
+    print(f"[DEBUG] DATABASE_HOST: {safe_url}")
+else:
+    print("[DEBUG] DATABASE_URL: configured")
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

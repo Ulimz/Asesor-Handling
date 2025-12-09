@@ -120,7 +120,7 @@ export default function DashboardPage() {
                     <header className="h-16 px-6 border-b border-white/5 flex items-center justify-between bg-slate-900/50 backdrop-blur-md z-20">
                         <div className="flex items-center gap-4">
                             <h1 className="text-xl font-semibold text-white">
-                                {activeTab === 'chat' && 'Asistente Legal IA'}
+                                {activeTab === 'chat' && 'Asistente IA Handling'}
                                 {activeTab === 'calculator' && 'Herramientas de Nómina'}
                                 {activeTab === 'alerts' && 'Centro de Novedades'}
                                 {activeTab === 'claims' && 'Generador de Escritos'}
@@ -152,7 +152,7 @@ export default function DashboardPage() {
                                     transition={{ duration: 0.2 }}
                                     className="h-full"
                                 >
-                                    <ChatInterface key={selectedCompanyId} /> {/* Key forces reset on company change */}
+                                    <ChatInterface key={selectedCompanyId} selectedCompanyId={selectedCompanyId} /> {/* Key forces reset on company change */}
                                 </motion.div>
                             )}
 

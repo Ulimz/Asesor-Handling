@@ -15,8 +15,20 @@ interface ApiHit {
     company_slug: string | null;
 }
 
-export async function askAI(query: string, companyId?: CompanyId): Promise<SearchResult> {
+interface Message {
+    role: 'user' | 'assistant';
+    content: string;
+}
+
+export async function askAI(messages: Message[], companyId?: CompanyId): Promise<SearchResult> {
     try {
+        // Extract current query and history
+        const query = messages[messages.length - 1].content;
+        const history = messages.slice(0, -1).map(m => ({
+            role: m.role,
+            content: m.content
+        }));
+
         const res = await fetch(`/api/articulos/search/chat`, {
             method: 'POST',
             headers: {
@@ -24,6 +36,7 @@ export async function askAI(query: string, companyId?: CompanyId): Promise<Searc
             },
             body: JSON.stringify({
                 query,
+                history,
                 company_slug: companyId
             })
         });
@@ -44,7 +57,9 @@ export async function askAI(query: string, companyId?: CompanyId): Promise<Searc
         };
 
     } catch (error) {
-        console.error("Error en askAI:", error);
+        if (process.env.NODE_ENV !== 'production') {
+            console.error("Error en askAI:", error);
+        }
         return {
             answer: "Lo siento, ha ocurrido un error al conectar con el servidor de inteligencia legal. Por favor inténtalo de nuevo.",
             sources: []

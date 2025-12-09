@@ -2,6 +2,7 @@ from fastapi import APIRouter, Query, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.db.database import SessionLocal
 from app.services.rag_engine import rag_engine
+from app.constants import VALID_COMPANIES
 from pydantic import BaseModel
 from typing import List, Optional, Any
 
@@ -18,6 +19,7 @@ def get_db():
 class ChatRequest(BaseModel):
     query: str
     company_slug: Optional[str] = None
+    history: List[dict] = []
 
 class ChatResponse(BaseModel):
     answer: str
@@ -36,8 +38,19 @@ def chat_with_docs(
     request: ChatRequest,
     db: Session = Depends(get_db)
 ):
-    # 1. Search relevant chunks
-    results = rag_engine.search(query=request.query, company_slug=request.company_slug, db=db, limit=5)
+    # 0. Rewrite query with history if available
+    final_query = request.query
+    # 0. Rewrite query (handling history + keyword enhancement)
+    final_query = rag_engine.rewrite_query(request.query, request.history)
+    if final_query != request.query:
+        print(f"🔄 Rewritten Query: '{request.query}' -> '{final_query}'")
+    
+    # 0.5 Validate company_slug
+    if request.company_slug and request.company_slug not in VALID_COMPANIES:
+        raise HTTPException(status_code=400, detail=f"Invalid company_slug. Must be one of: {', '.join(VALID_COMPANIES)}")
+
+    # 1. Search relevant chunks (increased limit to capture tables)
+    results = rag_engine.search(query=final_query, company_slug=request.company_slug, db=db, limit=8)
     
     if not results:
         return {
