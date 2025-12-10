@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_URL } from "@/config/api";
 
 interface Alerta {
   title: string;
@@ -15,7 +16,7 @@ export default function AlertasList() {
     async function fetchAlertas() {
       setLoading(true);
       try {
-        const res = await fetch("/api/alertas");
+        const res = await fetch(`${API_URL}/api/alertas`);
         const data = await res.json();
         setAlertas(data || []);
       } catch {

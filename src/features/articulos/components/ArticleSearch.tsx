@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_URL } from "@/config/api";
 
 interface ArticleResult {
   _source: {
@@ -18,7 +19,7 @@ export default function ArticleSearch() {
     setLoading(true);
     setResults([]);
     try {
-      const res = await fetch(`/api/articulos/search?q=${encodeURIComponent(query)}`);
+      const res = await fetch(`${API_URL}/api/articulos/search?q=${encodeURIComponent(query)}`);
       const data = await res.json();
       setResults(data.results || []);
     } catch {

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ShieldCheck, User, Lock, Mail, ArrowRight, AlertCircle, Loader2, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_URL } from '@/config/api';
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -28,7 +29,7 @@ export default function RegisterPage() {
         }
 
         try {
-            const response = await fetch('http://localhost:8000/users/', {
+            const response = await fetch(`${API_URL}/users/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

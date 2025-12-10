@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_URL } from "@/config/api";
 
 export default function LegalIAChat() {
   const [question, setQuestion] = useState("");
@@ -10,7 +11,7 @@ export default function LegalIAChat() {
     setLoading(true);
     setAnswer("");
     try {
-      const res = await fetch("/api/ia/ask", {
+      const res = await fetch(`${API_URL}/api/ia/ask`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question })

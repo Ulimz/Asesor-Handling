@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { PenTool, FileText, Download, Copy, Check } from 'lucide-react';
+import { API_URL } from '@/config/api';
 
 export default function ClaimGenerator() {
     const [type, setType] = useState('vacaciones');
@@ -17,7 +18,7 @@ export default function ClaimGenerator() {
         setLoading(true);
 
         try {
-            const res = await fetch('/api/reclamaciones/generate', {
+            const res = await fetch(`${API_URL}/api/reclamaciones/generate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Calculator, DollarSign, PieChart, ArrowRight } from 'lucide-react';
+import { API_URL } from '@/config/api';
 
 interface CalculationResult {
     gross_monthly: number;
@@ -24,7 +25,7 @@ export default function SalaryCalculator() {
         setLoading(true);
 
         try {
-            const res = await fetch('/api/calculadoras/nomina', {
+            const res = await fetch(`${API_URL}/api/calculadoras/nomina`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

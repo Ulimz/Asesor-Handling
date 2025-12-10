@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ShieldCheck, User, Lock, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_URL } from '@/config/api';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -20,7 +21,7 @@ export default function LoginPage() {
 
         try {
             // Using direct fetch to backend for now, later we can move to a service
-            const response = await fetch('http://localhost:8000/users/login', {
+            const response = await fetch(`${API_URL}/users/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',

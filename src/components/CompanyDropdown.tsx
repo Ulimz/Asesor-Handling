@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Check, Building2, Loader2 } from 'lucide-react';
 import { CompanyId } from '@/data/knowledge-base';
+import { API_URL } from "@/config/api";
 
 interface Company {
     id: number;
@@ -27,7 +28,7 @@ export default function CompanyDropdown({ selectedCompanyId, onSelect }: Company
     useEffect(() => {
         async function fetchCompanies() {
             try {
-                const res = await fetch(`/api/convenios/?t=${Date.now()}`);
+                const res = await fetch(`${API_URL}/api/convenios/?t=${Date.now()}`);
                 if (!res.ok) {
                     throw new Error(`HTTP ${res.status}: ${res.statusText}`);
                 }

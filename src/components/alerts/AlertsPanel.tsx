@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Bell, AlertTriangle, FileText, Shield, Info, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { API_URL } from '@/config/api';
 
 interface Alerta {
     id: number;
@@ -17,7 +18,7 @@ export default function AlertsPanel() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('/api/alertas')
+        fetch(`${API_URL}/api/alertas`)
             .then(res => res.json())
             .then(data => {
                 setAlertas(data);
