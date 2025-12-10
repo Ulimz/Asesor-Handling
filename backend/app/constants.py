@@ -8,7 +8,7 @@ EMBEDDING_DIMENSION = 384  # Output dimension of all-MiniLM-L6-v2
 
 # Context and history limits
 HISTORY_CONTEXT_MESSAGES = 3  # Number of previous messages to include in context
-MAX_CONTEXT_CHARS = 8000  # Maximum characters for Gemini context (~2000 tokens)
+MAX_CONTEXT_CHARS = 60000  # Maximum characters for Gemini context (increased to support large tables)
 
 # Valid company slugs
 VALID_COMPANIES = [

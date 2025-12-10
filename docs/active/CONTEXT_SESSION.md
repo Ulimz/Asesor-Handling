@@ -1,43 +1,37 @@
-# 📝 Session Context - December 10, 2025 (Session 3 - UI Polish & Branding)
+# 📝 Session Context - December 10, 2025 (Session 4 - RAG Refinement)
 
 ## 🎯 What Was Accomplished Today
 
-### 1. 🎨 Global Rebranding
-- **App Name**: Renamed to "**Asistente IA Handling**".
-- **Logo**: Updated to new "**AH-IA**" stacked text logo.
-- **Consistency**: Applied Branding across Dashboard, Mobile Header, Login Page, and Landing Page.
+### 1. 🔍 RAG Engine Optimization
+- **Parser Fixed**: `ingest_xml.py` now correctly detects "Anexo I" and "Tabla Salarial" as separate sections, preventing them from being merged into irrelevant articles.
+- **Robustness**: Added support for `class="centro_redonda"` and explicit "TABLA" keywords.
+- **Context Limit**: Increased `MAX_CONTEXT_CHARS` to 60,000 to handle massive salary tables (34k+ chars).
+- **Prioritized Search**: Implemented logic to force-retrieve and prioritize large "ANEXO/TABLA" chunks for salary-related queries.
 
-### 2. � Critical UI Fixes
-- **Duplicate Dropdown**: Resolved UI duplication of `CompanyDropdown`.
-- **"Failed to Fetch"**: Fixed trailing slash issue in API call (`/api/convenios/`) and implemented cache-busting (`?t=...`) to resolve persistent redirect loops.
-- **Mobile Friendly**: Layout adjusted for better mobile experience.
+### 2. ✅ Verification
+- **Automated Regression**: Verified Swissport ingestion remains stable.
+- **Success Metric**: Confirmed that queries for "horas perentorias" now retrieve the full salary table from Iberia's Anexo I.
 
-### 3. ✨ Landing Page Overhaul
-- **Content**: Removed broken links ("Funcionalidades", "Demo").
-- **New Sections**: Added "**Convenios Disponibles**" (Grid 2x4) and "**Preguntas Frecuentes**".
-- **Real Data**: Synced company list with database (Added EasyJet, Merged South/Iberia).
-- **Functionality**: Fixed "Solicita que lo añadamos" link (mailto to `soporte_asistentehandling@outlook.es`).
-- **Legal Compliance**: Added clear footer disclaimer regarding lack of legal validity.
-
-### 4. 🧠 Feature Completion
-- **Recent Memory**: Implemented functional history sidebar in Chat Interface (persists session queries).
+### 3. 🧹 Hygiene
+- **Changelog**: Created `CHANGELOG.md` documenting technical changes.
+- **Cleanup**: Removed temporary debugging scripts.
 
 ## 📊 Current Project State
 
 ### Services
-- **Frontend**: `http://localhost:3002` (Brand & Content Updated)
-- **Backend**: `http://localhost:8000` (Stable)
-- **Database**: PostgreSQL (Contains full company list)
+- **Frontend**: `http://localhost:3002` (Brand Updated)
+- **Backend**: `http://localhost:8000` (RAG Fixed for Salaries)
+- **Database**: PostgreSQL (Iberia & others ingested)
 
 ### Known Issues / Warnings ⚠️
-- **Mailto**: Support link relies on user having a default email client configured.
-- **Data Persistence**: "Recent Memory" is currently session-based (React State). Hard refresh clears it (expected for MVP).
+- **Context Costs**: Increasing context to 60k chars increases LLM token usage per query. Monitor costs.
+- **Data Persistence**: "Recent Memory" is session-based.
 
 ## 📋 Task List for Next Session
 
-- [ ] **Data Ingestion**: Scrape or parse real PDF convenios to replace sample data (Phase 6).
-- [ ] **Chat UI Polish**: Improve displaying of "Sources" (citations) in the chat response.
-- [ ] **Deploy Prep**: Configure production environment variables and HTTPS.
+- [ ] **Final End-to-End Test**: Verify salary answers in the actual Chat UI.
+- [ ] **Chat UI Polish**: Improve displaying of "Sources" (citations).
+- [ ] **Deploy Prep**: Configure production environment variables.
 
 ## 💾 Backup Status
-- Branding, UI Fixes, Landing Page, and Recent Memory features committed.
+- RAG Parser & Engine fixes committed.

@@ -1,5 +1,5 @@
 from sentence_transformers import SentenceTransformer
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 from app.db.models import DocumentChunk, LegalDocument
 import numpy as np
@@ -93,12 +93,29 @@ class RagEngine:
         if is_salary_query and company_slug:
             print(f"💰 Salary intent detected in search: forcing retrieval of ANEXOs/Tablas")
             
-            # Fetch chunks specifically from ANEXOs or TABLAS for this company
-            # We use a separate query to guarantee they are included
+            # 1. PRIORITY: Fetch BIG chunks from ANEXOs/TABLAS (Tables are usually large)
+            priority_stmt = select(DocumentChunk).join(LegalDocument).filter(
+                (LegalDocument.company == company_slug) &
+                ((DocumentChunk.article_ref.ilike('%ANEXO%')) | (DocumentChunk.article_ref.ilike('%TABLA%')))
+            ).order_by(
+                func.length(DocumentChunk.content).desc()
+            ).limit(3)
+            
+            priority_results = list(db.execute(priority_stmt).scalars().all())
+            
+            # Add priority results immediately
+            existing_ids = {r.id for r in results}
+            for pr in priority_results:
+                if pr.id not in existing_ids:
+                    print(f"   ⭐⭐ PRIORITY Force-added: {pr.article_ref}")
+                    results.append(pr)
+                    existing_ids.add(pr.id)
+
+            # 2. General Fallback: Other Anexos/Tablas
             anexo_stmt = select(DocumentChunk).join(LegalDocument).filter(
                 (LegalDocument.company == company_slug) &
                 ((DocumentChunk.article_ref.ilike('%ANEXO%')) | (DocumentChunk.article_ref.ilike('%TABLA%')))
-            ).limit(3) # Limit to avoid flooding context
+            ).limit(10) 
             
             anexo_results = db.execute(anexo_stmt).scalars().all()
             
@@ -219,7 +236,9 @@ INSTRUCCIONES OBLIGATORIAS:
    - Si la pregunta requiere un cálculo (ej: hora perentoria = hora ordinaria + 75%), REALIZA EL CÁLCULO usando el valor de la tabla.
    - Ejemplo: Si Tabla Nivel 2 = 10€ y Perentoria = +75%, responde: "El precio base es 10€, por lo que la hora perentoria sería 17,50€".
 3. Cita SIEMPRE el Artículo o Anexo de donde sacas el dato.
-4. Si el usuario pregunta por un dato numérico y ves una tabla, NO digas "no tengo información". Extrae el número más probable y explícalo.
+4. Si la pregunta es sobre un precio (horas, pluses) y hay varios NIVELES o ANTIGÜEDAD en la tabla:
+   - Si el usuario NO especifica su nivel, MUESTRA LA TABLA COMPLETA o el rango de precios (ej: "Desde el Nivel 1 (10€) al Nivel 5 (15€)"). NO des un solo valor al azar.
+   - Si el usuario especifica nivel, da el valor exacto.
 5. Responde con PRECISIÓN y DIRECTAMENTE al grano.
 
 RESPUESTA (directa, con cálculos si es necesario):"""

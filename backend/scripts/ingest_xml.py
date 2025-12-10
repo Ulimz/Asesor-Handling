@@ -83,16 +83,34 @@ def parse_boe_xml(doc_config):
         
         # 2. Paragraphs (p) - Check if they are actually Headers disguised as P
         if element.name == 'p':
-            # Some XMLs put "ANEXO I" in a <p class="centro_negrita">
+            # Some XMLs put "ANEXO I" in a <p class="centro_negrita"> or <p class="anexo_num">
             is_header_p = False
+            p_class = element.get('class', [])
+            
+            # Helper to check if text looks like a header
+            upper_text = text.upper().strip()
+            
+            # Specific classes used for headers in BOE
+            # USER CHECKLIST: Add 'centro_redonda'
+            if any(c in p_class for c in ['anexo', 'anexo_num', 'capitulo_num', 'titulo_num', 'articulo', 'centro_redonda']):
+                 # Extra check for centro_redonda: only if it contains specific keywords to avoid false positives
+                 if 'centro_redonda' in p_class and not any(k in upper_text for k in ['ANEXO', 'TABLA', 'INDICE']):
+                     pass 
+                 else:
+                     is_header_p = True
+            
             # Check length to avoid long paragraphs being treated as headers
-            if len(text) < 150:
-                upper_text = text.upper()
+            elif len(text) < 150:
                 # Must start with known keywords
+                # Added 'TABLA SALARIAL' as a potential section starter if it appears standalone
                 if upper_text.startswith("ARTÍCULO") or upper_text.startswith("ANEXO") or \
                    upper_text.startswith("DISPOSICIÓN") or upper_text.startswith("CAPÍTULO") or \
-                   upper_text.startswith("TÍTULO"):
+                   upper_text.startswith("TÍTULO") or upper_text.startswith("PARTE"):
                     is_header_p = True
+                
+                # Special case: "Tabla Salarial" or "Tabla de Equivalencias" often appears as a semi-header
+                if ("TABLA SALARIAL" in upper_text or "TABLA DE EQUIVALENCIAS" in upper_text) and len(text) < 100:
+                     is_header_p = True
             
             if is_header_p:
                 if current_article["content"].strip():

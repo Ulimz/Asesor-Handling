@@ -112,6 +112,9 @@ def seed_single_document(json_file: Path, db: Session) -> Optional[int]:
             
     except Exception as e:
         logger.error(f"Error processing {json_file.name}: {e}")
+        print(f"CRITICAL ERROR processing {json_file.name}: {e}") # Added for immediate feedback
+        import traceback
+        traceback.print_exc()
         db.rollback()
         return None
 
