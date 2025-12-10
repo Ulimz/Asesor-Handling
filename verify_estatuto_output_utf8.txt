@@ -1,0 +1,7 @@
+﻿[DEBUG] DATABASE_HOST: db/asistentehandling
+Ô£à Found Document: Convenio Colectivo estatuto (ID: 4, Company: General, Category: Estatuto)
+Searching for Article 34 chunks...
+Ô£à Found 1 chunks for Article 34:
+   - Ref: Art├¡culo 34.  Jornada.
+   - Content Preview: Art├¡culo 34.  Jornada.
+1. La duraci├│n de la jornada de trabajo ser├í la pactada en los convenios cole...

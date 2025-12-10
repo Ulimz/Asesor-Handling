@@ -103,6 +103,43 @@ class RagEngine:
         results = db.execute(stmt).scalars().all()
         results = list(results) # Convert to list to allow appending
 
+        # --- SPECIFIC ARTICLE RETRIEVAL (Estatuto / Convenio) ---
+        # If query explicitly mentions "Artículo X", prioritize searching for that article ref.
+        import re
+        art_match = re.search(r'art[ií]culo\s+(\d+)', query, re.IGNORECASE)
+        estatuto_match = re.search(r'estatuto', query, re.IGNORECASE)
+        
+        if art_match:
+            art_num = art_match.group(1)
+            print(f"📜 Article reference detected: {art_num}")
+            
+            # Base filter for article
+            art_filter = DocumentChunk.article_ref.ilike(f'%Art%culo {art_num}%')
+            
+            # If "Estatuto" is mentioned, restrict to Estatuto docs
+            doc_filter = None
+            if estatuto_match:
+                 print(f"   ⚖️  'Estatuto' detected, narrowing search.")
+                 doc_filter = LegalDocument.title.ilike('%Estatuto%')
+            elif company_slug:
+                 # Otherwise prioritize Company + General
+                 doc_filter = (LegalDocument.company == company_slug) | (LegalDocument.company.ilike('general'))
+            
+            if doc_filter is not None:
+                priority_stmt = select(DocumentChunk).join(LegalDocument).filter(
+                    doc_filter & art_filter
+                ).limit(3)
+                
+                priority_results = list(db.execute(priority_stmt).scalars().all())
+                
+                # Add priority results immediately
+                existing_ids = {r.id for r in results}
+                for pr in priority_results:
+                    if pr.id not in existing_ids:
+                        print(f"   ⭐⭐ SPECIFIC ARTICLE Force-added: {pr.article_ref} ({pr.document.title})")
+                        results.insert(0, pr) # Insert at TOP
+                        existing_ids.add(pr.id)
+
         # --- HYBRID SEARCH: FORCE ANEXOS FOR SALARY QUERIES ---
         # Vector search can miss tables (Anexos). If query is about salary, force fetch Anexos.
         salary_keywords = ['precio', 'salario', 'retribución', 'retribucion', 'paga', 'sueldo', 
@@ -157,6 +194,8 @@ class RagEngine:
                 "id": chunk.id,
                 "content": chunk.content,
                 "article_ref": chunk.article_ref,
+                "document_title": chunk.document.title if chunk.document else "Unknown",
+                "company": chunk.document.company if chunk.document else "Unknown",
                 "document_id": chunk.document.category if chunk.document else "unknown", # Access parent doc if needed
                 "score": 1.0  # Placeholder
             })
@@ -196,14 +235,14 @@ class RagEngine:
                      
                  return merged
 
-        if not self.gen_model:
-            return current_query
-
-        # Format last N messages for context
-        relevant_history = history[-HISTORY_CONTEXT_MESSAGES:] 
-        history_text = "\n".join([f"{msg['role']}: {msg['content']}" for msg in relevant_history])
+        rewritten = current_query
         
-        prompt = f"""Dada esta conversación:
+        if self.gen_model:
+            # Format last N messages for context
+            relevant_history = history[-HISTORY_CONTEXT_MESSAGES:] 
+            history_text = "\n".join([f"{msg['role']}: {msg['content']}" for msg in relevant_history])
+            
+            prompt = f"""Dada esta conversación:
 {history_text}
 
 Nueva pregunta del usuario: {current_query}
@@ -212,25 +251,25 @@ Si la nueva pregunta hace referencia a algo mencionado antes (ej: "y eso?", "cu�
 Si ya es clara y completa, devuélvela tal cual.
 
 Pregunta reescrita:"""
-        
-        try:
-            response = self.gen_model.generate_content(prompt)
-            rewritten = response.text.strip()
             
-            # Heuristic Fallback: If LLM failed to change anything but query looks dependent
-            if rewritten == current_query and history:
-                # Check for last USER message
-                last_user_msg = next((m['content'] for m in reversed(history) if m['role'] == 'user'), None)
-                if last_user_msg:
-                    print(f"⚠️ LLM lazy, using heuristic merge: '{last_user_msg}' + '{current_query}'")
-                    rewritten = f"{last_user_msg} {current_query}"
-            
-        except Exception as e:
-            print(f"Error rewriting query: {e}")
-            rewritten = current_query
+            try:
+                response = self.gen_model.generate_content(prompt)
+                rewritten_response = response.text.strip()
+                
+                # Heuristic Fallback: If LLM failed to change anything but query looks dependent
+                if rewritten_response == current_query and history:
+                    last_user_msg = next((m['content'] for m in reversed(history) if m['role'] == 'user'), None)
+                    if last_user_msg and len(current_query.split()) < 4: # Only merge if query is short
+                        pass # merged logic below if needed, but keeping it simple for now
+                    
+                rewritten = rewritten_response
+                
+            except Exception as e:
+                print(f"Error rewriting query: {e}")
+                rewritten = current_query
 
         # --- POST-REWRITE ENHANCEMENTS (Synonyms & Keywords) ---
-        # Apply these on the FINAL rewritten query to catch context from history
+        # Apply these on the FINAL rewritten query (or original if no rewrite)
         rewritten_lower = rewritten.lower()
 
         # SALARY DETECTION
@@ -253,8 +292,8 @@ Pregunta reescrita:"""
 
         # REST/SHIFT SYNONYMS (Statute uses 'jornada' not 'turno' often)
         if 'descanso' in rewritten_lower and ('turno' in rewritten_lower or 'turnos' in rewritten_lower):
-            rewritten = f"{rewritten} jornada descanso entre jornadas 12 horas"
-            print(f"🛌 Rest/Shift query detected, enhanced with: jornada, 12 horas")
+            rewritten = f"{rewritten} jornada descanso entre jornadas 12 horas doce horas Artículo 34 Estatuto"
+            print(f"🛌 Rest/Shift query detected, enhanced with: jornada, 12 horas, doce horas, Artículo 34")
 
         return rewritten
 

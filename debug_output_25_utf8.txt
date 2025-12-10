@@ -1,0 +1,354 @@
+[DEBUG] DATABASE_HOST: db/asistentehandling
+
+
+==================================================
+TESTING COMPANY: azul
+==================================================
+[SEARCH] Running rag_engine.search(limit=25)...
+[INFO] Loading SentenceTransformer model (all-MiniLM-L6-v2)...
+Found 25 chunks.
+
+--- Result 1 ---
+Source: Convenio Colectivo Azulhandling (Art├¡culo 77.ÔÇâCitas m├®dicas con especialistas.)
+Content (repr): 'Art├¡culo 77.\u2003Citas m├®dicas con especialistas.\nSe facilitar├ín por parte de la Compa├▒├¡a los cambios de'...
+
+--- Result 2 ---
+Source: Convenio Colectivo estatuto (Disposici├│n final segunda.  Desarrollo reglamentario.)
+Content (repr): 'Disposici├│n final segunda.  Desarrollo reglamentario.\n1. El Gobierno dictar├í las disposiciones que s'...
+
+--- Result 3 ---
+Source: Convenio Colectivo estatuto (art├¡culo 11.2 en la medida en que no se opongan o contradigan lo establecido en el mismo.)
+Content (repr): 'art├¡culo 11.2 en la medida en que no se opongan o contradigan lo establecido en el mismo.'...
+
+--- Result 4 ---
+Source: Convenio Colectivo estatuto (Art├¡culo 27.  Salario m├¡nimo interprofesional.)
+Content (repr): 'Art├¡culo 27.  Salario m├¡nimo interprofesional.\n1. El Gobierno fijar├í, previa consulta con las organi'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 5 ---
+Source: Convenio Colectivo Azulhandling (Art├¡culo 26.ÔÇâOtros conceptos retributivos.)
+Content (repr): 'Art├¡culo 26.\u2003Otros conceptos retributivos.\nCon efectos desde la publicaci├│n del presente convenio co'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 6 ---
+Source: Convenio Colectivo Azulhandling (Art├¡culo 15.ÔÇâProgresi├│n y promoci├│n.)
+Content (repr): 'Art├¡culo 15.\u2003Progresi├│n y promoci├│n.\n1.\u2003Se entiende por progresi├│n la mejora econ├│mica dentro de la '...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 7 ---
+Source: Convenio Colectivo General (Art├¡culo 34.ÔÇâTrabajo a turnos.)
+Content (repr): 'Art├¡culo 34.\u2003Trabajo a turnos.\nSe considera trabajo a turnos toda forma de organizaci├│n del trabajo '...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 8 ---
+Source: Convenio Colectivo General (XML Source) (Art├¡culo┬á34.ÔÇâTrabajo a turnos.)
+Content (repr): 'Art├¡culo\xa034.\u2003Trabajo a turnos.\nSe considera trabajo a turnos toda forma de organizaci├│n del trabajo '...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 9 ---
+Source: Convenio Colectivo estatuto (Disposici├│n adicional decimosexta.  Aplicaci├│n del despido por causas econ├│micas,)
+Content (repr): 'Disposici├│n adicional decimosexta.  Aplicaci├│n del despido por causas econ├│micas,\nt├®cnicas, organiza'...
+
+--- Result 10 ---
+Source: Convenio Colectivo Azulhandling (Art├¡culo 25.ÔÇâComplementos salariales de vencimiento peri├│dico superior al mes.)
+Content (repr): 'Art├¡culo 25.\u2003Complementos salariales de vencimiento peri├│dico superior al mes.\nCon car├ícter general,'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 11 ---
+Source: Convenio Colectivo General (Art├¡culo 27.ÔÇâComplementos salariales de vencimiento peri├│dico superior al mes.)
+Content (repr): 'Art├¡culo 27.\u2003Complementos salariales de vencimiento peri├│dico superior al mes.\nSe establecen dos gra'...
+
+--- Result 12 ---
+Source: Convenio Colectivo General (XML Source) (Art├¡culo┬á27.ÔÇâComplementos salariales de vencimiento peri├│dico superior al mes.)
+Content (repr): 'Art├¡culo\xa027.\u2003Complementos salariales de vencimiento peri├│dico superior al mes.\nSe establecen dos gra'...
+
+--- Result 13 ---
+Source: Convenio Colectivo estatuto (Art├¡culo 29.  Liquidaci├│n y pago.)
+Content (repr): 'Art├¡culo 29.  Liquidaci├│n y pago.\n1. La liquidaci├│n y el pago del salario se har├ín puntual y documen'...
+
+--- Result 14 ---
+Source: Convenio Colectivo estatuto (Disposici├│n adicional decimonovena.  C├ílculo de indemnizaciones en determinados)
+Content (repr): 'Disposici├│n adicional decimonovena.  C├ílculo de indemnizaciones en determinados\nsupuestos de jornada'...
+
+--- Result 15 ---
+Source: Convenio Colectivo Azulhandling (Art├¡culo 63. ÔÇâGarant├¡as de los miembros de los comit├®s de empresa o delegados de)
+Content (repr): 'Art├¡culo 63. \u2003Garant├¡as de los miembros de los comit├®s de empresa o delegados de\npersonal de los cen'...
+
+--- Result 16 ---
+Source: Convenio Colectivo estatuto (Art├¡culo 69.  Elecci├│n.)
+Content (repr): 'Art├¡culo 69.  Elecci├│n.\n1. Los delegados de personal y los miembros del comit├® de empresa se elegir├í'...
+
+--- Result 17 ---
+Source: Convenio Colectivo Azulhandling (Art├¡culo 49.ÔÇâServicios de Prevenci├│n.)
+Content (repr): 'Art├¡culo 49.\u2003Servicios de Prevenci├│n.\nLos Servicios de Prevenci├│n, propios o los que contrate la Emp'...
+
+--- Result 18 ---
+Source: Convenio Colectivo Azulhandling (Art├¡culo 24.ÔÇâPercepci├│n m├¡nima fija bruta anual.)
+Content (repr): 'Art├¡culo 24.\u2003Percepci├│n m├¡nima fija bruta anual.\n1.\u2003La percepci├│n fija m├¡nima bruta anual para cada '...
+
+--- Result 19 ---
+Source: Convenio Colectivo estatuto (disposici├│n legal y, en todo caso, los de pr├ícticas y para la formaci├│n y el aprendizaje, los)
+Content (repr): 'disposici├│n legal y, en todo caso, los de pr├ícticas y para la formaci├│n y el aprendizaje, los\ncontra'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 20 ---
+Source: Convenio Colectivo estatuto (art├¡culo 2, el salario en especie podr├í superar el treinta por ciento de las percepciones)
+Content (repr): 'art├¡culo 2, el salario en especie podr├í superar el treinta por ciento de las percepciones\nsalariales'...
+
+--- Result 21 ---
+Source: Convenio Colectivo General (XML Source) (Art├¡culo┬á74.ÔÇâSubrogaci├│n Servicios de Asistencia a Pasajeros y Pasajeras, Carga y Correo.)
+Content (repr): 'Art├¡culo\xa074.\u2003Subrogaci├│n Servicios de Asistencia a Pasajeros y Pasajeras, Carga y Correo.\nTraspaso d'...
+
+--- Result 22 ---
+Source: Convenio Colectivo General (Art├¡culo 47.ÔÇâServicios de Prevenci├│n.)
+Content (repr): 'Art├¡culo 47.\u2003Servicios de Prevenci├│n.\nLos Servicios de Prevenci├│n, propios o los que contraten las E'...
+
+--- Result 23 ---
+Source: Convenio Colectivo General (XML Source) (Art├¡culo┬á47.ÔÇâServicios de Prevenci├│n.)
+Content (repr): 'Art├¡culo\xa047.\u2003Servicios de Prevenci├│n.\nLos Servicios de Prevenci├│n, propios o los que contraten las E'...
+
+--- Result 24 ---
+Source: Convenio Colectivo estatuto (Art├¡culo 55.  Forma y efectos del despido disciplinario.)
+Content (repr): 'Art├¡culo 55.  Forma y efectos del despido disciplinario.\n1. El despido deber├í ser notificado por esc'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 25 ---
+Source: Convenio Colectivo General (Art├¡culo 80.ÔÇâEspecialidades en caso de subrogaci├│n simult├ínea.)
+Content (repr): 'Art├¡culo 80.\u2003Especialidades en caso de subrogaci├│n simult├ínea.\nEn todos aquellos casos en que por ap'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+
+==================================================
+TESTING COMPANY: iberia
+==================================================
+[SEARCH] Running rag_engine.search(limit=25)...
+Found 25 chunks.
+
+--- Result 1 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 97.)
+Content (repr): 'Art├¡culo 97.\nEl n├║mero de turnos necesarios se fijar├í por temporada y no ser├ín superiores a los\nesta'...
+
+--- Result 2 ---
+Source: Convenio Colectivo Iberia (ANEXO III)
+Content (repr): 'ANEXO III\nTurnos b├ísicos\nTurnos b├ísicos para jornadas de ocho horas\nTurno A.ÔÇôEl turno cuya hora de c'...
+
+--- Result 3 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 88.)
+Content (repr): 'Art├¡culo 88.\nSe establecen los turnos b├ísicos contenidos en el anexo III del presente convenio.\nAdem'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 4 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 131.ÔÇâRemuneraci├│n cambios de turno en turnicidad.)
+Content (repr): 'Art├¡culo 131.\u2003Remuneraci├│n cambios de turno en turnicidad.\nCuando un trabajador que no est├® en situa'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 5 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 130.ÔÇâPlus disponibilidad.)
+Content (repr): 'Art├¡culo 130.\u2003Plus disponibilidad.\nLos trabajadores que est├®n sujetos a cuatro turnos en jornada de '...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 6 ---
+Source: Convenio Colectivo estatuto (Disposici├│n final segunda.  Desarrollo reglamentario.)
+Content (repr): 'Disposici├│n final segunda.  Desarrollo reglamentario.\n1. El Gobierno dictar├í las disposiciones que s'...
+
+--- Result 7 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 91.ÔÇâCambios.)
+Content (repr): 'Art├¡culo 91.\u2003Cambios.\nLa Direcci├│n podr├í realizar hasta dos cambios de turno por trabajador y mes, d'...
+
+--- Result 8 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 159.ÔÇâCupo m├¡nimo mensual.)
+Content (repr): 'Art├¡culo 159.\u2003Cupo m├¡nimo mensual.\nLa Direcci├│n de la empresa establecer├í, antes de la fecha l├¡mite '...
+
+--- Result 9 ---
+Source: Convenio Colectivo Iberia (anexo III, sin que las variaciones que se produzcan en las horas de entrada de cada)
+Content (repr): 'anexo III, sin que las variaciones que se produzcan en las horas de entrada de cada\nturno puedan con'...
+
+--- Result 10 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 127.ÔÇâDieta desayuno/comida/cena.)
+Content (repr): 'Art├¡culo 127.\u2003Dieta desayuno/comida/cena.\nLa Empresa abonar├í el desayuno, la comida o la cena al per'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 11 ---
+Source: Convenio Colectivo Iberia (art├¡culo 159.)
+Content (repr): 'art├¡culo 159.\nAeropuerto de Alicante:\na)\u2003Los d├¡as de Actividad se fijar├ín anualmente entre 215 y 234'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 12 ---
+Source: Convenio Colectivo estatuto (art├¡culo 11.2 en la medida en que no se opongan o contradigan lo establecido en el mismo.)
+Content (repr): 'art├¡culo 11.2 en la medida en que no se opongan o contradigan lo establecido en el mismo.'...
+
+--- Result 13 ---
+Source: Convenio Colectivo estatuto (Art├¡culo 27.  Salario m├¡nimo interprofesional.)
+Content (repr): 'Art├¡culo 27.  Salario m├¡nimo interprofesional.\n1. El Gobierno fijar├í, previa consulta con las organi'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 14 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 95.)
+Content (repr): 'Art├¡culo 95.\nCon relaci├│n al descanso semanal se estar├í a lo dispuesto en el Estatuto de los\ntrabaja'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 15 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 9.ÔÇâDescanso semanal.)
+Content (repr): 'Art├¡culo 9.\u2003Descanso semanal.\nEl descanso semanal para los trabajadores a tiempo parcial, por la nat'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 16 ---
+Source: Convenio Colectivo Iberia (anexo I, por cada jornada completa de 8 horas trabajada en los mismos. A estos efectos,)
+Content (repr): 'anexo I, por cada jornada completa de 8 horas trabajada en los mismos. A estos efectos,\nse prorratea'...
+
+--- Result 17 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 90.)
+Content (repr): 'Art├¡culo 90.\nUna vez fijados los horarios de los turnos b├ísicos, por necesidades de ajuste en la\npro'...
+
+--- Result 18 ---
+Source: Convenio Colectivo Iberia (art├¡culo 159.)
+Content (repr): 'art├¡culo 159.\nAeropuerto de Tenerife:\na)\u2003Los d├¡as de Actividad se fijar├ín anualmente entre 215 y 231'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 19 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 185.)
+Content (repr): 'Art├¡culo 185.\nNo obstante lo estipulado en el art├¡culo anterior, cuando el billete sin reserva de pl'...
+
+--- Result 20 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 195.)
+Content (repr): 'Art├¡culo 195.\nEn los destacamentos superiores a veintiocho d├¡as de duraci├│n, la Empresa facilitar├í,\n'...
+
+--- Result 21 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 192.ÔÇâBillete con reserva de plaza (IB-49).)
+Content (repr): 'Art├¡culo 192.\u2003Billete con reserva de plaza (IB-49).\nEl trabajador o beneficiario que durante dos a├▒o'...
+
+--- Result 22 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 5.ÔÇâRetribuciones.)
+Content (repr): 'Art├¡culo 5.\u2003Retribuciones.\nLos trabajadores fijos a tiempo parcial, percibir├ín las retribuciones con'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 23 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 66.ÔÇâGrupo Superior de Gestores y T├®cnicos.)
+Content (repr): 'Art├¡culo 66.\u2003Grupo Superior de Gestores y T├®cnicos.\nEl paso del nivel 15 al 16 para los G.S.G.T. int'...
+
+--- Result 24 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 3.ÔÇâIngresos, promoci├│n y progresi├│n.)
+Content (repr): 'Art├¡culo 3.\u2003Ingresos, promoci├│n y progresi├│n.\nA efectos de ingreso, promoci├│n y progresi├│n, se aplic'...
+
+--- Result 25 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 160.ÔÇâSistema de puntuaci├│n.)
+Content (repr): 'Art├¡culo 160.\u2003Sistema de puntuaci├│n.\nEl orden para establecer la programaci├│n de vacaciones se fijar'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+
+==================================================
+TESTING COMPANY: None
+==================================================
+[SEARCH] Running rag_engine.search(limit=25)...
+Found 25 chunks.
+
+--- Result 1 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 97.)
+Content (repr): 'Art├¡culo 97.\nEl n├║mero de turnos necesarios se fijar├í por temporada y no ser├ín superiores a los\nesta'...
+
+--- Result 2 ---
+Source: Convenio Colectivo Iberia (ANEXO III)
+Content (repr): 'ANEXO III\nTurnos b├ísicos\nTurnos b├ísicos para jornadas de ocho horas\nTurno A.ÔÇôEl turno cuya hora de c'...
+
+--- Result 3 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 88.)
+Content (repr): 'Art├¡culo 88.\nSe establecen los turnos b├ísicos contenidos en el anexo III del presente convenio.\nAdem'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 4 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 131.ÔÇâRemuneraci├│n cambios de turno en turnicidad.)
+Content (repr): 'Art├¡culo 131.\u2003Remuneraci├│n cambios de turno en turnicidad.\nCuando un trabajador que no est├® en situa'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 5 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 130.ÔÇâPlus disponibilidad.)
+Content (repr): 'Art├¡culo 130.\u2003Plus disponibilidad.\nLos trabajadores que est├®n sujetos a cuatro turnos en jornada de '...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 6 ---
+Source: Convenio Colectivo Azulhandling (Art├¡culo 77.ÔÇâCitas m├®dicas con especialistas.)
+Content (repr): 'Art├¡culo 77.\u2003Citas m├®dicas con especialistas.\nSe facilitar├ín por parte de la Compa├▒├¡a los cambios de'...
+
+--- Result 7 ---
+Source: Convenio Colectivo estatuto (Disposici├│n final segunda.  Desarrollo reglamentario.)
+Content (repr): 'Disposici├│n final segunda.  Desarrollo reglamentario.\n1. El Gobierno dictar├í las disposiciones que s'...
+
+--- Result 8 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 91.ÔÇâCambios.)
+Content (repr): 'Art├¡culo 91.\u2003Cambios.\nLa Direcci├│n podr├í realizar hasta dos cambios de turno por trabajador y mes, d'...
+
+--- Result 9 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 159.ÔÇâCupo m├¡nimo mensual.)
+Content (repr): 'Art├¡culo 159.\u2003Cupo m├¡nimo mensual.\nLa Direcci├│n de la empresa establecer├í, antes de la fecha l├¡mite '...
+
+--- Result 10 ---
+Source: Convenio Colectivo Iberia (anexo III, sin que las variaciones que se produzcan en las horas de entrada de cada)
+Content (repr): 'anexo III, sin que las variaciones que se produzcan en las horas de entrada de cada\nturno puedan con'...
+
+--- Result 11 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 127.ÔÇâDieta desayuno/comida/cena.)
+Content (repr): 'Art├¡culo 127.\u2003Dieta desayuno/comida/cena.\nLa Empresa abonar├í el desayuno, la comida o la cena al per'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 12 ---
+Source: Convenio Colectivo Iberia (art├¡culo 159.)
+Content (repr): 'art├¡culo 159.\nAeropuerto de Alicante:\na)\u2003Los d├¡as de Actividad se fijar├ín anualmente entre 215 y 234'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 13 ---
+Source: Convenio Colectivo estatuto (art├¡culo 11.2 en la medida en que no se opongan o contradigan lo establecido en el mismo.)
+Content (repr): 'art├¡culo 11.2 en la medida en que no se opongan o contradigan lo establecido en el mismo.'...
+
+--- Result 14 ---
+Source: Convenio Colectivo estatuto (Art├¡culo 27.  Salario m├¡nimo interprofesional.)
+Content (repr): 'Art├¡culo 27.  Salario m├¡nimo interprofesional.\n1. El Gobierno fijar├í, previa consulta con las organi'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 15 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 95.)
+Content (repr): 'Art├¡culo 95.\nCon relaci├│n al descanso semanal se estar├í a lo dispuesto en el Estatuto de los\ntrabaja'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 16 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 9.ÔÇâDescanso semanal.)
+Content (repr): 'Art├¡culo 9.\u2003Descanso semanal.\nEl descanso semanal para los trabajadores a tiempo parcial, por la nat'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 17 ---
+Source: Convenio Colectivo Iberia (anexo I, por cada jornada completa de 8 horas trabajada en los mismos. A estos efectos,)
+Content (repr): 'anexo I, por cada jornada completa de 8 horas trabajada en los mismos. A estos efectos,\nse prorratea'...
+
+--- Result 18 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 90.)
+Content (repr): 'Art├¡culo 90.\nUna vez fijados los horarios de los turnos b├ísicos, por necesidades de ajuste en la\npro'...
+
+--- Result 19 ---
+Source: Convenio Colectivo Iberia (art├¡culo 159.)
+Content (repr): 'art├¡culo 159.\nAeropuerto de Tenerife:\na)\u2003Los d├¡as de Actividad se fijar├ín anualmente entre 215 y 231'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 20 ---
+Source: Convenio Colectivo Easyjet (Art├¡culo 84.ÔÇâPercepci├│n del salario.)
+Content (repr): 'Art├¡culo 84.\u2003Percepci├│n del salario.\nEl personal que preste sus servicios en Easyjet Handling Spain '...
+
+--- Result 21 ---
+Source: Convenio Colectivo Azulhandling (Art├¡culo 26.ÔÇâOtros conceptos retributivos.)
+Content (repr): 'Art├¡culo 26.\u2003Otros conceptos retributivos.\nCon efectos desde la publicaci├│n del presente convenio co'...
+   [POTENTIAL ANSWER FOUND IN TEXT]
+
+--- Result 22 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 185.)
+Content (repr): 'Art├¡culo 185.\nNo obstante lo estipulado en el art├¡culo anterior, cuando el billete sin reserva de pl'...
+
+--- Result 23 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 195.)
+Content (repr): 'Art├¡culo 195.\nEn los destacamentos superiores a veintiocho d├¡as de duraci├│n, la Empresa facilitar├í,\n'...
+
+--- Result 24 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 192.ÔÇâBillete con reserva de plaza (IB-49).)
+Content (repr): 'Art├¡culo 192.\u2003Billete con reserva de plaza (IB-49).\nEl trabajador o beneficiario que durante dos a├▒o'...
+
+--- Result 25 ---
+Source: Convenio Colectivo Iberia (Art├¡culo 5.ÔÇâRetribuciones.)
+Content (repr): 'Art├¡culo 5.\u2003Retribuciones.\nLos trabajadores fijos a tiempo parcial, percibir├ín las retribuciones con'...
+   [POTENTIAL ANSWER FOUND IN TEXT]

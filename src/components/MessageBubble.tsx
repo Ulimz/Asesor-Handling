@@ -58,10 +58,10 @@ export default function MessageBubble({ content, role, sources }: MessageBubbleP
                                             </div>
                                         ),
                                         th: ({ node, ...props }) => (
-                                            <th {...props} className="bg-slate-800/80 px-4 py-3 text-xs font-semibold text-slate-300 uppercase tracking-wider border-b border-slate-700 whitespace-nowrap" />
+                                            <th {...props} className="bg-slate-800/80 px-4 py-3 text-xs font-semibold text-slate-300 uppercase tracking-wider border-b border-slate-700 min-w-[100px]" />
                                         ),
                                         td: ({ node, ...props }) => (
-                                            <td {...props} className="px-4 py-3 text-sm text-slate-300 border-b border-slate-700/50 whitespace-nowrap" />
+                                            <td {...props} className="px-4 py-3 text-sm text-slate-300 border-b border-slate-700/50 min-w-[100px]" />
                                         )
                                     }}
                                 >

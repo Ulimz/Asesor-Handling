@@ -1,0 +1,110 @@
+[
+  {
+    "name": "Plus Nocturnidad",
+    "variable_code": "PLUS_NOCT",
+    "description": "Plus por cada hora efectiva de trabajo entre las 22:00 horas y las 06:00 horas.",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Hora Extraordinaria",
+    "variable_code": "HORA_EXTRA",
+    "description": "Retribución mínima equivalente al valor hora ordinaria del nivel correspondiente prevista en el convenio, incrementada en un 50 %.",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Hora Perentoria",
+    "variable_code": "HORA_PERENTORIA",
+    "description": "Cantidad equivalente al valor de la hora ordinaria del nivel correspondiente prevista en el convenio incrementada en un 75 %.",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Plus Festividad",
+    "variable_code": "PLUS_FESTIVO",
+    "description": "Cuantía adicional al precio de la hora ordinaria por cada hora efectiva trabajada en festivo (excepto domingos).",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Plus Domingos",
+    "variable_code": "PLUS_DOMINGO",
+    "description": "Cuantía adicional al precio de la hora ordinaria por cada hora efectiva trabajada en domingo. No acumulable con el complemento de festivo.",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Plus Jornada Fraccionada",
+    "variable_code": "PLUS_JORNADA_FRACC",
+    "description": "Cantidad por cada día de trabajo efectivo en régimen de jornada fraccionada.",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Plus de Madrugue",
+    "variable_code": "PLUS_MADRUGUE",
+    "description": "Importe por día trabajado, siempre que su jornada laboral tenga su comienzo entre las 4 y las 6,55 horas.",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Plus de Transporte",
+    "variable_code": "PLUS_TRANSPORTE",
+    "description": "Cantidad por cada día de asistencia al trabajo.",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Ayuda de Manutención",
+    "variable_code": "AYUDA_MANUTENCION",
+    "description": "Cantidad por cada día de asistencia al trabajo, siempre que su turno/horario incluyese en su totalidad las 14 y las 16 horas, o las 21:00 y las 23:00 horas y la duración de la jornada diaria continuada, sea igual o superior de seis horas.",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Plus de Jornada Irregular",
+    "variable_code": "PLUS_JORNADA_IRREG",
+    "description": "Cantidad fija mensual para el personal fijo a tiempo completo que realice su prestación en régimen de jornada irregular. Incompatible con Plus de Turnicidad/Disponibilidad/Flexibilidad y con el Plus FTP.",
+    "type": "fixed_recurring"
+  },
+  {
+    "name": "Plus FTP (Fijo Tiempo Parcial)",
+    "variable_code": "PLUS_FTP",
+    "description": "Plus fijo a tiempo parcial que compensa como concepto fijo la realización, por parte del personal fijo a tiempo parcial, de su jornada. Incompatible con el plus de jornada irregular y/o plus de variación de turnos/flexibilidad/disponibilidad.",
+    "type": "fixed_recurring"
+  },
+  {
+    "name": "Plus Turnicidad (2 Turnos)",
+    "variable_code": "PLUS_TURNOS_2",
+    "description": "Cantidad fija mensual para personal fijo a tiempo completo sujeto a régimen de turnos, por dos turnos distintos programados y efectivamente realizados en el mes. Incompatible con Plus de jornada irregular y con el Plus FTP.",
+    "type": "fixed_recurring"
+  },
+  {
+    "name": "Plus Turnicidad (3 Turnos)",
+    "variable_code": "PLUS_TURNOS_3",
+    "description": "Cantidad fija mensual para personal fijo a tiempo completo sujeto a régimen de turnos, por tres turnos distintos programados y efectivamente realizados en el mes. Incompatible con Plus de jornada irregular y con el Plus FTP.",
+    "type": "fixed_recurring"
+  },
+  {
+    "name": "Plus Turnicidad (4 Turnos)",
+    "variable_code": "PLUS_TURNOS_4",
+    "description": "Cantidad fija mensual para personal fijo a tiempo completo sujeto a régimen de turnos, por cuatro turnos distintos programados y efectivamente realizados en el mes. Incompatible con Plus de jornada irregular y con el Plus FTP.",
+    "type": "fixed_recurring"
+  },
+  {
+    "name": "Plus Turnicidad (5 o más Turnos)",
+    "variable_code": "PLUS_TURNOS_5",
+    "description": "Cantidad fija mensual para personal fijo a tiempo completo sujeto a régimen de turnos, por cinco o más turnos distintos programados y efectivamente realizados en el mes. Incompatible con Plus de jornada irregular y con el Plus FTP.",
+    "type": "fixed_recurring"
+  },
+  {
+    "name": "Plus Supervisión",
+    "variable_code": "PLUS_SUPERVISION",
+    "description": "Retribución por realizar tareas de supervisión.",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Plus Jefe de Turno",
+    "variable_code": "PLUS_JEFE_TURNO",
+    "description": "Retribución por realizar tareas de jefatura de servicio.",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Complemento media de vacaciones",
+    "variable_code": "COMPLEMENTO_MEDIA_VACACIONES",
+    "description": "Complemento que compensa el salario variable en los días en que se disfrutan las vacaciones.",
+    "type": "annual"
+  }
+]

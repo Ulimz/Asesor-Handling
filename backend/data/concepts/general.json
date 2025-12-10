@@ -1,0 +1,104 @@
+[
+  {
+    "name": "Plus Nocturnidad",
+    "variable_code": "PLUS_NOCT",
+    "description": "Plus por cada hora efectiva de trabajo entre las 22:00 horas y las 06:00 horas. Su cuantía mínima se indica en la tabla salarial (Anexo I).",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Hora Extraordinaria",
+    "variable_code": "HORA_EXTRA",
+    "description": "Cada hora realizada por encima de la jornada ordinaria de trabajo, retribución mínima equivalente al valor hora ordinaria del nivel correspondiente del convenio sectorial, incrementada en un 50 %, salvo que se compense con descanso.  El precio de la hora ordinaria se determinará aplicando la siguiente fórmula: Percepción mínima fija bruta anual/1712.",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Hora Perentoria",
+    "variable_code": "HORA_PERENT",
+    "description": "Horas que se originen por impuntualidad de aeronaves, en el relevo de turnos, ausencias imprevistas, servicios o reparaciones urgentes u otras circunstancias, siempre excepcionales y de obligada atención.  Se abonará como mínimo la cantidad equivalente al valor de la hora ordinaria del nivel correspondiente del convenio sectorial incrementada en un 75 %, salvo su compensación con descanso. El precio de la hora ordinaria se determinará aplicando la siguiente fórmula: Percepción mínima fija bruta anual/1712.",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Complemento por Festivo",
+    "variable_code": "COMP_FESTIVO",
+    "description": "Cuantía por cada hora efectiva trabajada en día festivo (excepto domingos).  Su cuantía mínima se indica en la tabla salarial (Anexo I).",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Complemento de Domingo",
+    "variable_code": "COMP_DOMINGO",
+    "description": "Cuantía por hora adicional al precio de la hora ordinaria de trabajo efectivo en domingo. Su cuantía mínima se indica en la tabla salarial (Anexo I). No acumulable con el complemento de festivo.",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Plus de Jornada Fraccionada",
+    "variable_code": "PLUS_FRACCIONADA",
+    "description": "Cantidad fija por cada día de trabajo efectivo en régimen de jornada fraccionada. Su cuantía mínima se indica en la tabla salarial (Anexo I).",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Plus de Madrugue",
+    "variable_code": "PLUS_MADRUGUE",
+    "description": "Cantidad fija por día trabajado con jornada laboral que comience entre las 4:00 y las 6:55 horas. Su cuantía mínima se indica en la tabla salarial (Anexo I).",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Plus de Transporte",
+    "variable_code": "PLUS_TRANSPORTE",
+    "description": "Cantidad fija por cada día de asistencia al trabajo. Su cuantía mínima se indica en la tabla salarial (Anexo I).",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Ayuda de Manutención",
+    "variable_code": "AYUDA_MANUTENCION",
+    "description": "Cantidad fija por cada día de asistencia al trabajo, siempre que el turno/horario incluya en su totalidad las 14 y las 16 horas, o las 21 y las 23 horas y la duración de la jornada diaria continuada, sea igual o superior de seis horas. Su cuantía mínima se indica en la tabla salarial (Anexo I).",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Plus de Jornada Irregular (Fiji)",
+    "variable_code": "PLUS_FIJI",
+    "description": "Cantidad fija mensual para el personal fijo a tiempo completo que realice su prestación en régimen de jornada irregular. Su cuantía mínima se indica en la tabla salarial (Anexo I). Incompatible con el Plus de Turnicidad y Plus FTP.",
+    "type": "fixed_recurring"
+  },
+  {
+    "name": "Plus Turnicidad (2 Turnos)",
+    "variable_code": "PLUS_TURNOS_2",
+    "description": "Cantidad fija mensual para el personal fijo a tiempo completo que realice su prestación en régimen de turnos programados por la empresa, por dos turnos distintos programados y efectivamente realizados en el mes. Su cuantía mínima se indica en la tabla salarial (Anexo I).",
+    "type": "fixed_recurring"
+  },
+  {
+    "name": "Plus Turnicidad (3 Turnos)",
+    "variable_code": "PLUS_TURNOS_3",
+    "description": "Cantidad fija mensual para el personal fijo a tiempo completo que realice su prestación en régimen de turnos programados por la empresa, por tres turnos distintos programados y efectivamente realizados en el mes. Su cuantía mínima se indica en la tabla salarial (Anexo I).",
+    "type": "fixed_recurring"
+  },
+  {
+    "name": "Plus Turnicidad (4 Turnos)",
+    "variable_code": "PLUS_TURNOS_4",
+    "description": "Cantidad fija mensual para el personal fijo a tiempo completo que realice su prestación en régimen de turnos programados por la empresa, por cuatro turnos distintos programados y efectivamente realizados en el mes. Su cuantía mínima se indica en la tabla salarial (Anexo I).",
+    "type": "fixed_recurring"
+  },
+  {
+    "name": "Plus Turnicidad (5 o más Turnos)",
+    "variable_code": "PLUS_TURNOS_5",
+    "description": "Cantidad fija mensual para el personal fijo a tiempo completo que realice su prestación en régimen de turnos programados por la empresa, por cinco o más turnos distintos programados y efectivamente realizados en el mes. Su cuantía mínima se indica en la tabla salarial (Anexo I).",
+    "type": "fixed_recurring"
+  },
+    {
+    "name": "Plus Actividad (Supervisión)",
+    "variable_code": "PLUS_SUPERVISION",
+    "description": "Cantidad fija mensual para agentes administrativos o de servicios auxiliares designados para realizar tareas de supervisión. Su cuantía mínima se indica en la tabla salarial (Anexo I). El personal a tiempo parcial que realice funciones de supervisión percibirá el complemento en proporción a su jornada.",
+    "type": "fixed_recurring"
+  },
+  {
+    "name": "Plus Actividad (Agente Jefe/Jefatura de Servicio)",
+    "variable_code": "PLUS_JEFE_SERVICIO",
+    "description": "Cantidad fija mensual para agentes administrativos o de servicios auxiliares designados para realizar tareas de jefatura. Su cuantía mínima se indica en la tabla salarial (Anexo I). El personal a tiempo parcial que realice funciones de jefatura percibirá el complemento en proporción a su jornada.",
+    "type": "fixed_recurring"
+  },
+  {
+    "name": "Plus FTP (Fijo Tiempo Parcial)",
+    "variable_code": "PLUS_FTP",
+    "description": "Cantidad fija mensual para el personal fijo a tiempo parcial, en proporción al porcentaje de jornada realizado, siendo de un máximo de la cantidad indicada en la tabla salarial (Anexo I) para las personas trabajadoras que realicen una jornada equivalente al 90 % de la jornada a tiempo completo.  Incompatible con el plus de jornada irregular y/o plus de variación de turnos/flexibilidad/disponibilidad.",
+    "type": "fixed_recurring"
+  }
+]

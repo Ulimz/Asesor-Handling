@@ -1,8 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
+import NeonLogo from '@/components/NeonLogo';
+import BrandLogo from '@/components/BrandLogo';
 import { motion } from 'framer-motion';
-import { ShieldCheck, MessageSquare, ArrowRight, Zap, Globe, Lock } from 'lucide-react';
+import { ShieldCheck, MessageSquare, ArrowRight, Zap, Globe, Lock, Plane } from 'lucide-react';
 
 export default function LandingPage() {
   return (
@@ -11,14 +14,7 @@ export default function LandingPage() {
       {/* NAVBAR */}
       <nav className="fixed top-0 inset-x-0 z-50 h-20 flex items-center bg-slate-950/50 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-7xl mx-auto w-full px-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-cyan-500/20 font-bold text-[10px] leading-tight text-center tracking-tighter">
-              AH<br />IA
-            </div>
-            <span className="font-bold text-xl tracking-tight text-white">
-              Asistente<span className="text-cyan-400">IA</span>
-            </span>
-          </div>
+          <BrandLogo iconSize={64} textSize="xl" />
 
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
             {/* Links removed as per user request */}

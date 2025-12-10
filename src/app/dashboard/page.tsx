@@ -11,8 +11,11 @@ import ClaimGenerator from '@/components/claims/ClaimGenerator';
 import { CompanyId, companies } from '@/data/knowledge-base';
 import { type KnowledgeItem } from '@/data/knowledge-base';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Calculator, Settings, LogOut, User, Bell, PenTool, Loader2 } from 'lucide-react';
+import { MessageSquare, Calculator, Settings, LogOut, User, Bell, PenTool, Loader2, Plane } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import NeonLogo from '@/components/NeonLogo';
+import Image from 'next/image';
+import BrandLogo from '@/components/BrandLogo';
 
 export default function DashboardPage() {
     const router = useRouter();
@@ -71,13 +74,8 @@ export default function DashboardPage() {
 
                 {/* SIDEBAR (Desktop) */}
                 <aside className="hidden md:flex flex-col w-20 lg:w-64 bg-slate-900/50 backdrop-blur-xl border-r border-white/5">
-                    <div className="p-6 flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-white font-bold shadow-lg shadow-cyan-400/20">
-                            AH
-                        </div>
-                        <span className="hidden lg:block font-bold text-lg bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
-                            Asistente
-                        </span>
+                    <div className="p-6 flex items-center justify-center border-b border-white/5">
+                        <BrandLogo iconSize={64} textSize="lg" />
                     </div>
 
                     <nav className="flex-1 px-4 py-6 space-y-2">
@@ -130,18 +128,34 @@ export default function DashboardPage() {
                 </aside>
 
                 {/* MAIN CONTENT */}
-                <main className="flex-1 flex flex-col h-full bg-slate-950/50 relative">
+                <main className="flex-1 flex flex-col h-full bg-slate-950/50 relative min-w-0">
                     {/* Header */}
-                    <header className="h-16 px-6 border-b border-white/5 flex items-center justify-between bg-slate-900/50 backdrop-blur-md z-20">
-                        <div className="flex items-center gap-4">
-                            <h1 className="text-xl font-semibold text-white">
-                                {activeTab === 'chat' && 'Asistente IA Handling'}
+                    <header className="relative h-16 px-6 border-b border-white/5 flex items-center justify-between bg-slate-900/50 backdrop-blur-md z-20">
+                        {/* LEFT: Placeholder to balance if needed, or just w-20 to push center */}
+                        <div className="flex items-center gap-4 w-20">
+                        </div>
+
+                        {/* CENTER: Title - Flex 1 to take available space and center within it */}
+                        <div className="flex-1 flex justify-center items-center">
+                            <h1 className="text-xl font-semibold text-white whitespace-nowrap">
+                                {activeTab === 'chat' && (
+                                    <span className="tracking-widest drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+                                        AS
+                                        <span className="text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]">I</span>
+                                        STENTE
+                                        {' '}
+                                        H
+                                        <span className="text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]">A</span>
+                                        NDLING
+                                    </span>
+                                )}
                                 {activeTab === 'calculator' && 'Herramientas de Nómina'}
                                 {activeTab === 'alerts' && 'Centro de Novedades'}
                                 {activeTab === 'claims' && 'Generador de Escritos'}
                             </h1>
                         </div>
 
+                        {/* RIGHT: User Profile & Company */}
                         <div className="flex items-center gap-4">
                             <CompanyDropdown
                                 onSelect={handleCompanySelect}
@@ -156,7 +170,7 @@ export default function DashboardPage() {
                     </header>
 
                     {/* Content Area */}
-                    <div className="flex-1 overflow-hidden relative p-4 md:p-6">
+                    <div className="flex-1 overflow-hidden relative p-4 md:p-6 min-w-0">
                         <AnimatePresence mode="wait">
                             {activeTab === 'chat' && (
                                 <motion.div
@@ -212,9 +226,9 @@ export default function DashboardPage() {
                         </AnimatePresence>
                     </div>
                 </main>
-            </div>
+            </div >
 
             <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} />
-        </div>
+        </div >
     );
 }

@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 
 DATABASE_URL = os.getenv('DATABASE_URL')
 if not DATABASE_URL:
-    DATABASE_URL = f"postgresql://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_DB')}"
+    DATABASE_URL = f"postgresql://{os.getenv('POSTGRES_USER', 'usuario')}:{os.getenv('POSTGRES_PASSWORD', 'password')}@{os.getenv('POSTGRES_HOST', 'localhost')}:{os.getenv('POSTGRES_PORT', '5432')}/{os.getenv('POSTGRES_DB', 'asistentehandling')}"
 
 # Sanitize URL for logging (hide password)
 if '@' in DATABASE_URL:
@@ -17,5 +17,12 @@ if '@' in DATABASE_URL:
 else:
     print("[DEBUG] DATABASE_URL: configured")
 
-engine = create_engine(DATABASE_URL, connect_args={"client_encoding": "utf8"})
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

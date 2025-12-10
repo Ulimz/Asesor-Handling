@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean, Float
 from sqlalchemy.orm import relationship, declarative_base
 from pgvector.sqlalchemy import Vector
 from datetime import datetime
@@ -42,3 +42,28 @@ class UserClaim(Base):
     type = Column(String)  # "Nomina", "Horas", "Sancion"
     generated_text = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+class SalaryTable(Base):
+    """Tablas salariales para calculos de nómina (Salarios Base Fijos)"""
+    __tablename__ = "salary_tables"
+
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(String, index=True) # "iberia", "groundforce"
+    year = Column(Integer, index=True) # 2024
+    group = Column(String, index=True) # "Administrativos", "Gestores"
+    level = Column(String, index=True) # "Nivel A", "Nivel 1"
+    concept = Column(String) # "Salario Base", "Plus Convenio", "Plus Transporte"
+    amount = Column(Float) # 1500.00
+
+class SalaryConceptDefinition(Base):
+    """Definición de conceptos variables dinámicos (metadata)"""
+    __tablename__ = "salary_concept_definitions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    company_slug = Column(String, index=True) # "iberia"
+    name = Column(String) # "Plus Nocturnidad"
+    code = Column(String, index=True) # "PLUS_NOCT"
+    description = Column(Text, nullable=True) # "Se cobra entre 22h y 6h..."
+    input_type = Column(String, default="number") # "number" (horas), "bool" (si/no), "days"
+    default_price = Column(Float, default=0.0) # Precio unitario por defecto (si aplica)
+    is_active = Column(Boolean, default=True)

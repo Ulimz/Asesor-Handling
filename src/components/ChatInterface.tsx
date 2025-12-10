@@ -122,17 +122,9 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
             <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-950/90 to-slate-900/80 -z-10"></div>
 
             {/* SIDEBAR (Desktop) */}
-            <aside className="hidden md:flex flex-col w-80 bg-slate-950 border-r border-slate-800 h-full shadow-xl z-20">
+            <aside className="hidden md:flex flex-col w-80 shrink-0 bg-slate-950 border-r border-slate-800 h-full shadow-xl z-20">
                 <div className="p-6">
-                    <div className="flex items-center gap-3 mb-8">
-                        <div className="w-12 h-12 bg-gradient-to-tr from-sky-600 to-blue-700 rounded-xl flex items-center justify-center text-white shadow-lg shadow-sky-900/20 font-bold text-xs tracking-tighter leading-none text-center">
-                            AH<br />IA
-                        </div>
-                        <div>
-                            <h1 className="font-bold text-lg text-slate-100 tracking-tight leading-none">Asistente IA</h1>
-                            <span className="text-[10px] text-sky-500 font-bold tracking-wider uppercase">Handling</span>
-                        </div>
-                    </div>
+
 
                     <div className="mb-8 space-y-2">
                         <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">
@@ -187,15 +179,10 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
             </aside>
 
             {/* MAIN CONTENT */}
-            <main className="flex-1 flex flex-col h-full relative bg-slate-900">
+            <main className="flex-1 flex flex-col h-full relative bg-slate-900 min-w-0">
                 {/* MOBILE HEADER */}
                 <header className="md:hidden flex items-center justify-between p-4 border-b border-slate-800 bg-slate-950 z-20">
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-sky-600 rounded-lg flex items-center justify-center text-white font-bold text-[10px] leading-tight text-center">
-                            AH<br />IA
-                        </div>
-                        <span className="font-bold text-white">Asistente IA</span>
-                    </div>
+
                     {/* Mobile Selector Removed */}
                 </header>
 
