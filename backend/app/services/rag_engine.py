@@ -11,6 +11,7 @@ from app.constants import (
     HISTORY_CONTEXT_MESSAGES,
     MAX_CONTEXT_CHARS
 )
+from app.prompts import PROMPT_TEMPLATES, IntentType
 
 class RagEngine:
     def __init__(self):
@@ -34,6 +35,26 @@ class RagEngine:
 
     def generate_embedding(self, text: str):
         return self.model.encode(text)
+
+    def detect_intent(self, query: str) -> IntentType:
+        """
+        Detect user intent based on keywords.
+        """
+        q = query.lower()
+        
+        # Salary Keywords
+        if any(k in q for k in ['precio', 'salario', 'cobrar', 'retribución', 'paga', 'sueldo', 'plus', 'hora', 'festiva', 'nocturnidad', 'tabla', 'anexo', 'euros', '€']):
+            return IntentType.SALARY
+            
+        # Dismissal Keywords
+        if any(k in q for k in ['despido', 'despedi', 'extinción', 'finiquito', 'indemnización', 'disciplinario', 'improcedente', 'baja voluntaria']):
+            return IntentType.DISMISSAL
+            
+        # Leave/Time Keywords
+        if any(k in q for k in ['vacaciones', 'permiso', 'día libre', 'boda', 'nacimiento', 'hospitalización', 'excedencia', 'reducción']):
+            return IntentType.LEAVE
+            
+        return IntentType.GENERAL
 
     def search(self, query: str, company_slug: str = None, db: Session = None, limit: int = 10):
         """
@@ -207,9 +228,9 @@ Pregunta reescrita:"""
             print(f"Error rewriting query: {e}")
             return current_query
 
-    def generate_answer(self, query: str, context_chunks: list):
+    def generate_answer(self, query: str, context_chunks: list, intent: IntentType = IntentType.GENERAL):
         """
-        Generate answer using Gemini based on provided context
+        Generate answer using Gemini based on provided context and intent
         """
         if not self.gen_model:
             return "Error: GOOGLE_API_KEY no configurada en el servidor."
@@ -221,25 +242,16 @@ Pregunta reescrita:"""
             print(f"[WARN] Context truncated from {len(context_text)} to {MAX_CONTEXT_CHARS} chars")
             context_text = context_text[:MAX_CONTEXT_CHARS] + "\n\n...[contexto truncado por longitud]"
         
-        prompt = f"""Eres un asistente legal especializado en convenios colectivos del sector de Handling Aeroportuario en España.
+        # Select Prompt Template based on Intent
+        system_prompt = PROMPT_TEMPLATES.get(intent, PROMPT_TEMPLATES[IntentType.GENERAL])
+        
+        final_prompt = f"""{system_prompt}
 
 CONTEXTO PROPORCIONADO:
 {context_text}
 
 PREGUNTA:
 {query}
-
-INSTRUCCIONES OBLIGATORIAS:
-1. Responde SIEMPRE usando la información del contexto anterior
-2. Si hay tablas con valores numéricos (ej: en ANEXOS), ÚSALAS.
-   - Si la tabla dice "Nivel X - Euros", asume que son los valores económicos base (hora ordinaria o salario base) y úsalos.
-   - Si la pregunta requiere un cálculo (ej: hora perentoria = hora ordinaria + 75%), REALIZA EL CÁLCULO usando el valor de la tabla.
-   - Ejemplo: Si Tabla Nivel 2 = 10€ y Perentoria = +75%, responde: "El precio base es 10€, por lo que la hora perentoria sería 17,50€".
-3. Cita SIEMPRE el Artículo o Anexo de donde sacas el dato.
-4. Si la pregunta es sobre un precio (horas, pluses) y hay varios NIVELES o ANTIGÜEDAD en la tabla:
-   - Si el usuario NO especifica su nivel, MUESTRA LA TABLA COMPLETA o el rango de precios (ej: "Desde el Nivel 1 (10€) al Nivel 5 (15€)"). NO des un solo valor al azar.
-   - Si el usuario especifica nivel, da el valor exacto.
-5. Responde con PRECISIÓN y DIRECTAMENTE al grano.
 
 RESPUESTA (directa, con cálculos si es necesario):"""
         try:

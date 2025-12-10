@@ -17,5 +17,5 @@ if '@' in DATABASE_URL:
 else:
     print("[DEBUG] DATABASE_URL: configured")
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, connect_args={"client_encoding": "utf8"})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

@@ -49,6 +49,10 @@ def chat_with_docs(
     if request.company_slug and request.company_slug not in VALID_COMPANIES:
         raise HTTPException(status_code=400, detail=f"Invalid company_slug. Must be one of: {', '.join(VALID_COMPANIES)}")
 
+    # 1.5 Detect Intent
+    intent = rag_engine.detect_intent(final_query)
+    print(f"🧠 Detected Intent: {intent}")
+
     # 1. Search relevant chunks (increased limit to capture tables)
     results = rag_engine.search(query=final_query, company_slug=request.company_slug, db=db, limit=8)
     
@@ -58,8 +62,8 @@ def chat_with_docs(
             "sources": []
         }
         
-    # 2. Generate answer using Gemini
-    answer = rag_engine.generate_answer(query=request.query, context_chunks=results)
+    # 2. Generate answer using Gemini with specific Intent
+    answer = rag_engine.generate_answer(query=request.query, context_chunks=results, intent=intent)
     
     return {
         "answer": answer,

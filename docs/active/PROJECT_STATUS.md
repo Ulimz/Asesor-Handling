@@ -12,12 +12,17 @@ Este documento resume el propósito, arquitectura y estado actual del proyecto. 
 - **Estilos**: Tailwind CSS v4 con Glassmorphism
 - **Estructura**: Modular (`src/features/`) alineada con el dominio
 
-### Backend
-- **Framework**: FastAPI
-- **Base de Datos**: PostgreSQL + PgVector (SQLAlchemy ORM)
-- **Búsqueda**: Elasticsearch + PgVector (dual system)
-- **IA**: sentence-transformers (local, FREE)
-- **Arquitectura**: Services Layer (`legal_engine.py`, `rag_engine.py`)
+### Backend (`/backend`)
+- **Framework**: FastAPI (Python 3.11)
+- **Database**: PostgreSQL 15 + PgVector (Dockerized)
+- **AI/RAG**:
+    - **Embeddings**: Sentence-Transformers (`all-MiniLM-L6-v2`)
+    - **LLM**: Google Gemini 2.0 Flash (via API)
+    - **Intent Detection**: Logic to classify queries (Salary, Dismissal, Leave) and swap system prompts.
+- **Data Integrity**:
+    - Versioning (`updated_at`, `version`) on LegalDocuments.
+    - Automated integrity tests.
+- **Search**: Hybrid (Semantic + Keyword) with specific boosting for Salary Tables ("Anexos").py`, `rag_engine.py`)
 - **Estructura**: Modular (`backend/app/modules/`)
 
 ### DevOps

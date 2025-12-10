@@ -14,6 +14,8 @@ class LegalDocument(Base):
     category = Column(String)  # "Convenio", "Estatuto", "Jurisprudencia"
     company = Column(String, nullable=True)  # "Iberia", "General"
     url_source = Column(String, nullable=True)
+    updated_at = Column(DateTime, default=datetime.utcnow) # Control de versiones
+    version = Column(String, default="1.0") # "1.0", "2024", etc.
     
     # Relationship
     chunks = relationship("DocumentChunk", back_populates="document")
