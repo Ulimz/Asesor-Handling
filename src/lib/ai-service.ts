@@ -20,7 +20,14 @@ interface Message {
     content: string;
 }
 
-export async function askAI(messages: Message[], companyId?: CompanyId): Promise<SearchResult> {
+export interface UserContext {
+    job_group?: string;
+    salary_level?: number;
+    contract_type?: string;
+    preferred_name?: string;
+}
+
+export async function askAI(messages: Message[], companyId?: CompanyId, userContext?: UserContext): Promise<SearchResult> {
     try {
         // Extract current query and history
         const query = messages[messages.length - 1].content;
@@ -38,7 +45,8 @@ export async function askAI(messages: Message[], companyId?: CompanyId): Promise
             body: JSON.stringify({
                 query,
                 history,
-                company_slug: companyId
+                company_slug: companyId,
+                user_context: userContext
             })
         });
 

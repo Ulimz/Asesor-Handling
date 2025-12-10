@@ -25,6 +25,8 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [recentQueries, setRecentQueries] = useState<string[]>([]);
+    const [user, setUser] = useState<any | null>(null); // Using any to avoid importing User type if not easy, but ideally import it. 
+    // Actually, I can import { User } from '@/lib/api-service'.
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Optimized scroll - only when messages length changes
@@ -36,6 +38,18 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
             return () => clearTimeout(timeout);
         }
     }, [messages.length]);
+
+    // Load user profile
+    useEffect(() => {
+        const token = localStorage.getItem('auth_token');
+        if (token) {
+            import('@/lib/api-service').then(({ apiService }) => {
+                apiService.getMe(token).then(u => {
+                    setUser(u);
+                }).catch(console.error);
+            });
+        }
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -66,7 +80,14 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
 
         try {
             // Pass the entire conversation history (including the new user message)
-            const response = await askAI([...messages, userMessage], selectedCompanyId);
+            const userContext = user ? {
+                job_group: user.job_group,
+                salary_level: user.salary_level,
+                preferred_name: user.preferred_name,
+                contract_type: user.contract_type
+            } : undefined;
+
+            const response = await askAI([...messages, userMessage], selectedCompanyId!, userContext);
 
             const aiMessage: Message = {
                 id: crypto.randomUUID(),
@@ -196,7 +217,9 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
                             <div className="w-16 h-16 bg-slate-800/50 rounded-2xl flex items-center justify-center mb-6 border border-slate-700 text-sky-500">
                                 <MessageSquare size={32} />
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-2">¿En qué puedo ayudarte hoy?</h3>
+                            <h3 className="text-xl font-bold text-white mb-2">
+                                ¿En qué puedo ayudarte hoy{user?.preferred_name ? `, ${user.preferred_name}` : ''}?
+                            </h3>
                             <p className="max-w-md mx-auto text-slate-400 text-sm mb-8">
                                 He cargado el convenio de <span className="text-sky-400 font-semibold uppercase">{selectedCompanyId}</span>.
                                 Pregúntame sobre cualquier duda legal o laboral.
@@ -206,8 +229,8 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-lg w-full">
                                 {[
                                     "¿Cuál es el descanso mínimo entre turnos?",
-                                    "¿Cómo se pagan las horas extra?",
-                                    "Generar reclamación de nómina",
+                                    "¿Cómo se pagan las horas perentorias?",
+                                    "¿Cuándo subo de nivel salarial?",
                                     "Días de vacaciones por convenio"
                                 ].map((text, i) => (
                                     <button

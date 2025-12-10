@@ -251,9 +251,14 @@ Pregunta reescrita:"""
                  rewritten = f"{rewritten} refrigerio descanso pausa retribuida"
                  print(f"🥪 Food query detected (post-merge), enhanced with synonyms: refrigerio, descanso")
 
+        # REST/SHIFT SYNONYMS (Statute uses 'jornada' not 'turno' often)
+        if 'descanso' in rewritten_lower and ('turno' in rewritten_lower or 'turnos' in rewritten_lower):
+            rewritten = f"{rewritten} jornada descanso entre jornadas 12 horas"
+            print(f"🛌 Rest/Shift query detected, enhanced with: jornada, 12 horas")
+
         return rewritten
 
-    def generate_answer(self, query: str, context_chunks: list, intent: IntentType = IntentType.GENERAL):
+    def generate_answer(self, query: str, context_chunks: list, intent: IntentType = IntentType.GENERAL, user_context: dict = None):
         """
         Generate answer using Gemini based on provided context and intent
         """
@@ -270,7 +275,23 @@ Pregunta reescrita:"""
         # Select Prompt Template based on Intent
         system_prompt = PROMPT_TEMPLATES.get(intent, PROMPT_TEMPLATES[IntentType.GENERAL])
         
+        # Inject User Context if available
+        user_info = ""
+        if user_context:
+            user_info = f"""
+DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
+- Nombre: {user_context.get('preferred_name', 'Usuario')}
+- Grupo Laboral: {user_context.get('job_group', 'No especificado')}
+- Nivel Salarial: {user_context.get('salary_level', 'No especificado')}
+- Tipo Contrato: {user_context.get('contract_type', 'No especificado')}
+
+                IMPORTANTE: Si la respuesta depende del nivel salarial o grupo, USA EXCLUSIVAMENTE los datos de arriba. Si el usuario es Nivel 3, busca en las tablas el valor para Nivel 3.
+                PRIORIDAD: Si el valor exacto (ej: precio hora) aparece en una Tabla o Anexo, UŚALO DIRECTAMENTE. NO realices cálculos manuales si el dato ya está facilitado en la tabla. Solo calcula si NO aparece el valor final.
+                """
+        
         final_prompt = f"""{system_prompt}
+
+{user_info}
 
 CONTEXTO PROPORCIONADO:
 {context_text}
@@ -278,7 +299,7 @@ CONTEXTO PROPORCIONADO:
 PREGUNTA:
 {query}
 
-RESPUESTA (directa, con cálculos si es necesario):"""
+RESPUESTA (Si es un dato de tabla, dalo directmente sin fórmulas):"""
         try:
             response = self.gen_model.generate_content(final_prompt)
             return response.text

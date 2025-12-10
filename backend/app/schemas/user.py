@@ -8,7 +8,22 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
 
+class UserProfileUpdate(BaseModel):
+    preferred_name: str | None = None
+    company_slug: str | None = None
+    job_group: str | None = None
+    salary_level: int | None = None
+    contract_type: str | None = None
+    seniority_date: str | None = None
+
 class User(UserBase):
     id: int
+    preferred_name: str | None = None
+    company_slug: str | None = None
+    job_group: str | None = None
+    salary_level: int | None = None
+    contract_type: str | None = None
+    seniority_date: str | None = None
+    
     class Config:
         orm_mode = True

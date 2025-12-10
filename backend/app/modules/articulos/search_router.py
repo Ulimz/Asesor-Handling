@@ -20,6 +20,7 @@ class ChatRequest(BaseModel):
     query: str
     company_slug: Optional[str] = None
     history: List[dict] = []
+    user_context: Optional[dict] = None
 
 class ChatResponse(BaseModel):
     answer: str
@@ -54,7 +55,8 @@ def chat_with_docs(
     print(f"🧠 Detected Intent: {intent}")
 
     # 1. Search relevant chunks (increased limit to capture tables)
-    results = rag_engine.search(query=final_query, company_slug=request.company_slug, db=db, limit=8)
+    # 1. Search relevant chunks (increased limit to capture tables)
+    results = rag_engine.search(query=final_query, company_slug=request.company_slug, db=db, limit=12)
     
     if not results:
         return {
@@ -63,7 +65,12 @@ def chat_with_docs(
         }
         
     # 2. Generate answer using Gemini with specific Intent
-    answer = rag_engine.generate_answer(query=request.query, context_chunks=results, intent=intent)
+    answer = rag_engine.generate_answer(
+        query=request.query, 
+        context_chunks=results, 
+        intent=intent,
+        user_context=request.user_context
+    )
     
     return {
         "answer": answer,

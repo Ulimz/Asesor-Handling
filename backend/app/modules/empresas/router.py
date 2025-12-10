@@ -27,3 +27,7 @@ def get_company(company_id: int, db: Session = Depends(get_db)):
     if not company:
         raise HTTPException(status_code=404, detail="Company not found")
     return company
+
+@router.get("/", response_model=list[Company])
+def list_companies(db: Session = Depends(get_db)):
+    return db.query(CompanyModel).all()

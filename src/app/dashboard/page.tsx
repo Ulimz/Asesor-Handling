@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { apiService } from '@/lib/api-service';
 import CompanyDropdown from '@/components/CompanyDropdown';
 import MobileNav from '@/components/MobileNav';
 import ChatInterface from "@/components/ChatInterface";
@@ -23,9 +24,20 @@ export default function DashboardPage() {
         const token = localStorage.getItem('auth_token');
         if (!token) {
             router.push('/login');
-        } else {
-            setIsAuthorized(true);
+            return;
         }
+
+        // Verify profile completeness
+        apiService.getMe(token)
+            .then(user => {
+                if (!user.company_slug) {
+                    router.push('/onboarding');
+                } else {
+                    setIsAuthorized(true);
+                    if (user.company_slug) setSelectedCompanyId(user.company_slug as any);
+                }
+            })
+            .catch(() => router.push('/login'));
     }, [router]);
 
     if (!isAuthorized) {
@@ -100,7 +112,10 @@ export default function DashboardPage() {
                     </nav>
 
                     <div className="p-4 border-t border-white/5 space-y-2">
-                        <button className="flex items-center gap-3 w-full px-4 py-3 text-slate-400 hover:text-white transition-colors">
+                        <button
+                            onClick={() => router.push('/dashboard/settings')}
+                            className="flex items-center gap-3 w-full px-4 py-3 text-slate-400 hover:text-white transition-colors"
+                        >
                             <Settings size={20} />
                             <span className="hidden lg:block">Configuración</span>
                         </button>
@@ -141,16 +156,16 @@ export default function DashboardPage() {
                     </header>
 
                     {/* Content Area */}
-                    <div className="flex-1 overflow-hidden relative">
+                    <div className="flex-1 overflow-hidden relative p-4 md:p-6">
                         <AnimatePresence mode="wait">
                             {activeTab === 'chat' && (
                                 <motion.div
                                     key="chat"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: 20 }}
+                                    initial={{ opacity: 0, scale: 0.98 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.98 }}
                                     transition={{ duration: 0.2 }}
-                                    className="h-full"
+                                    className="h-full w-full"
                                 >
                                     <ChatInterface key={selectedCompanyId} selectedCompanyId={selectedCompanyId} /> {/* Key forces reset on company change */}
                                 </motion.div>

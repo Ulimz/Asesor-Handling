@@ -39,7 +39,7 @@ export default function MessageBubble({ content, role, sources }: MessageBubbleP
                     </div>
                 )}
 
-                <div className={`flex flex-col gap-1.5 ${isUser ? 'items-end' : 'items-start'} w-full overflow-hidden`}>
+                <div className={`flex flex-col gap-1.5 ${isUser ? 'items-end' : 'items-start'} w-full min-w-0 overflow-hidden`}>
                     {/* Bubble */}
                     <div className={`px-5 py-3.5 rounded-2xl text-[15px] leading-relaxed shadow-md backdrop-blur-sm w-full ${isUser
                         ? 'bg-gradient-to-br from-cyan-600 to-blue-600 text-white rounded-br-sm border border-cyan-400/20'
@@ -53,12 +53,12 @@ export default function MessageBubble({ content, role, sources }: MessageBubbleP
                                     remarkPlugins={[remarkGfm]}
                                     components={{
                                         table: ({ node, ...props }) => (
-                                            <div className="overflow-x-auto my-2 border border-slate-700/50 rounded-lg">
+                                            <div className="overflow-x-auto max-w-full my-2 border border-slate-700/50 rounded-lg">
                                                 <table {...props} className="w-full text-left border-collapse" />
                                             </div>
                                         ),
                                         th: ({ node, ...props }) => (
-                                            <th {...props} className="bg-slate-800/80 px-4 py-3 text-xs font-semibold text-slate-300 uppercase tracking-wider border-b border-slate-700" />
+                                            <th {...props} className="bg-slate-800/80 px-4 py-3 text-xs font-semibold text-slate-300 uppercase tracking-wider border-b border-slate-700 whitespace-nowrap" />
                                         ),
                                         td: ({ node, ...props }) => (
                                             <td {...props} className="px-4 py-3 text-sm text-slate-300 border-b border-slate-700/50 whitespace-nowrap" />

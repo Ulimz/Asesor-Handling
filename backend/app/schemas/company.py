@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 class CompanyBase(BaseModel):
     name: str
+    slug: str | None = None
     sector: str
     is_active: bool = True
 
