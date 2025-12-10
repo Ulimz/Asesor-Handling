@@ -1,53 +1,40 @@
-from app.db.models import Base
-from app.db.database import engine, SessionLocal
-from app.modules.convenios.models import Convenio
 from sqlalchemy.orm import Session
-
-from sqlalchemy import text
-
-# Limpiar tabla convenios (y dependencias) para aplicar nuevo esquema
-with engine.connect() as connection:
-    connection.execute(text("DROP TABLE IF EXISTS convenios CASCADE"))
-    connection.commit()
-
-# Re-crear tablas (solo las que faltan)
-Base.metadata.create_all(bind=engine)
+from app.db.database import SessionLocal
+from app.modules.convenios.models import Convenio
 
 def seed_convenios():
-    db: Session = SessionLocal()
-    
-    companies_data = [
-        {"slug": "azul", "name": "Azul Handling", "description": "Convenio Colectivo Azul Handling", "color": "#004481"},
-        {"slug": "iberia", "name": "South (antes Iberia)", "description": "Convenio Colectivo South (ex-Iberia)", "color": "#D7192D"},
-        {"slug": "groundforce", "name": "Groundforce", "description": "Convenio Groundforce Globalia", "color": "#0033A0"},
-        {"slug": "swissport", "name": "Swissport", "description": "Convenio Colectivo Swissport", "color": "#FF6600"},
-        {"slug": "menzies", "name": "Menzies", "description": "Convenio Menzies Aviation", "color": "#2B3E50"},
-        {"slug": "wfs", "name": "WFS", "description": "Convenio Worldwide Flight Services", "color": "#E31837"},
-        {"slug": "aviapartner", "name": "Aviapartner", "description": "Convenio Colectivo Aviapartner", "color": "#00965E"},
-        {"slug": "easyjet", "name": "easyJet", "description": "Convenio Colectivo easyJet Handling", "color": "#FF6600"},
-        {"slug": "general", "name": "V Convenio Sector", "description": "V Convenio Colectivo General del Sector", "color": "#64748b"},
-    ]
+    db = SessionLocal()
+    try:
+        companies = [
+            {"slug": "iberia", "name": "Iberia", "description": "Convenio Colectivo Iberia Handling", "color": "#D7192D"},
+            {"slug": "azul", "name": "Azul Handling", "description": "Convenio Colectivo Azul Handling", "color": "#00AEEF"},
+            {"slug": "groundforce", "name": "Groundforce", "description": "Convenio Groundforce", "color": "#003F7D"},
+            {"slug": "swissport", "name": "Swissport", "description": "Convenio Swissport", "color": "#D50032"},
+            {"slug": "menzies", "name": "Menzies", "description": "Convenio Menzies Aviation", "color": "#FFC72C"},
+            {"slug": "wfs", "name": "WFS", "description": "Convenio WFS", "color": "#0055A4"},
+            {"slug": "aviapartner", "name": "Aviapartner", "description": "Convenio Aviapartner", "color": "#8CC63F"},
+            {"slug": "easyjet", "name": "EasyJet", "description": "Convenio EasyJet Handling", "color": "#FF6600"},
+        ]
 
-    print("🌱 Seeding Convenios...")
-    for data in companies_data:
-        existing = db.query(Convenio).filter(Convenio.slug == data["slug"]).first()
-        if not existing:
-            convenio = Convenio(**data)
-            db.add(convenio)
-            print(f"   Created: {data['name']}")
-        else:
-            existing.name = data["name"]
-            existing.description = data["description"]
-            existing.color = data["color"]
-            print(f"   Updated: {data['name']}")
-    
-    db.commit()
-    db.close()
-    # Sync logic: Remove companies not in the list
-    allowed_slugs = [data["slug"] for data in companies_data]
-    db.query(Convenio).filter(Convenio.slug.notin_(allowed_slugs)).delete(synchronize_session=False)
-
-    print("✅ Seeding & Sync Complete!")
+        for company in companies:
+            existing = db.query(Convenio).filter(Convenio.slug == company["slug"]).first()
+            if not existing:
+                print(f"Adding {company['name']}...")
+                db_item = Convenio(
+                    slug=company["slug"],
+                    name=company["name"],
+                    description=company["description"],
+                    color=company["color"],
+                    is_active=True
+                )
+                db.add(db_item)
+            else:
+                print(f"Skipping {company['name']} (already exists)")
+        
+        db.commit()
+        print("Done seeding convenios.")
+    finally:
+        db.close()
 
 if __name__ == "__main__":
     seed_convenios()

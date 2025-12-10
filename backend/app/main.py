@@ -16,6 +16,7 @@ from app.db.database import engine
 from app.db.base import Base
 # Importar modelos para que Base los reconozca en create_all
 from app.db import models
+from app.modules.usuarios import models as user_models
 
 # Crear tablas en la base de datos
 Base.metadata.create_all(bind=engine)
@@ -37,16 +38,16 @@ app.add_middleware(
 )
 
 
-app.include_router(usuarios_router)
-app.include_router(empresas_router)
-app.include_router(convenios_router)
-app.include_router(articulos_router)
-app.include_router(jurisprudencia_router)
-app.include_router(reclamaciones_router)
-app.include_router(calculadoras_router)
-app.include_router(alertas_router)
-app.include_router(ia_router)
-app.include_router(articulos_search_router)
+app.include_router(usuarios_router, prefix="/api")
+app.include_router(empresas_router, prefix="/api")
+app.include_router(convenios_router, prefix="/api")
+app.include_router(articulos_router, prefix="/api")
+app.include_router(jurisprudencia_router, prefix="/api")
+app.include_router(reclamaciones_router, prefix="/api")
+app.include_router(calculadoras_router, prefix="/api")
+app.include_router(alertas_router, prefix="/api")
+app.include_router(ia_router, prefix="/api")
+app.include_router(articulos_search_router, prefix="/api")
 
 @app.get("/")
 def read_root():

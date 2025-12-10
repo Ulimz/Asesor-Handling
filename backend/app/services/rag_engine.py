@@ -106,8 +106,8 @@ class RagEngine:
         # --- HYBRID SEARCH: FORCE ANEXOS FOR SALARY QUERIES ---
         # Vector search can miss tables (Anexos). If query is about salary, force fetch Anexos.
         salary_keywords = ['precio', 'salario', 'retribución', 'retribucion', 'paga', 'sueldo', 
-                          'complemento', 'plus', 'hora', 'extraordinaria', 'perentoria',
-                          'nocturna', 'festiva', 'tabla', 'anexo', 'cuanto', 'cuánto', 'euros', '€']
+                          'complemento', 'plus', 'extraordinaria', 'perentoria',
+                          'nocturna', 'festiva', 'tabla', 'anexo', 'euros', '€']
         
         is_salary_query = any(k in query.lower() for k in salary_keywords)
         
@@ -170,29 +170,31 @@ class RagEngine:
         
         Example: "y si tengo 4x4?" + Context [User: "Vacaciones en Azul"] -> "Vacaciones en rotación 4x4"
         """
-        # SALARY DETECTION: Enhance query if it's about prices/salaries
-        salary_keywords = ['precio', 'salario', 'retribución', 'retribucion', 'paga', 'sueldo', 
-                          'complemento', 'plus', 'hora', 'horas', 'extraordinaria', 'perentoria',
-                          'nocturna', 'festiva', 'complementaria', 'tabla', 'anexo', 'cuanto', 'cuánto']
         
-        query_lower = current_query.lower()
-        is_salary_query = any(keyword in query_lower for keyword in salary_keywords)
-        
-        if is_salary_query and 'anexo' not in query_lower:
-            # Add ANEXO keywords to improve semantic search
-            current_query = f"{current_query} ANEXO tabla salarial retribución"
-            print(f"💰 Salary query detected, enhanced to search in ANEXOS")
-        
-        if not history:
-            return current_query
-
         # FAST PATH: If query clearly indicates continuation, merge immediately without LLM
         clean_q = current_query.strip().lower()
         if clean_q.startswith(("y ", "pero ", "entonces ", "ademas ", "también ")):
              last_user_msg = next((m['content'] for m in reversed(history) if m['role'] == 'user'), None)
              if last_user_msg:
+                 merged = f"{last_user_msg} {current_query}"
                  print(f"⚡ Fast-Path Context Merge: '{last_user_msg}' + '{current_query}'")
-                 return f"{last_user_msg} {current_query}"
+                 
+                 # Apply synonyms on merged result directly here for fast path return
+                 merged_lower = merged.lower()
+                 
+                 # SALARY (Fast Path)
+                 salary_keywords = ['precio', 'salario', 'retribución', 'retribucion', 'paga', 'sueldo', 
+                                   'complemento', 'plus', 'hora', 'horas', 'extraordinaria', 'perentoria',
+                                   'nocturna', 'festiva', 'complementaria', 'tabla', 'anexo', 'cuanto', 'cuánto']
+                 if any(k in merged_lower for k in salary_keywords) and 'anexo' not in merged_lower:
+                     merged = f"{merged} ANEXO tabla salarial retribución"
+
+                 # FOOD (Fast Path)
+                 food_keywords = ['comida', 'comer', 'almuerzo', 'bocadillo', 'merienda', 'cena']
+                 if any(k in merged_lower for k in food_keywords) and 'refrigerio' not in merged_lower:
+                     merged = f"{merged} refrigerio descanso pausa retribuida"
+                     
+                 return merged
 
         if not self.gen_model:
             return current_query
@@ -223,10 +225,33 @@ Pregunta reescrita:"""
                     print(f"⚠️ LLM lazy, using heuristic merge: '{last_user_msg}' + '{current_query}'")
                     rewritten = f"{last_user_msg} {current_query}"
             
-            return rewritten
         except Exception as e:
             print(f"Error rewriting query: {e}")
-            return current_query
+            rewritten = current_query
+
+        # --- POST-REWRITE ENHANCEMENTS (Synonyms & Keywords) ---
+        # Apply these on the FINAL rewritten query to catch context from history
+        rewritten_lower = rewritten.lower()
+
+        # SALARY DETECTION
+        salary_keywords = ['precio', 'salario', 'retribución', 'retribucion', 'paga', 'sueldo', 
+                          'complemento', 'plus', 'extraordinaria', 'perentoria',
+                          'nocturna', 'festiva', 'complementaria', 'tabla', 'anexo']
+        
+        is_salary_query = any(keyword in rewritten_lower for keyword in salary_keywords)
+        if is_salary_query and 'anexo' not in rewritten_lower:
+            rewritten = f"{rewritten} ANEXO tabla salarial retribución"
+            print(f"💰 Salary query detected (post-merge), enhanced to search in ANEXOS")
+            rewritten_lower = rewritten.lower() # Update for next check
+
+        # FOOD/BREAK SYNONYMS
+        food_keywords = ['comida', 'comer', 'almuerzo', 'bocadillo', 'merienda', 'cena']
+        if any(k in rewritten_lower for k in food_keywords):
+             if 'refrigerio' not in rewritten_lower:
+                 rewritten = f"{rewritten} refrigerio descanso pausa retribuida"
+                 print(f"🥪 Food query detected (post-merge), enhanced with synonyms: refrigerio, descanso")
+
+        return rewritten
 
     def generate_answer(self, query: str, context_chunks: list, intent: IntentType = IntentType.GENERAL):
         """
@@ -255,7 +280,7 @@ PREGUNTA:
 
 RESPUESTA (directa, con cálculos si es necesario):"""
         try:
-            response = self.gen_model.generate_content(prompt)
+            response = self.gen_model.generate_content(final_prompt)
             return response.text
         except Exception as e:
             return f"Error generando respuesta: {str(e)}"

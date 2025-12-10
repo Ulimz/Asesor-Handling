@@ -21,7 +21,7 @@ export default function LoginPage() {
 
         try {
             // Using direct fetch to backend for now, later we can move to a service
-            const response = await fetch(`${API_URL}/users/login`, {
+            const response = await fetch(`${API_URL}/api/users/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
