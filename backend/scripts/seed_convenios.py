@@ -2,8 +2,13 @@ from sqlalchemy.orm import Session
 from app.db.database import SessionLocal
 from app.modules.convenios.models import Convenio
 
-def seed_convenios():
-    db = SessionLocal()
+def seed_convenios(db: Session = None):
+    # If no session provided (local run), create one
+    should_close = False
+    if db is None:
+        db = SessionLocal()
+        should_close = True
+    
     try:
         companies = [
             {"slug": "iberia", "name": "Iberia", "description": "Convenio Colectivo Iberia Handling", "color": "#D7192D"},
@@ -37,7 +42,8 @@ def seed_convenios():
         db.commit()
         print("Done seeding convenios.")
     finally:
-        db.close()
+        if should_close:
+            db.close()
 
 if __name__ == "__main__":
     seed_convenios()

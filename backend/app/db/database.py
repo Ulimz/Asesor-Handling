@@ -6,7 +6,8 @@ load_dotenv(dotenv_path=env_path)
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-DATABASE_URL = os.getenv('DATABASE_URL')
+# Prioritize a custom variable to bypass Railway's sticky DATABASE_URL issue if needed
+DATABASE_URL = os.getenv('CLOUD_DATABASE_URL') or os.getenv('DATABASE_URL')
 if not DATABASE_URL:
     DATABASE_URL = f"postgresql://{os.getenv('POSTGRES_USER', 'usuario')}:{os.getenv('POSTGRES_PASSWORD', 'password')}@{os.getenv('POSTGRES_HOST', 'localhost')}:{os.getenv('POSTGRES_PORT', '5432')}/{os.getenv('POSTGRES_DB', 'asistentehandling')}"
 

@@ -1,43 +1,36 @@
-# Contexto de Sesión: Estandarización de Marca y Mejoras en Calculadora
+# Contexto de Sesión: Autenticación Segura y Cumplimiento Legal
 
 ## 📅 Fecha
-2025-12-10
+2025-12-11
 
 ## ✅ Qué se hizo hoy
-1.  **Frontend & UI - Estandarización de Marca**:
-    *   **Identidad Visual Unificada**: Creado componente `BrandLogo.tsx` que combina el icono y el texto con efectos neón.
-    *   **Implementación Global**: Reemplazados los logos antiguos/desalineados en:
-        *   **Landing Page**: Revisado para asegurar consistencia.
-        *   **Login**: Ahora usa el mismo diseño "Icono + Neon" que la Landing.
-        *   **Dashboard (Sidebar)**: Adaptado para usar el mismo componente, mejorando la coherencia visual.
-2.  **Calculadora de Nómina**:
-    *   **Exportación PDF**: Implementada impresión limpia (ocultando sidebar/inputs y mostrando solo resultados) y corregidos problemas de páginas en blanco extra.
-    *   **Corrección de Título**: Arreglado título del documento ("Asistente Handling" en lugar de "Asistente Azul Handling") en `layout.tsx`.
-    *   **Mejora UX - Botón Reset**: Añadido botón "Nueva Nómina" (icono rotar) que limpia resultados y variables sin recargar la página.
-    *   **Visibilidad Modo Oscuro**: Corregido contraste del Aviso Legal (texto gris claro sobre fondo oscuro).
-3.  **Refactorización**:
-    *   Limpieza de imports y corrección de errores de sintaxis en `dashboard/page.tsx` y `login/page.tsx`.
+1.  **Fase 1: Legal y Privacidad**:
+    *   **Páginas Legales**: Creadas `/privacidad` y `/aviso-legal` con datos reales del usuario.
+    *   **Consentimiento**: Implementado banner de cookies y disclaimer de IA ("La IA puede cometer errores").
+2.  **Fase 2: Seguridad (PII)**:
+    *   **"Vacunas" Prompts**: Inyectadas instrucciones al cerebro de Gemini para nunca revelar nombres reales ni DNI en las respuestas.
+3.  **Fase 3: Autenticación Completa**:
+    *   **Encriptación**: Implementado `bcrypt` + `passlib`. Las contraseñas ya NO se guardan en texto plano.
+    *   **Registro Mejorado**: Recuperados campos de perfil (Nombre Preferido, Grupo Laboral, Salario, Contrato) para permitir cálculos precisos de nómina/finiquito.
+    *   **Protección de Rutas**: Implementada redirección en cliente (si no logueado -> login) en Dashboard y Ajustes.
+    *   **Borrado de Cuenta**: Funcionalidad "Eliminar Cuenta" operativa.
+4.  **Fase 4: Preparación Despliegue (Railway)**:
+    *   **Optimización**: Eliminado `torch` de `requirements.txt` para usar versión CPU-only (Docker) y caber en plan Hobby.
+    *   **Documentación**: Creada `DEPLOYMENT_GUIDE.md` específica para "Todo en Railway" (Backend + BD + Frontend).
+    *   **Frontend Check**: Verificado que no hay URLs `localhost` hardcodeadas.
 
 ## 📝 Estado Actual
-*   **Interfaz**: Pulida y consistente. La marca se ve profesional y unificada en todas las pantallas principales.
-*   **Funcionalidad**: La calculadora es totalmente funcional, con flujo completo de cálculo -> impresión -> reset.
-*   **Código**: Componente de logo reutilizable creado para evitar duplicidad de código.
-
-## 🚀 Estado del Despliegue (Cloud)
-*   **Base de Datos (Supabase)**: ✅ Creada y configurada (Vector ON).
-*   **Backend (Railway)**: ❌ Fallo en el build por tamaño (7.9GB vs 4GB límite).
-    *   *Causa*: `requirements.txt` está instalando `torch` completo (con drivers NVIDIA) sobreescribiendo nuestra optimización del Dockerfile.
-    *   *Solución Pendiente*: Eliminar `torch` de `requirements.txt` para que solo cuente la instalación CPU-only del Dockerfile.
-*   **Frontend (Vercel)**: ⏳ Pendiente (esperando URL del backend).
+*   **Proyecto**: Listo para producción (MVP).
+*   **Seguridad**: Alta (Passwords hasheados, PII protegido).
+*   **Código**: Optimizado para nube gratuita (Railway Hobby).
+*   **Repositorio**: Todo pusheado a GitHub (`feature/user-profile-v2`).
 
 ## ⚠️ Advertencias para Mañana
-*   **Prioridad 1**: Arreglar el build de Railway eliminando `torch` de `requirements.txt`.
-*   **Prioridad 2**: Verificar que el backend arranca ("Active") y copiar su URL.
-*   **Prioridad 3**: Configurar Vercel con esa URL.
+*   **Base de Datos Nube**: Al crear la BD en Railway, estará VACÍA. Hay que ejecutar el script `seed` desde local (ver Guía paso 2).
+*   **Variables de Entorno**: No olvidar configurar `JWT_SECRET` y `GOOGLE_API_KEY` en el panel de Railway antes del deploy.
 
 ## 📋 Lista de Tareas (Próximos Pasos)
-- [ ] **Despliegue Backend**: Fix `requirements.txt` -> Redeploy Railway.
-- [ ] **Despliegue Frontend**: Subir a Vercel.
-- [ ] **Validación**: Probar registro y login en producción.
-- [ ] **Validación de Usuarios**: Implementar flujo de verificación de email (backend preparado, falta frontend).
-- [ ] **Optimización SEO**: Revisar metadatos finales en todas las páginas públicas.
+- [ ] **Despliegue Backend**: Seguir `DEPLOYMENT_GUIDE.md` Parte 1.
+- [ ] **Seed**: Cargar datos iniciales a la nube.
+- [ ] **Despliegue Frontend**: Seguir `DEPLOYMENT_GUIDE.md` Parte 3 (Vercel/Railway).
+- [ ] **Validación Final**: Probarlo todo desde el móvil (dominio público).
