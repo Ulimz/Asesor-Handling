@@ -5,7 +5,7 @@ import { Send, Menu, X, MessageSquare, ShieldCheck, Sparkles, BrainCircuit, Load
 import { motion, AnimatePresence } from 'framer-motion';
 import MessageBubble from './MessageBubble';
 import { askAI } from '@/lib/ai-service';
-import { type KnowledgeItem, type CompanyId } from '@/data/knowledge-base';
+import { type KnowledgeItem, type CompanyId, companies } from '@/data/knowledge-base';
 
 interface Message {
     id: string;
@@ -138,7 +138,9 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
                             {selectedCompanyId ? (
                                 <div className="flex items-center gap-2">
                                     <ShieldCheck size={16} />
-                                    <span className="capitalize">{selectedCompanyId}</span>
+                                    <span className="capitalize">
+                                        {companies.find(c => c.id === selectedCompanyId)?.agreementLabel || selectedCompanyId}
+                                    </span>
                                 </div>
                             ) : (
                                 "Selecciona empresa arriba ↗"
@@ -281,9 +283,14 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
                                     )}
                                 </button>
                             </form>
-                            <div className="text-center mt-3">
-                                <p className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">
-                                    IA entrenada con Convenios Colectivos y Estatuto de los Trabajadores
+                            <div className="text-center mt-3 space-y-1">
+                                <p className="text-[10px] text-slate-500 font-medium">
+                                    IA entrenada con Convenios Colectivos. <span className="text-amber-500/80">Puede cometer errores.</span>
+                                </p>
+                                <p className="text-[9px] text-slate-600">
+                                    No introduzcas datos personales sensibles. Consulta nuestras políticas en{' '}
+                                    <a href="/privacidad" target="_blank" className="hover:text-sky-400 underline decoration-slate-700 underline-offset-2">Privacidad</a> y{' '}
+                                    <a href="/aviso-legal" target="_blank" className="hover:text-sky-400 underline decoration-slate-700 underline-offset-2">Aviso Legal</a>.
                                 </p>
                             </div>
                         </div>

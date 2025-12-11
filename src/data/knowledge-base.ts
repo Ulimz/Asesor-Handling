@@ -1,20 +1,24 @@
-export type CompanyId = 'azul' | 'iberia' | 'groundforce' | 'swissport' | 'menzies' | 'wfs' | 'aviapartner' | 'easyjet';
+export type CompanyId = 'azul' | 'iberia' | 'south' | 'groundforce' | 'swissport' | 'menzies' | 'wfs' | 'aviapartner' | 'easyjet' | 'jet2' | 'norwegian';
 
 export interface Company {
     id: CompanyId;
     name: string;
     color: string; // Hex color for branding
+    agreementLabel?: string; // e.g. "Convenio Iberia", "Convenio Sectorial"
 }
 
 export const companies: Company[] = [
-    { id: 'azul', name: 'Azul Handling', color: '#004481' },
-    { id: 'iberia', name: 'South (antes Iberia)', color: '#D7192D' },
-    { id: 'groundforce', name: 'Groundforce', color: '#0033A0' },
-    { id: 'swissport', name: 'Swissport', color: '#FF6600' },
-    { id: 'menzies', name: 'Menzies', color: '#2B3E50' },
-    { id: 'wfs', name: 'WFS', color: '#E31837' },
-    { id: 'aviapartner', name: 'Aviapartner', color: '#00965E' },
-    { id: 'easyjet', name: 'easyJet', color: '#FF6600' },
+    { id: 'azul', name: 'Azul Handling', color: '#004481', agreementLabel: 'Convenio Azul Handling' },
+    { id: 'iberia', name: 'Iberia', color: '#D7192D', agreementLabel: 'Convenio Iberia' },
+    { id: 'south', name: 'South', color: '#E11D48', agreementLabel: 'Convenio Sectorial' },
+    { id: 'groundforce', name: 'Groundforce', color: '#0033A0', agreementLabel: 'Convenio Groundforce' },
+    { id: 'swissport', name: 'Swissport', color: '#FF6600', agreementLabel: 'Convenio Sectorial' },
+    { id: 'menzies', name: 'Menzies', color: '#2B3E50', agreementLabel: 'Convenio Sectorial' },
+    { id: 'wfs', name: 'WFS', color: '#E31837', agreementLabel: 'Convenio WFS' },
+    { id: 'aviapartner', name: 'Aviapartner', color: '#00965E', agreementLabel: 'Convenio Aviapartner' },
+    { id: 'easyjet', name: 'easyJet', color: '#FF6600', agreementLabel: 'Convenio EasyJet' },
+    { id: 'jet2', name: 'Jet2.com', color: '#D7192D', agreementLabel: 'Convenio Sectorial' },
+    { id: 'norwegian', name: 'Norwegian', color: '#B00000', agreementLabel: 'Convenio Sectorial' },
 ];
 
 export interface KnowledgeItem {

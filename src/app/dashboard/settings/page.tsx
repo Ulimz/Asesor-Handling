@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { apiService, User } from '@/lib/api-service';
 import { motion } from 'framer-motion';
-import { Save, User as UserIcon } from 'lucide-react';
+import { Save, User as UserIcon, Trash2 } from 'lucide-react';
 
 export default function SettingsPage() {
+    const router = useRouter();
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState<Partial<User>>({});
@@ -13,13 +15,17 @@ export default function SettingsPage() {
 
     useEffect(() => {
         const token = localStorage.getItem('auth_token');
-        if (token) {
-            apiService.getMe(token).then(u => {
-                setUser(u);
-                setFormData(u);
-            });
+        if (!token) {
+            router.push('/login');
+            return;
         }
-    }, []);
+        apiService.getMe(token).then(u => {
+            setUser(u);
+            setFormData(u);
+        }).catch(() => {
+            router.push('/login');
+        });
+    }, [router]);
 
     const handleSave = async () => {
         setIsLoading(true);
@@ -111,6 +117,44 @@ export default function SettingsPage() {
                     </button>
                 </div>
                 {successMsg && <p className="text-green-400 text-right">{successMsg}</p>}
+            </div>
+
+            {/* Danger Zone */}
+            <div className="mt-12 bg-red-900/10 border border-red-500/20 rounded-2xl p-8">
+                <h2 className="text-xl font-bold text-red-500 mb-4 flex items-center gap-2">
+                    <Trash2 size={24} /> Zona de Peligro
+                </h2>
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div>
+                        <p className="text-slate-300 font-medium mb-1">Eliminar Cuenta</p>
+                        <p className="text-sm text-slate-500">
+                            Esta acción es permanente y no se puede deshacer. Todos tus datos serán borrados.
+                        </p>
+                    </div>
+                    <button
+                        onClick={async () => {
+                            if (window.confirm('¿Estás SEGURO de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.')) {
+                                setIsLoading(true);
+                                try {
+                                    const token = localStorage.getItem('auth_token');
+                                    if (token) {
+                                        await apiService.deleteAccount(token);
+                                        localStorage.removeItem('auth_token');
+                                        window.location.href = '/';
+                                    }
+                                } catch (error) {
+                                    console.error(error);
+                                    alert("Error al eliminar cuenta");
+                                } finally {
+                                    setIsLoading(false);
+                                }
+                            }
+                        }}
+                        className="bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white border border-red-500/50 px-6 py-3 rounded-xl transition-all font-semibold text-sm whitespace-nowrap"
+                    >
+                        Eliminar definitivamente
+                    </button>
+                </div>
             </div>
         </div >
     );

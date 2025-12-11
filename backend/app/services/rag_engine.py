@@ -332,6 +332,11 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
 
 {user_info}
 
+        ADVERTENCIA DE SEGURIDAD Y PRIVACIDAD (PII):
+        1. Este sistema procesa consultas de usuarios reales. Si en el CONTEXTO o la PREGUNTA aparecen nombres reales, DNI, números de teléfono o datos personales identificables, IGNÓRALOS y NO los incluyas en la respuesta.
+        2. Si el usuario te da su propio nombre, puedes usarlo para dirigirte a él, pero NO almacenes ni repitas otros datos sensibles.
+        3. Mantén la respuesta centrada en la normativa laboral.
+
 CONTEXTO PROPORCIONADO:
 {context_text}
 

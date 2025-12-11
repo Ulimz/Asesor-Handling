@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ShieldCheck, User, Lock, Mail, ArrowRight, AlertCircle, Loader2, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { API_URL } from '@/config/api';
+import { companies } from '@/data/knowledge-base';
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -13,6 +14,12 @@ export default function RegisterPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [companySlug, setCompanySlug] = useState('');
+    const [preferredName, setPreferredName] = useState('');
+    const [jobGroup, setJobGroup] = useState('');
+    const [salaryLevel, setSalaryLevel] = useState('');
+    const [contractType, setContractType] = useState('');
+
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
@@ -38,6 +45,11 @@ export default function RegisterPage() {
                     email,
                     full_name: fullName,
                     password,
+                    company_slug: companySlug,
+                    preferred_name: preferredName || fullName.split(' ')[0], // Default 1st name
+                    job_group: jobGroup,
+                    salary_level: salaryLevel ? parseInt(salaryLevel) : null,
+                    contract_type: contractType,
                     is_active: true
                 }),
             });
@@ -148,6 +160,84 @@ export default function RegisterPage() {
                                     minLength={6}
                                     required
                                 />
+                            </div>
+
+                            {/* Company Selection */}
+                            <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <User size={18} className="text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
+                                </div>
+                                <select
+                                    value={companySlug}
+                                    onChange={(e) => setCompanySlug(e.target.value)}
+                                    className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all font-medium text-sm appearance-none cursor-pointer"
+                                    required
+                                >
+                                    <option value="" disabled className="bg-slate-900 text-slate-500">Selecciona tu Empresa</option>
+                                    {companies.map((company) => (
+                                        <option key={company.id} value={company.id} className="bg-slate-900 text-slate-200">
+                                            {company.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Preferred Name (Opcional) */}
+                            <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <User size={18} className="text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
+                                </div>
+                                <input
+                                    type="text"
+                                    value={preferredName}
+                                    onChange={(e) => setPreferredName(e.target.value)}
+                                    className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all font-medium text-sm"
+                                    placeholder="¿Cómo quieres que te llame el asistente?"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* Job Group */}
+                                <div className="relative group">
+                                    <select
+                                        value={jobGroup}
+                                        onChange={(e) => setJobGroup(e.target.value)}
+                                        className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3.5 px-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all font-medium text-sm appearance-none cursor-pointer"
+                                    >
+                                        <option value="" className="bg-slate-900 text-slate-500">Grupo Laboral</option>
+                                        <option value="Administrativo" className="bg-slate-900">Administrativo</option>
+                                        <option value="Tecnico" className="bg-slate-900">Técnico/Gestor</option>
+                                        <option value="Auxiliar" className="bg-slate-900">Serv. Auxiliares</option>
+                                        <option value="Agente" className="bg-slate-900">Agente de Handling</option>
+                                    </select>
+                                </div>
+
+                                {/* Salary Level */}
+                                <div className="relative group">
+                                    <input
+                                        type="number"
+                                        min="0" max="25"
+                                        value={salaryLevel}
+                                        onChange={(e) => setSalaryLevel(e.target.value)}
+                                        className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3.5 px-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all font-medium text-sm"
+                                        placeholder="Nivel Salarial (Nº)"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Contract Type */}
+                            <div className="relative group">
+                                <select
+                                    value={contractType}
+                                    onChange={(e) => setContractType(e.target.value)}
+                                    className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3.5 px-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all font-medium text-sm appearance-none cursor-pointer"
+                                >
+                                    <option value="" className="bg-slate-900 text-slate-500">Tipo de Contrato</option>
+                                    <option value="Fijo" className="bg-slate-900">Fijo Tiempo Completo</option>
+                                    <option value="Fijo Parcial" className="bg-slate-900">Fijo Tiempo Parcial</option>
+                                    <option value="Fijo Discontinuo" className="bg-slate-900">Fijo Discontinuo</option>
+                                    <option value="Eventual" className="bg-slate-900">Eventual</option>
+                                </select>
                             </div>
                         </div>
 

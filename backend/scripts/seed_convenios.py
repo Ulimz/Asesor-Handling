@@ -14,6 +14,9 @@ def seed_convenios():
             {"slug": "wfs", "name": "WFS", "description": "Convenio WFS", "color": "#0055A4"},
             {"slug": "aviapartner", "name": "Aviapartner", "description": "Convenio Aviapartner", "color": "#8CC63F"},
             {"slug": "easyjet", "name": "EasyJet", "description": "Convenio EasyJet Handling", "color": "#FF6600"},
+            {"slug": "south", "name": "South", "description": "South (Aplica Convenio Sector)", "color": "#E11D48"},
+            {"slug": "jet2", "name": "Jet2.com", "description": "Jet2 (Aplica Convenio Sector)", "color": "#D7192D"},
+            {"slug": "norwegian", "name": "Norwegian", "description": "Norwegian (Aplica Convenio Sector)", "color": "#B00000"},
         ]
 
         for company in companies:

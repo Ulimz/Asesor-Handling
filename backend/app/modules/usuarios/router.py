@@ -5,8 +5,7 @@ from sqlalchemy.orm import Session
 from app.db.database import SessionLocal
 from app.schemas.user import User, UserCreate, UserProfileUpdate
 from .models import User as UserModel
-from app.services.jwt_service import create_access_token, verify_token
-
+from app.services.jwt_service import create_access_token, verify_token, get_password_hash, verify_password
 
 router = APIRouter(prefix="/users", tags=["users"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
@@ -32,7 +31,21 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 
 @router.post("/", response_model=User)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = UserModel(email=user.email, full_name=user.full_name, hashed_password=user.password)
+    # Check if user already exists
+    existing_user = db.query(UserModel).filter(UserModel.email == user.email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="El email ya está registrado")
+
+    db_user = UserModel(
+        email=user.email, 
+        full_name=user.full_name, 
+        hashed_password=get_password_hash(user.password),
+        company_slug=user.company_slug,
+        preferred_name=user.preferred_name,
+        job_group=user.job_group,
+        salary_level=user.salary_level,
+        contract_type=user.contract_type
+    )
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -41,7 +54,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 @router.post("/login")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(UserModel).filter(UserModel.email == form_data.username).first()
-    if not user or user.hashed_password != form_data.password:
+    if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Credenciales incorrectas")
     token = create_access_token({"sub": str(user.id)})
     return {"access_token": token, "token_type": "bearer"}
@@ -81,3 +94,9 @@ def get_user(user_id: int, db: Session = Depends(get_db), current_user: UserMode
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
+
+@router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user_me(db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+    db.delete(current_user)
+    db.commit()
+    return None

@@ -12,6 +12,7 @@ interface Company {
     name: string;
     description: string;
     color: string;
+    agreementLabel?: string;
 }
 
 interface CompanyDropdownProps {
@@ -92,7 +93,7 @@ export default function CompanyDropdown({ selectedCompanyId, onSelect }: Company
                             {selectedCompany ? selectedCompany.name : 'Seleccionar Empresa'}
                         </span>
                         <span className="block text-[10px] text-slate-400 uppercase tracking-wide">
-                            {selectedCompany ? 'Convenio Activo' : 'Requerido'}
+                            {selectedCompany ? (selectedCompany.agreementLabel || 'Convenio Activo') : 'Requerido'}
                         </span>
                     </div>
                 </div>

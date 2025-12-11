@@ -7,6 +7,11 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+    company_slug: str | None = None
+    preferred_name: str | None = None
+    job_group: str | None = None
+    salary_level: int | None = None
+    contract_type: str | None = None
 
 class UserProfileUpdate(BaseModel):
     preferred_name: str | None = None

@@ -5,7 +5,8 @@ import Image from 'next/image';
 import NeonLogo from '@/components/NeonLogo';
 import BrandLogo from '@/components/BrandLogo';
 import { motion } from 'framer-motion';
-import { ShieldCheck, MessageSquare, ArrowRight, Zap, Globe, Lock, Plane } from 'lucide-react';
+import { ArrowRight, MessageSquare, ShieldCheck, Scale, History, UserCheck, CheckCircle2, Zap, Globe, Lock } from 'lucide-react';
+import { companies } from '@/data/knowledge-base';
 
 export default function LandingPage() {
   return (
@@ -121,9 +122,9 @@ export default function LandingPage() {
           <h2 className="text-3xl font-bold text-white mb-12">Convenios Disponibles</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 opacity-100 max-w-5xl mx-auto">
             {/* Updated list based on DB data - Corrected per user feedback */}
-            {['AZUL HANDLING', 'EASYJET', 'GROUNDFORCE', 'MENZIES', 'RYANAIR', 'SOUTH (IBERIA)', 'SWISSPORT', 'WFS'].map((company) => (
-              <div key={company} className="px-6 py-3 rounded-xl border border-white/10 bg-slate-800/50 text-slate-300 font-bold tracking-wider hover:border-cyan-500/30 hover:text-white transition-all cursor-default shadow-lg shadow-black/20">
-                {company}
+            {companies.map((company) => (
+              <div key={company.id} className="px-6 py-3 rounded-xl border border-white/10 bg-slate-800/50 text-slate-300 font-bold tracking-wider hover:border-cyan-500/30 hover:text-white transition-all cursor-default shadow-lg shadow-black/20 uppercase">
+                {company.name}
               </div>
             ))}
           </div>

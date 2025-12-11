@@ -57,7 +57,7 @@ export default function DashboardPage() {
 
     const handleLogout = () => {
         localStorage.removeItem('auth_token');
-        router.push('/login');
+        router.push('/');
     };
 
     const selectedCompanyName = companies.find(c => c.id === selectedCompanyId)?.name;

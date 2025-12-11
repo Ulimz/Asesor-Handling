@@ -9,7 +9,6 @@ httpx
 pytest
 pgvector
 sentence-transformers
-torch
 google-generativeai
 email-validator
 PyJWT
@@ -18,3 +17,4 @@ python-multipart
 beautifulsoup4
 lxml
 tenacity
+passlib[bcrypt]

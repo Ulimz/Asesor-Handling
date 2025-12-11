@@ -120,5 +120,16 @@ export const apiService = {
 
         if (!response.ok) throw new Error('Error actualizando perfil');
         return response.json();
+    },
+
+    async deleteAccount(token: string): Promise<void> {
+        const response = await fetch(`${API_URL}/api/users/me`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) throw new Error('Error eliminando cuenta');
     }
 };

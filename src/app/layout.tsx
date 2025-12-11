@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: "Resuelve tus dudas sobre el convenio y estatuto.",
 };
 
+import CookieBanner from "@/components/legal/CookieBanner";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,6 +31,7 @@ export default function RootLayout({
             {children}
           </div>
         </main>
+        <CookieBanner />
       </body>
     </html>
   );
