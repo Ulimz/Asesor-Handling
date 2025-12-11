@@ -31,25 +31,31 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 
 @router.post("/", response_model=User)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    # Check if user already exists
-    existing_user = db.query(UserModel).filter(UserModel.email == user.email).first()
-    if existing_user:
-        raise HTTPException(status_code=400, detail="El email ya está registrado")
+    try:
+        # Check if user already exists
+        existing_user = db.query(UserModel).filter(UserModel.email == user.email).first()
+        if existing_user:
+            raise HTTPException(status_code=400, detail="El email ya está registrado")
 
-    db_user = UserModel(
-        email=user.email, 
-        full_name=user.full_name, 
-        hashed_password=get_password_hash(user.password),
-        company_slug=user.company_slug,
-        preferred_name=user.preferred_name,
-        job_group=user.job_group,
-        salary_level=user.salary_level,
-        contract_type=user.contract_type
-    )
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+        db_user = UserModel(
+            email=user.email, 
+            full_name=user.full_name, 
+            hashed_password=get_password_hash(user.password),
+            company_slug=user.company_slug,
+            preferred_name=user.preferred_name,
+            job_group=user.job_group,
+            salary_level=user.salary_level,
+            contract_type=user.contract_type
+        )
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+        return db_user
+    except Exception as e:
+        print(f"CRITICAL ERROR creating user: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
 @router.post("/login")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
