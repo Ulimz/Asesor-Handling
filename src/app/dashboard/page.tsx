@@ -192,7 +192,7 @@ export default function DashboardPage() {
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: -20 }}
                                     transition={{ duration: 0.2 }}
-                                    className="h-full overflow-y-auto p-6"
+                                    className="h-full overflow-y-auto p-6 pb-28 md:pb-6"
                                 >
                                     <SalaryCalculator />
                                 </motion.div>
@@ -205,7 +205,7 @@ export default function DashboardPage() {
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: -20 }}
                                     transition={{ duration: 0.2 }}
-                                    className="h-full overflow-y-auto p-6"
+                                    className="h-full overflow-y-auto p-6 pb-28 md:pb-6"
                                 >
                                     <ClaimGenerator />
                                 </motion.div>
@@ -218,7 +218,7 @@ export default function DashboardPage() {
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: -20 }}
                                     transition={{ duration: 0.2 }}
-                                    className="h-full overflow-y-auto p-6"
+                                    className="h-full overflow-y-auto p-6 pb-28 md:pb-6"
                                 >
                                     <AlertsPanel />
                                 </motion.div>
