@@ -23,11 +23,21 @@
 *   **Funcionalidad**: La calculadora es totalmente funcional, con flujo completo de cálculo -> impresión -> reset.
 *   **Código**: Componente de logo reutilizable creado para evitar duplicidad de código.
 
+## 🚀 Estado del Despliegue (Cloud)
+*   **Base de Datos (Supabase)**: ✅ Creada y configurada (Vector ON).
+*   **Backend (Railway)**: ❌ Fallo en el build por tamaño (7.9GB vs 4GB límite).
+    *   *Causa*: `requirements.txt` está instalando `torch` completo (con drivers NVIDIA) sobreescribiendo nuestra optimización del Dockerfile.
+    *   *Solución Pendiente*: Eliminar `torch` de `requirements.txt` para que solo cuente la instalación CPU-only del Dockerfile.
+*   **Frontend (Vercel)**: ⏳ Pendiente (esperando URL del backend).
+
 ## ⚠️ Advertencias para Mañana
-*   **Tests E2E**: Sería buena idea hacer un recorrido completo de usuario (Registro -> Login -> Calculadora -> Imprimir) para asegurar que ningún cambio de estilo ha roto flujos.
-*   **Responsive**: Verificar que el nuevo componente `BrandLogo` se adapta bien en móviles muy pequeños (aunque se usaron clases de Tailwind responsivas).
+*   **Prioridad 1**: Arreglar el build de Railway eliminando `torch` de `requirements.txt`.
+*   **Prioridad 2**: Verificar que el backend arranca ("Active") y copiar su URL.
+*   **Prioridad 3**: Configurar Vercel con esa URL.
 
 ## 📋 Lista de Tareas (Próximos Pasos)
-- [ ] **Despliegue**: Preparar build final para producción.
+- [ ] **Despliegue Backend**: Fix `requirements.txt` -> Redeploy Railway.
+- [ ] **Despliegue Frontend**: Subir a Vercel.
+- [ ] **Validación**: Probar registro y login en producción.
 - [ ] **Validación de Usuarios**: Implementar flujo de verificación de email (backend preparado, falta frontend).
 - [ ] **Optimización SEO**: Revisar metadatos finales en todas las páginas públicas.
