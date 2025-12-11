@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'export',
-    trailingSlash: true,
+    // output: 'export', // Comentado para Railway (SSR)
+    // trailingSlash: true, // No necesario en SSR
     images: {
         unoptimized: true,
     },
