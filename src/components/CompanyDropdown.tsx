@@ -89,10 +89,10 @@ export default function CompanyDropdown({ selectedCompanyId, onSelect }: Company
                         {selectedCompany ? selectedCompany.name.charAt(0) : <Building2 size={16} />}
                     </div>
                     <div>
-                        <span className="block text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
+                        <span className="hidden md:block text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
                             {selectedCompany ? selectedCompany.name : 'Seleccionar Empresa'}
                         </span>
-                        <span className="block text-[10px] text-slate-400 uppercase tracking-wide">
+                        <span className="hidden md:block text-[10px] text-slate-400 uppercase tracking-wide">
                             {selectedCompany ? (selectedCompany.agreementLabel || 'Convenio Activo') : 'Requerido'}
                         </span>
                     </div>

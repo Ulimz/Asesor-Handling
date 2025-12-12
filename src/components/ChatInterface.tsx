@@ -260,7 +260,7 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
                     )}
 
                     {/* Input Area */}
-                    <div className="p-4 pb-28 md:p-6 z-20 bg-slate-900 border-t border-slate-800">
+                    <div className="p-4 pb-36 md:p-6 z-20 bg-slate-900 border-t border-slate-800">
                         <div className="max-w-3xl mx-auto">
                             <form onSubmit={handleSubmit} className="relative flex items-center bg-slate-950 border border-slate-700 rounded-2xl p-2 focus-within:ring-1 focus-within:ring-sky-500/50 transition-all shadow-lg">
                                 <input

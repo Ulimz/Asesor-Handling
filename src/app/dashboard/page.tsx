@@ -131,13 +131,13 @@ export default function DashboardPage() {
                 <main className="flex-1 flex flex-col h-full bg-slate-950/50 relative min-w-0">
                     {/* Header */}
                     <header className="relative h-16 px-6 border-b border-white/5 flex items-center justify-between bg-slate-900/50 backdrop-blur-md z-20">
-                        {/* LEFT: Placeholder to balance if needed, or just w-20 to push center */}
-                        <div className="flex items-center gap-4 w-20">
+                        {/* LEFT: Placeholder - Hidden on mobile to save space */}
+                        <div className="hidden md:flex items-center gap-4 w-20">
                         </div>
 
                         {/* CENTER: Title - Flex 1 to take available space and center within it */}
-                        <div className="flex-1 flex justify-center items-center">
-                            <h1 className="text-xl font-semibold text-white whitespace-nowrap">
+                        <div className="flex-1 flex justify-center items-center overflow-hidden px-2">
+                            <h1 className="text-lg md:text-xl font-semibold text-white whitespace-nowrap truncate">
                                 {activeTab === 'chat' && (
                                     <span className="tracking-widest drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
                                         AS
