@@ -21,6 +21,10 @@ def main():
 
     print(f"🔄 Conectando a Base de Datos Nube (URL empieza por {database_url[:20]}...)...")
     
+    # SQLAlchemy requiere postgresql:// en lugar de postgres://
+    if database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql://", 1)
+    
     try:
         engine = create_engine(database_url)
         
