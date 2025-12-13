@@ -30,9 +30,21 @@
     "type": "variable_monthly"
   },
   {
-    "name": "Plus de Jornada Fraccionada",
-    "variable_code": "PLUS_FRACC",
-    "description": "Cantidad por cada día de trabajo efectivo en régimen de jornada fraccionada.",
+    "name": "Plus de Jornada Fraccionada (Tipo 1 / Corta)",
+    "variable_code": "PLUS_FRACC_1",
+    "description": "Plus por jornada fraccionada (Tipo 1).",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Plus de Jornada Fraccionada (Tipo 2 / Media)",
+    "variable_code": "PLUS_FRACC_2",
+    "description": "Plus por jornada fraccionada (Tipo 2).",
+    "type": "variable_monthly"
+  },
+  {
+    "name": "Plus de Jornada Fraccionada (Tipo 3 / Larga)",
+    "variable_code": "PLUS_FRACC_3",
+    "description": "Plus por jornada fraccionada (Tipo 3).",
     "type": "variable_monthly"
   },
   {
