@@ -24,14 +24,18 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(title="Asistente Handling API", description="Backend legal modular para el sector handling aeroportuario español.")
 
 # Configuración CORS segura
+# Configuración CORS segura
 origins = [
-    "https://tudominio.com",
     "http://localhost:3000",
     "http://localhost:3002",
+    "https://asesor-handling-production.up.railway.app",
+    "https://asistentehandling.es",
+    "https://www.asistentehandling.es",
 ]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins, # Usar lista explícita en lugar de ["*"]
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
