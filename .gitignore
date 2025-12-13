@@ -44,5 +44,7 @@ next-env.d.ts
 
 # Auditoria & Debug
 auditoria_resultados/
-*.txt
+debug_*.txt
+verify_*.txt
 debug_*.py
+debug_*.txt
