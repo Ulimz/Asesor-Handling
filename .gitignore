@@ -41,3 +41,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Auditoria & Debug
+auditoria_resultados/
+*.txt
+debug_*.py
