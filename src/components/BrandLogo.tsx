@@ -4,9 +4,10 @@ interface BrandLogoProps {
     className?: string;
     iconSize?: number;
     textSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+    showText?: boolean;
 }
 
-export default function BrandLogo({ className = '', iconSize = 64, textSize = 'xl' }: BrandLogoProps) {
+export default function BrandLogo({ className = '', iconSize = 64, textSize = 'xl', showText = true }: BrandLogoProps) {
     // Map textSize to font size classes and tracking
     const textClasses = {
         'xs': 'text-[10px] tracking-[0.1em]',
@@ -27,14 +28,16 @@ export default function BrandLogo({ className = '', iconSize = 64, textSize = 'x
                     className="object-contain"
                 />
             </div>
-            <div className="flex flex-col leading-none">
-                <span className={`${textClasses[textSize]} font-bold text-[var(--text-primary)] drop-shadow-[0_0_5px_rgba(255,255,255,0.3)] dark:drop-shadow-[0_0_5px_rgba(255,255,255,0.3)] drop-shadow-none`}>
-                    AS<span className="text-cyan-400 drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]">I</span>STENTE
-                </span>
-                <span className={`${textClasses[textSize]} font-bold text-[var(--text-primary)] drop-shadow-[0_0_5px_rgba(255,255,255,0.3)] dark:drop-shadow-[0_0_5px_rgba(255,255,255,0.3)] drop-shadow-none`}>
-                    H<span className="text-cyan-400 drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]">A</span>NDLING
-                </span>
-            </div>
+            {showText && (
+                <div className="flex flex-col leading-none">
+                    <span className={`${textClasses[textSize]} font-bold text-[var(--text-primary)] drop-shadow-[0_0_5px_rgba(255,255,255,0.3)] dark:drop-shadow-[0_0_5px_rgba(255,255,255,0.3)] drop-shadow-none`}>
+                        AS<span className="text-cyan-400 drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]">I</span>STENTE
+                    </span>
+                    <span className={`${textClasses[textSize]} font-bold text-[var(--text-primary)] drop-shadow-[0_0_5px_rgba(255,255,255,0.3)] dark:drop-shadow-[0_0_5px_rgba(255,255,255,0.3)] drop-shadow-none`}>
+                        H<span className="text-cyan-400 drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]">A</span>NDLING
+                    </span>
+                </div>
+            )}
         </div>
     );
 }

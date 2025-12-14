@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { apiService } from '@/lib/api-service';
 import CompanyDropdown from '@/components/CompanyDropdown';
-import MobileNav from '@/components/MobileNav';
+
 import ChatInterface from "@/components/ChatInterface";
 import SalaryCalculator from '@/features/calculadoras/components/SalaryCalculator';
 import AlertsPanel from '@/components/alerts/AlertsPanel';
@@ -11,7 +11,7 @@ import ClaimGenerator from '@/components/claims/ClaimGenerator';
 import { CompanyId, companies } from '@/data/knowledge-base';
 import { type KnowledgeItem } from '@/data/knowledge-base';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Calculator, Settings, LogOut, User, Bell, PenTool, Loader2, Plane } from 'lucide-react';
+import { MessageSquare, Calculator, Settings, LogOut, User, Bell, PenTool, Loader2, Plane, Menu, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import NeonLogo from '@/components/NeonLogo';
 import Image from 'next/image';
@@ -23,6 +23,8 @@ export default function DashboardPage() {
     const [selectedCompanyId, setSelectedCompanyId] = useState<CompanyId | null>(null);
     const [activeTab, setActiveTab] = useState<'chat' | 'calculator' | 'alerts' | 'claims'>('chat');
     const [isAuthorized, setIsAuthorized] = useState(false);
+
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('auth_token');
@@ -63,6 +65,13 @@ export default function DashboardPage() {
 
     const selectedCompanyName = companies.find(c => c.id === selectedCompanyId)?.name;
 
+    const navItems = [
+        { id: 'chat' as const, label: 'Chat Asistente', icon: MessageSquare },
+        { id: 'calculator' as const, label: 'Calculadora', icon: Calculator },
+        { id: 'claims' as const, label: 'Reclamaciones', icon: PenTool },
+        { id: 'alerts' as const, label: 'Novedades', icon: Bell },
+    ];
+
     return (
         <div className="fixed inset-0 md:static md:h-screen w-full bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans selection:bg-cyan-500/30 transition-colors duration-300 overflow-hidden flex flex-col">
             {/* Background Effects */}
@@ -80,34 +89,16 @@ export default function DashboardPage() {
                     </div>
 
                     <nav className="flex-1 px-4 py-6 space-y-2">
-                        <button
-                            onClick={() => setActiveTab('chat')}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'chat' ? 'bg-[var(--panel-bg)] text-[var(--text-primary)] shadow-lg shadow-black/5 border border-[var(--panel-border)]' : 'text-[var(--text-secondary)] hover:bg-[var(--panel-bg)]/50 hover:text-[var(--text-primary)]'}`}
-                        >
-                            <MessageSquare size={20} />
-                            <span className="hidden lg:block">Chat Asistente</span>
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('calculator')}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'calculator' ? 'bg-gradient-to-r from-emerald-500/20 to-green-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400 shadow-lg shadow-emerald-500/10' : 'text-[var(--text-secondary)] hover:bg-[var(--panel-bg)]/50 hover:text-[var(--text-primary)]'}`}
-                        >
-                            <Calculator size={20} />
-                            <span className="hidden lg:block">Calculadora</span>
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('claims')}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'claims' ? 'bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 border border-indigo-500/20 shadow-lg shadow-indigo-500/10' : 'text-[var(--text-secondary)] hover:bg-[var(--panel-bg)]/50 hover:text-[var(--text-primary)]'}`}
-                        >
-                            <PenTool size={20} />
-                            <span className="hidden lg:block">Reclamaciones</span>
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('alerts')}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'alerts' ? 'bg-amber-500/10 text-amber-500 dark:text-amber-400 border border-amber-500/20 shadow-lg shadow-amber-500/10' : 'text-[var(--text-secondary)] hover:bg-[var(--panel-bg)]/50 hover:text-[var(--text-primary)]'}`}
-                        >
-                            <Bell size={20} />
-                            <span className="hidden lg:block">Novedades</span>
-                        </button>
+                        {navItems.map(item => (
+                            <button
+                                key={item.id}
+                                onClick={() => setActiveTab(item.id)}
+                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === item.id ? 'bg-[var(--panel-bg)] text-[var(--text-primary)] shadow-lg shadow-black/5 border border-[var(--panel-border)]' : 'text-[var(--text-secondary)] hover:bg-[var(--panel-bg)]/50 hover:text-[var(--text-primary)]'}`}
+                            >
+                                <item.icon size={20} />
+                                <span className="hidden lg:block">{item.label}</span>
+                            </button>
+                        ))}
                     </nav>
 
                     <div className="p-4 border-t border-white/5 space-y-2">
@@ -129,49 +120,101 @@ export default function DashboardPage() {
                 </aside>
 
                 {/* MAIN CONTENT */}
-                <main className="flex-1 flex flex-col h-full bg-slate-950/50 relative min-w-0">
+                <main className="flex-1 flex flex-col h-full bg-[var(--bg-primary)]/50 relative min-w-0">
                     {/* Header */}
-                    <header className="relative h-16 px-6 border-b border-[var(--panel-border)] flex items-center justify-between bg-[var(--bg-primary)]/80 backdrop-blur-md z-20 transition-colors duration-300">
-                        {/* LEFT: Placeholder - Hidden on mobile to save space */}
-                        <div className="hidden md:flex items-center gap-4 w-20">
+                    <header className="relative h-16 md:h-20 px-4 md:px-6 border-b border-[var(--panel-border)] flex items-center justify-between bg-[var(--bg-primary)]/80 backdrop-blur-md z-30 transition-colors duration-300">
+                        {/* MOBILE: Left (Logo Icon) */}
+                        <div className="md:hidden shrink-0">
+                            <BrandLogo iconSize={32} showText={false} />
                         </div>
 
-                        {/* CENTER: Title - Flex 1 to take available space and center within it */}
+                        {/* MOBILE: Center (Dropdown) / DESKTOP: Title */}
                         <div className="flex-1 flex justify-center items-center overflow-hidden px-2">
-                            <h1 className="text-lg md:text-xl font-semibold text-white whitespace-nowrap truncate">
-                                {activeTab === 'chat' && (
-                                    <span className="tracking-widest drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
-                                        AS
-                                        <span className="text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]">I</span>
-                                        STENTE
-                                        {' '}
-                                        H
-                                        <span className="text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]">A</span>
-                                        NDLING
-                                    </span>
-                                )}
-                                {activeTab === 'calculator' && 'Herramientas de Nómina'}
-                                {activeTab === 'alerts' && 'Centro de Novedades'}
-                                {activeTab === 'claims' && 'Generador de Escritos'}
-                            </h1>
+                            <div className="md:hidden w-full max-w-[200px]">
+                                <CompanyDropdown
+                                    onSelect={handleCompanySelect}
+                                    selectedCompanyId={selectedCompanyId}
+                                />
+                            </div>
+                            <div className="hidden md:block">
+                                <h1 className="text-xl font-semibold text-white whitespace-nowrap truncate">
+                                    {activeTab === 'chat' && 'Asistente Handling'}
+                                    {activeTab === 'calculator' && 'Herramientas de Nómina'}
+                                    {activeTab === 'alerts' && 'Centro de Novedades'}
+                                    {activeTab === 'claims' && 'Generador de Escritos'}
+                                </h1>
+                            </div>
                         </div>
 
-                        {/* RIGHT: User Profile & Company */}
-                        <div className="flex items-center gap-4">
-                            <div className="md:hidden">
-                                <ThemeToggle />
-                            </div>
-                            <CompanyDropdown
-                                onSelect={handleCompanySelect}
-                                selectedCompanyId={selectedCompanyId}
-                            />
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-500 p-[1px] shadow-lg shadow-cyan-500/20">
-                                <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center">
-                                    <User size={20} className="text-slate-400" />
+                        {/* MOBILE: Right (Menu) / DESKTOP: User & Settings */}
+                        <div className="flex items-center gap-4 shrink-0">
+                            {/* Mobile Hamburger */}
+                            <button
+                                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                className="md:hidden p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-[var(--card-bg)] border border-[var(--card-border)] rounded-lg"
+                            >
+                                {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                            </button>
+
+                            {/* Desktop User Area */}
+                            <div className="hidden md:flex items-center gap-4">
+                                <CompanyDropdown
+                                    onSelect={handleCompanySelect}
+                                    selectedCompanyId={selectedCompanyId}
+                                />
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-500 p-[1px] shadow-lg shadow-cyan-500/20">
+                                    <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center">
+                                        <User size={20} className="text-slate-400" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </header>
+
+                    {/* MOBILE MENU DROPDOWN */}
+                    <AnimatePresence>
+                        {isMobileMenuOpen && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="md:hidden absolute top-16 left-0 right-0 bg-[var(--bg-primary)] border-b border-[var(--panel-border)] shadow-2xl z-20 overflow-hidden"
+                            >
+                                <div className="p-4 space-y-4">
+                                    <div className="grid grid-cols-2 gap-3">
+                                        {navItems.map(item => (
+                                            <button
+                                                key={item.id}
+                                                onClick={() => {
+                                                    setActiveTab(item.id);
+                                                    setIsMobileMenuOpen(false);
+                                                }}
+                                                className={`flex flex-col items-center justify-center p-4 rounded-xl border transition-all gap-2 ${activeTab === item.id
+                                                    ? 'bg-[var(--panel-bg)] border-cyan-500/50 text-[var(--text-primary)]'
+                                                    : 'bg-[var(--card-bg)] border-[var(--card-border)] text-[var(--text-secondary)]'
+                                                    }`}
+                                            >
+                                                <item.icon size={24} className={activeTab === item.id ? 'text-cyan-400' : ''} />
+                                                <span className="text-xs font-medium">{item.label}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    <div className="h-px bg-[var(--panel-border)]"></div>
+
+                                    <div className="flex items-center justify-between p-2">
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-sm font-medium text-[var(--text-secondary)]">Modo Oscuro</span>
+                                            <ThemeToggle />
+                                        </div>
+                                        <button onClick={handleLogout} className="text-red-400 text-sm font-medium flex items-center gap-2">
+                                            <LogOut size={16} /> Cerrar Sesión
+                                        </button>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
                     {/* Content Area */}
                     <div className="flex-1 overflow-hidden relative p-4 md:p-6 min-w-0">
@@ -232,7 +275,7 @@ export default function DashboardPage() {
                 </main>
             </div >
 
-            <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} />
+            {/* MobileNav Removed */}
         </div >
     );
 }
