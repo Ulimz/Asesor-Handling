@@ -363,9 +363,15 @@ RESPUESTA (Si es un dato de tabla, dalo directmente sin fórmulas):"""
             {query}
             
             INSTRUCCIONES:
-            1. Usa la INFORMACIÓN INTERNA como tu fuente principal.
-            2. SI la información interna responde la pregunta, úsala y cita el artículo.
-            3. SI la información interna es incompleta, antigua (ej. pides datos 2024/2025 y el texto es viejo) o NO responde la pregunta -> USA LA HERRAMIENTA DE BÚSQUEDA (Google Search) para encontrar el dato actualizado.
+            1. REGLA DE ORO: El usuario quiere la RESPUESTA, no explicaciones.
+            2. Principio de Jerarquía:
+               - Por defecto: Prioriza el CONVENIO (Info Interna).
+               - EXCEPCIÓN CRÍTICA: Si el usuario pregunta por NUEVAS LEYES (ej: "Ley de Familias", "RDL 5/2023", "cambios 2024") que modifican el Estatuto, la BÚSQUEDA EXTERNA MANDA sobre el PDF antiguo.
+            3. Si la información interna NO es suficiente o está desactualizada:
+               - IGNORA la falta de información interna.
+               - USA TU CAPACIDAD DE BÚSQUEDA para encontrar el dato real.
+               - RESPONDE DIRECTAMENTE con el dato encontrado.
+               - NO digas "voy a buscar". SIMPLEMENTE RESPONDE.
             4. Se conciso y profesional.
             """
 
