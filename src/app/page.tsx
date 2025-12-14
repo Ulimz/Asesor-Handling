@@ -1,15 +1,20 @@
 'use client';
 
+import { useState } from 'react';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import NeonLogo from '@/components/NeonLogo';
 import BrandLogo from '@/components/BrandLogo';
 import ThemeToggle from '@/components/ThemeToggle';
-import { motion } from 'framer-motion';
-import { ArrowRight, MessageSquare, ShieldCheck, Scale, History, UserCheck, CheckCircle2, Zap, Globe, Lock } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, MessageSquare, ShieldCheck, Scale, History, UserCheck, CheckCircle2, Zap, Globe, Lock, Menu, X } from 'lucide-react';
 import { companies } from '@/data/knowledge-base';
+import { useState } from 'react';
 
 export default function LandingPage() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen text-[var(--text-primary)] font-sans selection:bg-cyan-500/30 transition-colors duration-300">
 
@@ -17,30 +22,68 @@ export default function LandingPage() {
       <nav className="fixed top-0 inset-x-0 z-50 h-16 md:h-20 flex items-center bg-[var(--bg-primary)]/80 backdrop-blur-xl border-b border-[var(--panel-border)] transition-colors duration-300">
         <div className="max-w-7xl mx-auto w-full px-4 md:px-6">
 
-          {/* MOBILE LAYOUT (Centered Logo) */}
-          <div className="md:hidden flex items-center justify-between w-full relative h-full">
-            {/* Left: Theme Toggle */}
-            <div className="scale-90">
-              <ThemeToggle />
+          {/* MOBILE LAYOUT (Left Logo - Center CTA - Right Menu) */}
+          <div className="md:hidden flex items-center justify-between w-full relative h-full gap-2">
+            {/* Left: Logo */}
+            <div className="shrink-0">
+              <BrandLogo iconSize={28} textSize="xs" />
             </div>
 
-            {/* Center: Logo */}
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-              <BrandLogo iconSize={32} textSize="sm" />
+            {/* Center: CTA (Flexible width if needed, or just centered) */}
+            <div className="flex-1 flex justify-center">
+              <Link href="/login" className="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-xs font-bold rounded-full hover:shadow-lg hover:shadow-cyan-500/25 transition-all flex items-center gap-1.5 whitespace-nowrap">
+                Empezar Gratis
+              </Link>
             </div>
 
-            {/* Right: CTA */}
-            <Link href="/login" className="px-3 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-[10px] font-bold rounded-full hover:shadow-lg hover:shadow-cyan-500/25 transition-all flex items-center gap-1.5">
-              Empezar Gratis
-            </Link>
+            {/* Right: Hamburger Menu */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
+
+          {/* MOBILE MENU DROPDOWN */}
+          <AnimatePresence>
+            {isMobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="md:hidden absolute top-16 left-0 right-0 bg-[var(--bg-primary)] border-b border-[var(--panel-border)] overflow-hidden shadow-2xl"
+              >
+                <div className="p-4 space-y-4 flex flex-col items-center">
+                  <Link href="#features" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] py-2">
+                    Funciones
+                  </Link>
+                  <Link href="#convenios" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] py-2">
+                    Convenios
+                  </Link>
+                  <Link href="#faq" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] py-2">
+                    Preguntas
+                  </Link>
+
+                  <div className="w-full h-px bg-[var(--panel-border)] my-2"></div>
+
+                  <div className="flex items-center gap-3 py-2">
+                    <span className="text-sm text-[var(--text-secondary)]">Modo:</span>
+                    <ThemeToggle />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* DESKTOP LAYOUT (Standard) */}
           <div className="hidden md:flex items-center justify-between w-full">
             <BrandLogo iconSize={64} textSize="xl" />
 
             <div className="flex items-center gap-8 text-sm font-medium text-[var(--text-secondary)]">
-              {/* Links removed as per user request */}
+              <Link href="#features" className="hover:text-[var(--text-primary)] transition-colors">Funciones</Link>
+              <Link href="#convenios" className="hover:text-[var(--text-primary)] transition-colors">Convenios</Link>
+              <Link href="#faq" className="hover:text-[var(--text-primary)] transition-colors">FAQ</Link>
             </div>
 
             <div className="flex items-center gap-4">
