@@ -10,8 +10,8 @@ export const metadata: Metadata = {
   description: "Resuelve tus dudas sobre el convenio y estatuto.",
   manifest: '/manifest.json',
   icons: {
-    icon: '/icon-dark.png',
-    apple: '/icon-dark.png',
+    icon: '/logoapp.png',
+    apple: '/logoapp.png',
   },
   appleWebApp: {
     capable: true,
