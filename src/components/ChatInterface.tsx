@@ -119,7 +119,8 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
     return (
         <div className="flex h-full rounded-3xl overflow-hidden glass-panel border-0 shadow-2xl relative">
             {/* Background Effects */}
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-950/90 to-slate-900/80 -z-10"></div>
+            {/* Background Effects */}
+            <div className="absolute inset-0 bg-gradient-to-br from-[var(--bg-primary)]/80 via-[var(--bg-primary)]/90 to-[var(--bg-primary)]/80 -z-10 transition-colors duration-300"></div>
 
             {/* SIDEBAR (Desktop) */}
             <aside className="hidden md:flex flex-col w-80 shrink-0 bg-slate-950 border-r border-slate-800 h-full shadow-xl z-20">
@@ -260,15 +261,15 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
                     )}
 
                     {/* Input Area */}
-                    <div className="p-4 pb-36 md:p-6 z-20 bg-slate-900 border-t border-slate-800">
+                    <div className="p-4 pb-36 md:p-6 z-20 bg-[var(--bg-primary)]/90 backdrop-blur-md border-t border-[var(--panel-border)] transition-colors duration-300">
                         <div className="max-w-3xl mx-auto">
-                            <form onSubmit={handleSubmit} className="relative flex items-center bg-slate-950 border border-slate-700 rounded-2xl p-2 focus-within:ring-1 focus-within:ring-sky-500/50 transition-all shadow-lg">
+                            <form onSubmit={handleSubmit} className="relative flex items-center bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-2 focus-within:ring-1 focus-within:ring-sky-500/50 transition-all shadow-lg">
                                 <input
                                     type="text"
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
                                     placeholder={selectedCompanyId ? "Escribe tu pregunta jurídica..." : "Selecciona una empresa primero..."}
-                                    className="flex-1 bg-transparent border-none focus:outline-none text-slate-100 placeholder:text-slate-500 px-4 py-3 text-base"
+                                    className="flex-1 bg-transparent border-none focus:outline-none text-[var(--text-primary)] placeholder:text-slate-500 px-4 py-3 text-base"
                                     disabled={isLoading}
                                 />
                                 <button

@@ -64,7 +64,7 @@ export default function DashboardPage() {
     const selectedCompanyName = companies.find(c => c.id === selectedCompanyId)?.name;
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-cyan-500/30">
+        <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans selection:bg-cyan-500/30 transition-colors duration-300">
             {/* Background Effects */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-cyan-500/10 rounded-full blur-[100px] animate-pulse-slow"></div>
@@ -74,7 +74,7 @@ export default function DashboardPage() {
             <div className="relative z-10 flex h-screen overflow-hidden">
 
                 {/* SIDEBAR (Desktop) */}
-                <aside className="hidden md:flex flex-col w-20 lg:w-64 bg-slate-900/50 backdrop-blur-xl border-r border-white/5">
+                <aside className="hidden md:flex flex-col w-20 lg:w-64 glass-panel border-r border-[var(--panel-border)] transition-colors duration-300">
                     <div className="p-6 flex items-center justify-center border-b border-white/5">
                         <BrandLogo iconSize={64} textSize="lg" />
                     </div>
@@ -131,7 +131,7 @@ export default function DashboardPage() {
                 {/* MAIN CONTENT */}
                 <main className="flex-1 flex flex-col h-full bg-slate-950/50 relative min-w-0">
                     {/* Header */}
-                    <header className="relative h-16 px-6 border-b border-white/5 flex items-center justify-between bg-slate-900/50 backdrop-blur-md z-20">
+                    <header className="relative h-16 px-6 border-b border-[var(--panel-border)] flex items-center justify-between bg-[var(--bg-primary)]/80 backdrop-blur-md z-20 transition-colors duration-300">
                         {/* LEFT: Placeholder - Hidden on mobile to save space */}
                         <div className="hidden md:flex items-center gap-4 w-20">
                         </div>
