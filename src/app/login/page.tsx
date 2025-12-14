@@ -57,11 +57,11 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 selection:bg-cyan-500/30 font-sans relative overflow-hidden">
+        <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center p-4 selection:bg-cyan-500/30 font-sans relative overflow-hidden transition-colors duration-300">
             {/* Background Effects */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-900/20 via-slate-950 to-slate-950 -z-10"></div>
-            <div className="absolute top-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-            <div className="absolute bottom-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-900/20 via-[var(--bg-primary)] to-[var(--bg-primary)] -z-10 transition-colors duration-300"></div>
+            <div className="absolute top-0 w-full h-px bg-gradient-to-r from-transparent via-[var(--panel-border)] to-transparent"></div>
+            <div className="absolute bottom-0 w-full h-px bg-gradient-to-r from-transparent via-[var(--panel-border)] to-transparent"></div>
 
             {/* Animated Orbs */}
             <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-cyan-500/10 rounded-full blur-[100px] animate-pulse-slow"></div>
@@ -71,7 +71,7 @@ export default function LoginPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="w-full max-w-md bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-3xl p-8 shadow-2xl relative"
+                className="w-full max-w-md bg-[var(--card-bg)] backdrop-blur-xl border border-[var(--card-border)] rounded-3xl p-8 shadow-2xl relative transition-colors duration-300"
             >
                 {/* Glow Effect */}
                 <div className="absolute -top-10 -right-10 w-20 h-20 bg-cyan-500/20 rounded-full blur-xl animate-pulse"></div>
@@ -80,21 +80,21 @@ export default function LoginPage() {
                     <div className="flex justify-center mb-6">
                         <BrandLogo iconSize={80} textSize="2xl" />
                     </div>
-                    <h1 className="text-3xl font-bold text-white mb-2">Bienvenido</h1>
-                    <p className="text-slate-400 text-sm">Accede a tu asistente legal personal</p>
+                    <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">Bienvenido</h1>
+                    <p className="text-[var(--text-secondary)] text-sm">Accede a tu asistente legal personal</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-4">
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <User size={18} className="text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
+                                <User size={18} className="text-[var(--text-secondary)] group-focus-within:text-cyan-400 transition-colors" />
                             </div>
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all font-medium"
+                                className="w-full bg-[var(--panel-bg)]/50 border border-[var(--panel-border)] rounded-xl py-3.5 pl-11 pr-4 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all font-medium"
                                 placeholder="Correo electrónico"
                                 required
                             />
@@ -102,13 +102,13 @@ export default function LoginPage() {
 
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Lock size={18} className="text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
+                                <Lock size={18} className="text-[var(--text-secondary)] group-focus-within:text-cyan-400 transition-colors" />
                             </div>
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all font-medium"
+                                className="w-full bg-[var(--panel-bg)]/50 border border-[var(--panel-border)] rounded-xl py-3.5 pl-11 pr-4 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all font-medium"
                                 placeholder="Contraseña"
                                 required
                             />
@@ -121,7 +121,7 @@ export default function LoginPage() {
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: 'auto' }}
                                 exit={{ opacity: 0, height: 0 }}
-                                className="flex items-center gap-2 text-red-400 text-sm bg-red-500/10 p-3 rounded-lg border border-red-500/20"
+                                className="flex items-center gap-2 text-red-500 dark:text-red-400 text-sm bg-red-100 dark:bg-red-500/10 p-3 rounded-lg border border-red-200 dark:border-red-500/20"
                             >
                                 <AlertCircle size={16} />
                                 <span>{error}</span>
@@ -148,19 +148,19 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                <div className="mt-8 text-center pt-6 border-t border-white/5">
-                    <p className="text-slate-500 text-sm mb-2">¿No tienes cuenta?</p>
-                    <Link href="/register" className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors text-sm">
+                <div className="mt-8 text-center pt-6 border-t border-[var(--panel-border)]">
+                    <p className="text-[var(--text-secondary)] text-sm mb-2">¿No tienes cuenta?</p>
+                    <Link href="/register" className="text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 dark:hover:text-cyan-300 font-medium transition-colors text-sm">
                         Crear una cuenta nueva
                     </Link>
                     <div className="mt-4">
-                        <Link href="/" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">
+                        <Link href="/" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
                             ← Volver al inicio
                         </Link>
                     </div>
                 </div>
             </motion.div>
-            <div className="absolute bottom-6 text-slate-600 text-xs font-mono">
+            <div className="absolute bottom-6 text-[var(--text-secondary)] text-xs font-mono">
                 Development Build v0.1
             </div>
         </div>
