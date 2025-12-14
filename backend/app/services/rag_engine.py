@@ -345,6 +345,7 @@ PREGUNTA:
 {query}
 
 RESPUESTA (Si es un dato de tabla, dalo directmente sin fórmulas):"""
+        try:
             # Lógica Híbrida:
             # Si hay contexto local bueno, úsalo. Si no, permite que Google busque.
             
