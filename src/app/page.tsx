@@ -15,33 +15,44 @@ export default function LandingPage() {
 
       {/* NAVBAR */}
       <nav className="fixed top-0 inset-x-0 z-50 h-16 md:h-20 flex items-center bg-[var(--bg-primary)]/80 backdrop-blur-xl border-b border-[var(--panel-border)] transition-colors duration-300">
-        <div className="max-w-7xl mx-auto w-full px-4 md:px-6 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {/* Mobile Logo */}
-            <div className="md:hidden">
-              <BrandLogo iconSize={32} textSize="sm" />
-            </div>
-            {/* Desktop Logo */}
-            <div className="hidden md:block">
-              <BrandLogo iconSize={64} textSize="xl" />
-            </div>
-          </div>
+        <div className="max-w-7xl mx-auto w-full px-4 md:px-6">
 
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-[var(--text-secondary)]">
-            {/* Links removed as per user request */}
-          </div>
-
-          <div className="flex items-center gap-2 md:gap-4">
-            <div className="md:hidden scale-90">
+          {/* MOBILE LAYOUT (Centered Logo) */}
+          <div className="md:hidden flex items-center justify-between w-full relative h-full">
+            {/* Left: Theme Toggle */}
+            <div className="scale-90">
               <ThemeToggle />
             </div>
-            <Link href="/login" className="hidden md:block text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
-              Login
-            </Link>
-            <Link href="/login" className="px-3 py-2 md:px-5 md:py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-[10px] md:text-sm font-bold rounded-full hover:shadow-lg hover:shadow-cyan-500/25 transition-all flex items-center gap-1.5 md:gap-2">
+
+            {/* Center: Logo */}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+              <BrandLogo iconSize={32} textSize="sm" />
+            </div>
+
+            {/* Right: CTA */}
+            <Link href="/login" className="px-3 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-[10px] font-bold rounded-full hover:shadow-lg hover:shadow-cyan-500/25 transition-all flex items-center gap-1.5">
               Empezar Gratis
             </Link>
           </div>
+
+          {/* DESKTOP LAYOUT (Standard) */}
+          <div className="hidden md:flex items-center justify-between w-full">
+            <BrandLogo iconSize={64} textSize="xl" />
+
+            <div className="flex items-center gap-8 text-sm font-medium text-[var(--text-secondary)]">
+              {/* Links removed as per user request */}
+            </div>
+
+            <div className="flex items-center gap-4">
+              <Link href="/login" className="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+                Login
+              </Link>
+              <Link href="/login" className="px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-sm font-bold rounded-full hover:shadow-lg hover:shadow-cyan-500/25 transition-all flex items-center gap-2">
+                Empezar Gratis
+              </Link>
+            </div>
+          </div>
+
         </div>
       </nav>
 
