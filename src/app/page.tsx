@@ -23,7 +23,9 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-4">
-            <ThemeToggle />
+            <div className="md:hidden">
+              <ThemeToggle />
+            </div>
             <Link href="/login" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
               Login
             </Link>

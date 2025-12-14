@@ -158,7 +158,9 @@ export default function DashboardPage() {
 
                         {/* RIGHT: User Profile & Company */}
                         <div className="flex items-center gap-4">
-                            <ThemeToggle />
+                            <div className="md:hidden">
+                                <ThemeToggle />
+                            </div>
                             <CompanyDropdown
                                 onSelect={handleCompanySelect}
                                 selectedCompanyId={selectedCompanyId}
