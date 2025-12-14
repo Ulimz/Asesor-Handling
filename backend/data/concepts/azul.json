@@ -137,7 +137,7 @@
     "type": "variable_monthly"
   },
   {
-    "name": "Horas Complementarias Especiales (HC Especial)",
+    "name": "Horas Complementarias Especiales",
     "variable_code": "HC_ESPECIAL",
     "description": "Retribución de las horas complementarias especiales de aceptación voluntaria, para ajustar la jornada a necesidades operativas imprevistas.",
     "type": "variable_monthly"
