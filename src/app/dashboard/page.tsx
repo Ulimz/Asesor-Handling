@@ -127,11 +127,11 @@ export default function DashboardPage() {
                     <header className="relative h-16 md:h-20 px-4 md:px-6 border-b border-[var(--panel-border)] flex items-center justify-between bg-[var(--bg-primary)]/80 backdrop-blur-md z-30 transition-colors duration-300">
                         {/* MOBILE: Left (Logo Icon) */}
                         <div className="md:hidden shrink-0">
-                            <BrandLogo iconSize={32} showText={false} />
+                            <BrandLogo iconSize={48} showText={false} />
                         </div>
 
                         {/* MOBILE: Center (Dropdown) / DESKTOP: Title */}
-                        <div className="flex-1 flex justify-center items-center overflow-hidden px-2">
+                        <div className="flex-1 flex justify-center items-center px-2">
                             <div className="md:hidden w-full max-w-[200px]">
                                 <CompanyDropdown
                                     onSelect={handleCompanySelect}

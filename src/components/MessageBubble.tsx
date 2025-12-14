@@ -1,5 +1,6 @@
-import { motion } from 'framer-motion';
-import { Bot, BookOpen, Sparkles, User } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Bot, BookOpen, Sparkles, User, ChevronDown, ChevronUp } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -18,6 +19,7 @@ interface MessageBubbleProps {
 
 export default function MessageBubble({ content, role, sources }: MessageBubbleProps) {
     const isUser = role === 'user';
+    const [showSources, setShowSources] = useState(false);
 
     return (
         <motion.div
@@ -79,15 +81,37 @@ export default function MessageBubble({ content, role, sources }: MessageBubbleP
                         )}
                     </div>
 
-                    {/* Sources (AI Only) */}
+                    {/* Sources (AI Only) - Collapsible */}
                     {sources && sources.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-1">
-                            {sources.map((source, i) => (
-                                <span key={i} className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[var(--panel-bg)] border border-[var(--panel-border)] hover:border-cyan-500/30 rounded-full text-[10px] text-[var(--text-secondary)] font-medium transition-colors cursor-help">
-                                    <BookOpen size={10} className="text-cyan-500/70" />
-                                    {source.topic.substring(0, 30)}{source.topic.length > 30 ? '...' : ''}
-                                </span>
-                            ))}
+                        <div className="w-full mt-1">
+                            <button
+                                onClick={() => setShowSources(!showSources)}
+                                className="flex items-center gap-2 text-xs font-medium text-[var(--text-secondary)] hover:text-cyan-400 transition-colors px-2 py-1"
+                            >
+                                <BookOpen size={12} />
+                                <span>{sources.length} Referencias consultadas</span>
+                                {showSources ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                            </button>
+
+                            <AnimatePresence>
+                                {showSources && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        className="overflow-hidden"
+                                    >
+                                        <div className="flex flex-wrap gap-2 pt-2 pb-1 px-1">
+                                            {sources.map((source, i) => (
+                                                <span key={i} className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[var(--panel-bg)] border border-[var(--panel-border)] rounded-full text-[10px] text-[var(--text-secondary)] font-medium">
+                                                    <BookOpen size={10} className="text-cyan-500/70" />
+                                                    {source.topic.substring(0, 30)}{source.topic.length > 30 ? '...' : ''}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                     )}
                 </div>

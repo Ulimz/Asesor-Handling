@@ -261,7 +261,7 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
                     )}
 
                     {/* Input Area */}
-                    <div className="p-4 pb-24 md:p-6 z-20 bg-[var(--bg-primary)]/90 backdrop-blur-md border-t border-[var(--panel-border)] transition-colors duration-300">
+                    <div className="p-4 pb-4 md:p-6 z-20 bg-[var(--bg-primary)]/90 backdrop-blur-md border-t border-[var(--panel-border)] transition-colors duration-300">
                         <div className="max-w-3xl mx-auto">
                             <form onSubmit={handleSubmit} className="relative flex items-center bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-2 focus-within:ring-1 focus-within:ring-sky-500/50 transition-all shadow-lg">
                                 <input
