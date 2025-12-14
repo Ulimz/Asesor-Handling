@@ -23,8 +23,7 @@ class RagEngine:
         self.gen_model = None
         if api_key:
             genai.configure(api_key=api_key)
-            # Enable Google Search Tool for Grounding
-            self.gen_model = genai.GenerativeModel('gemini-2.0-flash', tools='google_search_retrieval')
+            self.gen_model = genai.GenerativeModel('gemini-2.0-flash')
     
     @property
     def model(self):
@@ -357,7 +356,13 @@ RESPUESTA (Si es un dato de tabla, dalo directmente sin fórmulas):"""
                 # Si hay contexto, le decimos que priorice el contexto pero puede complementar
                 pass
 
-            response = self.gen_model.generate_content(final_prompt)
+            # Define tools dynamically (using the format suggested by the error "google_search field")
+            search_tool = {'google_search': {}}
+            
+            response = self.gen_model.generate_content(
+                final_prompt,
+                tools=[search_tool]
+            )
             # Verificar si usó Grounding (esto añade fuentes al final)
             return response.text
         except Exception as e:
