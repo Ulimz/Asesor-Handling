@@ -8,11 +8,13 @@ import NeonLogo from '@/components/NeonLogo';
 import BrandLogo from '@/components/BrandLogo';
 import ThemeToggle from '@/components/ThemeToggle';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, MessageSquare, ShieldCheck, Scale, History, UserCheck, CheckCircle2, Zap, Globe, Lock, Menu, X } from 'lucide-react';
+import { ArrowRight, MessageSquare, ShieldCheck, Scale, History, UserCheck, CheckCircle2, Zap, Globe, Lock, Menu, X, Download } from 'lucide-react';
 import { companies } from '@/data/knowledge-base';
+import PwaInstallGuide from '@/components/pwa/PwaInstallGuide';
 
 export default function LandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showInstallGuide, setShowInstallGuide] = useState(false);
 
   return (
     <div className="min-h-screen text-[var(--text-primary)] font-sans selection:bg-cyan-500/30 transition-colors duration-300">
@@ -64,6 +66,17 @@ export default function LandingPage() {
                     Preguntas
                   </Link>
 
+                  <button
+                    onClick={() => {
+                      setShowInstallGuide(true);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 bg-[var(--panel-bg)] border border-[var(--panel-border)] rounded-full text-sm font-medium text-[var(--text-primary)] hover:border-cyan-500/50 transition-colors w-full justify-center"
+                  >
+                    <Download size={16} className="text-cyan-400" />
+                    Instalar App
+                  </button>
+
                   <div className="w-full h-px bg-[var(--panel-border)] my-2"></div>
 
                   <div className="flex items-center gap-3 py-2">
@@ -86,6 +99,13 @@ export default function LandingPage() {
             </div>
 
             <div className="flex items-center gap-4">
+              <button
+                onClick={() => setShowInstallGuide(true)}
+                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                title="Instalar Aplicación"
+              >
+                <Download size={18} />
+              </button>
               <Link href="/login" className="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
                 Login
               </Link>
@@ -238,6 +258,8 @@ export default function LandingPage() {
           AVISO: Esta herramienta no tiene validez jurídica. Las respuestas son generadas por Inteligencia Artificial basada en convenios y están destinadas únicamente a fines informativos y de orientación. Ante duda legal, consulte con un representante sindical o abogado.
         </p>
       </footer>
+
+      <PwaInstallGuide isOpen={showInstallGuide} onClose={() => setShowInstallGuide(false)} />
 
     </div>
   );
