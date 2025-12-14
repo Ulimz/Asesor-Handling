@@ -4,7 +4,6 @@ from sqlalchemy.orm import Session
 from app.db.models import DocumentChunk, LegalDocument
 import numpy as np
 import google.generativeai as genai
-from google.generativeai.types import Tool, GoogleSearch
 import os
 from app.constants import (
     EMBEDDING_MODEL_NAME,
@@ -357,8 +356,8 @@ RESPUESTA (Si es un dato de tabla, dalo directmente sin fórmulas):"""
                 # Si hay contexto, le decimos que priorice el contexto pero puede complementar
                 pass
 
-            # Define tools using the Types to avoid SDK serialization confusion
-            search_tool = Tool(google_search=GoogleSearch())
+            # Define tools dynamically (using the standard dict format for the SDK)
+            search_tool = {'google_search': {}}
             
             response = self.gen_model.generate_content(
                 final_prompt,
