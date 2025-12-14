@@ -23,8 +23,8 @@ class RagEngine:
         self.gen_model = None
         if api_key:
             genai.configure(api_key=api_key)
-            # Downgrade to 1.5-flash for stable Grounding support with string syntax
-            self.gen_model = genai.GenerativeModel('gemini-1.5-flash', tools='google_search_retrieval')
+            # Downgrade to 1.5-flash (specific version) for stable Grounding support
+            self.gen_model = genai.GenerativeModel('gemini-1.5-flash-001', tools='google_search_retrieval')
     
     @property
     def model(self):
