@@ -348,44 +348,78 @@ PREGUNTA:
 
 RESPUESTA (Si es un dato de tabla, dalo directmente sin fórmulas):"""
         try:
-            # Lógica Híbrida:
-            # Si hay contexto local bueno, úsalo. Si no, permite que Google busque.
+            # Lógica Híbrida REAL:
+            # Siempre pasamos el contexto local, pero habilitamos la herramienta de búsqueda
+            # para que el modelo decida si necesita complementar la información.
             
-            enable_search = True
-            if not context_chunks or len(context_chunks) == 0:
-                print("🌍 No local context found. Delegating to Google Search (Direct REST).")
-                context_text = "No se encontró información específica en los documentos internos. Usa tu herramienta de búsqueda para responder basándote en normativa general (Estatuto Trabajadores, BOE, Seguridad Social)."
-                
-                # Use Direct REST call to bypass SDK "Unknown field" error
-                api_key = os.getenv("GOOGLE_API_KEY")
-                if api_key:
-                    try:
-                        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
-                        payload = {
-                            "contents": [{
-                                "parts": [{"text": final_prompt}]
-                            }],
-                            "tools": [{"google_search": {}}]
-                        }
-                        headers = {'Content-Type': 'application/json'}
-                        response = requests.post(url, headers=headers, data=json.dumps(payload))
-                        
-                        if response.status_code == 200:
-                            result = response.json()
-                            # Extract text from response
-                            try:
-                                return result['candidates'][0]['content']['parts'][0]['text']
-                            except (KeyError, IndexError):
-                                return "Error interpretando respuesta de Google Search."
-                        else:
-                            return f"Error en búsqueda externa: {response.text}"
-                    except Exception as e:
-                        return f"Excepción en búsqueda externa: {str(e)}"
+            context_text = ""
+            if context_chunks:
+                context_text = "\n\n".join([c.text for c in context_chunks])
+            
+            # Prompt más flexible que permite usar búsqueda externa
+            final_prompt = f"""
+            Eres un asistente experto en normativa laboral de handling.
+            
+            INFORMACIÓN INTERNA (Prioritaria):
+            {context_text}
+            
+            PREGUNTA DEL USUARIO:
+            {query}
+            
+            INSTRUCCIONES:
+            1. Usa la INFORMACIÓN INTERNA como tu fuente principal.
+            2. SI la información interna responde la pregunta, úsala y cita el artículo.
+            3. SI la información interna es incompleta, antigua (ej. pides datos 2024/2025 y el texto es viejo) o NO responde la pregunta -> USA LA HERRAMIENTA DE BÚSQUEDA (Google Search) para encontrar el dato actualizado.
+            4. Se conciso y profesional.
+            """
 
-            # Standard SDK generation (no tools) if we have context or fallback failed (though fallback returns above)
-            response = self.gen_model.generate_content(final_prompt)
-            # Verificar si usó Grounding (esto añade fuentes al final)
-            return response.text
+            # Use Direct REST call for ALL generations to ensure Tool availability
+            # This bypasses the SDK validation issues we faced.
+            api_key = os.getenv("GOOGLE_API_KEY")
+            if api_key:
+                try:
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
+                    payload = {
+                        "contents": [{
+                            "parts": [{"text": final_prompt}]
+                        }],
+                        "tools": [{"google_search": {}}],
+                        "safetySettings": [
+                            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_ONLY_HIGH"},
+                            {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_ONLY_HIGH"},
+                            {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_ONLY_HIGH"},
+                            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_ONLY_HIGH"}
+                        ]
+                    }
+                    headers = {'Content-Type': 'application/json'}
+                    response = requests.post(url, headers=headers, data=json.dumps(payload))
+                    
+                    if response.status_code == 200:
+                        result = response.json()
+                        try:
+                            # Try to get text from the first candidate
+                            text_response = result['candidates'][0]['content']['parts'][0]['text']
+                            
+                            # Check for grounding metadata (citations) to confirm search usage
+                            grounding_metadata = result['candidates'][0].get('groundingMetadata', {})
+                            if grounding_metadata:
+                                # Append a small indicator if external search was used
+                                text_response += "\n\n(ℹ️ Información complementada con búsqueda externa)"
+                            
+                            return text_response
+                        except (KeyError, IndexError):
+                             # Fallback if structure is unexpected
+                             return "Error interpretando respuesta de la IA."
+                    else:
+                        print(f"⚠️ API Error: {response.text}")
+                        # Fallback to pure SDK generation (no tools) if REST fails
+                        return self.gen_model.generate_content(final_prompt).text
+                        
+                except Exception as e:
+                    print(f"⚠️ Exception in REST call: {e}")
+                    return f"Error procesando la solicitud: {str(e)}"
+
+            return "Error de configuración: API Cloud no disponible."
         except Exception as e:
             return f"Error generando respuesta: {str(e)}"
 
