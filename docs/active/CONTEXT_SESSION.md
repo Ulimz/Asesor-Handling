@@ -1,27 +1,27 @@
 ## 📅 Fecha
 2025-12-13
+2025-12-14
 
 ## ✅ Qué se hizo hoy
-1.  **Calculadora de Nómina (Azul Handling)**:
-    *   **Corrección de Datos**: Detectada falta de conceptos "Jornada Fraccionada".
-    *   **Implementación**: Añadidos 3 tipos placeholder ("Corta", "Media", "Larga") en `azul.json`.
-    *   **Sincronización**: Script `run_seed_cloud_concepts.py` ejecutado para actualizar la BD de Producción.
-2.  **Reparación Entorno Local y Nube**:
-    *   **Backend Local**: Solucionado crash por falta de dependencias (`fastapi`, `uvicorn`, `argon2-cffi`, `pgvector`).
-    *   **Configuración**: Corregido `.env` local que tenía caracteres corruptos en `DATABASE_URL`.
-    *   **Backend Producción**: Actualizado `requirements.txt` con `argon2-cffi` para evitar boot loop.
-    *   **Chat IA**: Depurado error "Lo siento...". Causa confirmada: Falta de `GOOGLE_API_KEY` en Railway (usuario notificado).
+1.  **Optimización Móvil (Completa)**:
+    *   **Fase 1 (Visibilidad)**: Implementado tema Claro/Oscuro y Alto Contraste para exteriores.
+    *   **Fase 2 (UX Táctil)**: Navegación nativa, logo simplificado, menús táctiles y fixes de teclado virtual.
+    *   **Fase 3 (PWA)**: Conversión total a App Instalable (Manifest, Iconos Apple/Android, Guía de Instalación).
+    *   **Fase 4 (Rendimiento)**: Compresión de Logo (1.2MB -> 0.2MB) y Lazy Loading de herramientas pesadas.
+2.  **Limpieza de Proyecto**:
+    *   Eliminada carpeta `auditoria_resultados/` y limpiado `.gitignore`.
+    *   Generado `walkthrough.md` con el resumen visual.
 
 ## 📝 Estado Actual
-*   **Calculadora**: FUNCIONAL en Producción (datos parcheados, pendientes de validar precios reales).
-*   **Chat IA**: FUNCIONAL (si se configura la API KEY).
-*   **Despliegue**: Estable en rama `main`.
+*   **App Móvil**: LISTA para despliegue y uso en rampa. Se siente como una app nativa.
+*   **Rendimiento**: Muy optimizado. Carga inicial rápida.
+*   **Código**: Más modular gracias al Code Splitting.
 
 ## ⚠️ Advertencias para Mañana
-*   **Precios Reales**: Los pluses de "Fraccionada" tienen nombres genéricos. El usuario debe facilitar los precios exactos para editarlos en `azul.json`.
-*   **Variables Nube**: Verificar que `GOOGLE_API_KEY` persiste en Railway tras el redeploy.
+*   **Caché PWA**: Es posible que algunos usuarios antiguos sigan viendo el logo pesado hasta que el Service Worker se actualice (automático, pero puede tardar 24h).
+*   **Pruebas Reales**: Falta feedback de usuarios reales en iOS/Android a pie de pista.
 
 ## 📋 Lista de Tareas (Próximos Pasos)
-- [ ] **Validación Usuario**: Confirmar que los cálculos de nómina coinciden con la realidad.
-- [ ] **Refinamiento**: Sustituir placeholders de Fraccionada por nombres/precios reales.
-- [ ] **Móvil**: Verificar experiencia de usuario en móvil (punto pendiente anterior).
+- [ ] **Despliegue**: Subir cambios a Producción (Railway).
+- [ ] **Feedback de Campo**: Recopilar opiniones de usuarios sobre la nueva interfaz móvil.
+- [ ] **Validación Nómina**: Retomar la validación de cálculos pendientes (del día anterior).

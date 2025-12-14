@@ -30,22 +30,25 @@
     "type": "variable_monthly"
   },
   {
-    "name": "Plus de Jornada Fraccionada (Tipo 1 / Corta)",
+    "name": "Plus de Jornada Fraccionada (Tipo 1 / Corta (1-4h))",
     "variable_code": "PLUS_FRACC_1",
-    "description": "Plus por jornada fraccionada (Tipo 1).",
-    "type": "variable_monthly"
+    "description": "Plus por jornada fraccionada de 1 a 4 horas.",
+    "type": "variable_monthly",
+    "default_price": 11.34
   },
   {
-    "name": "Plus de Jornada Fraccionada (Tipo 2 / Media)",
+    "name": "Plus de Jornada Fraccionada (Tipo 2 / Media (>4-7h))",
     "variable_code": "PLUS_FRACC_2",
-    "description": "Plus por jornada fraccionada (Tipo 2).",
-    "type": "variable_monthly"
+    "description": "Plus por jornada fraccionada de más de 4 horas y hasta 7 horas.",
+    "type": "variable_monthly",
+    "default_price": 14.74
   },
   {
-    "name": "Plus de Jornada Fraccionada (Tipo 3 / Larga)",
+    "name": "Plus de Jornada Fraccionada (Tipo 3 / Larga (>7-8h))",
     "variable_code": "PLUS_FRACC_3",
-    "description": "Plus por jornada fraccionada (Tipo 3).",
-    "type": "variable_monthly"
+    "description": "Plus por jornada fraccionada de más de 7 horas y hasta 8 horas.",
+    "type": "variable_monthly",
+    "default_price": 17.02
   },
   {
     "name": "Plus de Madrugue",
@@ -69,49 +72,57 @@
     "name": "Plus de Jornada Irregular (Fiji)",
     "variable_code": "PLUS_FIJI",
     "description": "Cantidad fija mensual para el personal fijo a tiempo completo que realiza su prestación en régimen de jornada irregular. Incompatible con Plus de Turnicidad y Plus FTP.",
-    "type": "fixed_recurring"
+    "type": "fixed_recurring",
+    "default_price": 142.12
   },
   {
     "name": "Plus Turnicidad (2 Turnos)",
     "variable_code": "PLUS_TURNOS_2",
     "description": "Cantidad fija mensual por realizar dos turnos distintos programados y efectivamente realizados en el mes. Incompatible con Plus de Jornada Irregular y Plus FTP.",
-    "type": "fixed_recurring"
+    "type": "fixed_recurring",
+    "default_price": 81.99
   },
   {
     "name": "Plus Turnicidad (3 Turnos)",
     "variable_code": "PLUS_TURNOS_3",
     "description": "Cantidad fija mensual por realizar tres turnos distintos programados y efectivamente realizados en el mes. Incompatible con Plus de Jornada Irregular y Plus FTP.",
-    "type": "fixed_recurring"
+    "type": "fixed_recurring",
+    "default_price": 109.32
   },
   {
     "name": "Plus Turnicidad (4 Turnos)",
     "variable_code": "PLUS_TURNOS_4",
     "description": "Cantidad fija mensual por realizar cuatro turnos distintos programados y efectivamente realizados en el mes. Incompatible con Plus de Jornada Irregular y Plus FTP.",
-    "type": "fixed_recurring"
+    "type": "fixed_recurring",
+    "default_price": 125.72
   },
   {
     "name": "Plus Turnicidad (5 o más Turnos)",
     "variable_code": "PLUS_TURNOS_5",
     "description": "Cantidad fija mensual por realizar cinco o más turnos distintos programados y efectivamente realizados en el mes. Incompatible con Plus de Jornada Irregular y Plus FTP.",
-    "type": "fixed_recurring"
+    "type": "fixed_recurring",
+    "default_price": 142.12
   },
   {
     "name": "Plus de Supervisión",
     "variable_code": "PLUS_SUPERV",
     "description": "Cantidad abonada a agentes administrativos o de servicios auxiliares designados para realizar tareas de supervisión.",
-    "type": "variable_monthly"
+    "type": "variable_monthly",
+    "default_price": 76.53
   },
   {
     "name": "Plus Agente Jefe/JS",
     "variable_code": "PLUS_JEFE_SERV",
     "description": "Cantidad abonada a agentes administrativos o de servicios auxiliares designados para realizar tareas de jefatura de servicio/Agente jefe.",
-    "type": "variable_monthly"
+    "type": "variable_monthly",
+    "default_price": 131.90
   },
   {
     "name": "Plus FTP",
     "variable_code": "PLUS_FTP",
     "description": "Complemento fijo para el personal fijo a tiempo parcial, que compensa la realización de su jornada en las condiciones reguladas en el artículo 18.5. Incompatible con el plus de jornada irregular y/o plus de variación de turnos/flexibilidad/disponibilidad.",
-    "type": "fixed_recurring"
+    "type": "fixed_recurring",
+    "default_price": 98.39
   },
   {
     "name": "Plus de Productividad",
@@ -135,6 +146,7 @@
     "name": "Plus Diferente Puesto",
     "variable_code": "PLUS_DIF_PUESTO",
     "description": "Plus abonado por la realización de funciones correspondientes a un puesto de trabajo diferente al habitual.",
-    "type": "variable_monthly"
+    "type": "variable_monthly",
+    "default_price": 0.80
   }
 ]
