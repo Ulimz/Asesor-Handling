@@ -64,7 +64,7 @@ export default function DashboardPage() {
     const selectedCompanyName = companies.find(c => c.id === selectedCompanyId)?.name;
 
     return (
-        <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans selection:bg-cyan-500/30 transition-colors duration-300">
+        <div className="h-[100dvh] w-full bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans selection:bg-cyan-500/30 transition-colors duration-300 overflow-hidden flex flex-col">
             {/* Background Effects */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-cyan-500/10 rounded-full blur-[100px] animate-pulse-slow"></div>
