@@ -43,7 +43,7 @@ yarn-error.log*
 next-env.d.ts
 
 # Auditoria & Debug
-auditoria_resultados/
+
 debug_*.txt
 verify_*.txt
 debug_*.py

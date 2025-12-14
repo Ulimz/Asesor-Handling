@@ -3,11 +3,26 @@
 import { useState, useEffect } from 'react';
 import { apiService } from '@/lib/api-service';
 import CompanyDropdown from '@/components/CompanyDropdown';
+import dynamic from 'next/dynamic';
 
 import ChatInterface from "@/components/ChatInterface";
-import SalaryCalculator from '@/features/calculadoras/components/SalaryCalculator';
-import AlertsPanel from '@/components/alerts/AlertsPanel';
-import ClaimGenerator from '@/components/claims/ClaimGenerator';
+// Static imports removed to optimize initial bundle size
+// import SalaryCalculator from '@/features/calculadoras/components/SalaryCalculator';
+// import AlertsPanel from '@/components/alerts/AlertsPanel';
+// import ClaimGenerator from '@/components/claims/ClaimGenerator';
+
+const SalaryCalculator = dynamic(() => import('@/features/calculadoras/components/SalaryCalculator'), {
+    loading: () => <div className="h-full flex items-center justify-center"><Loader2 className="w-8 h-8 text-cyan-500 animate-spin" /></div>
+});
+
+const ClaimGenerator = dynamic(() => import('@/components/claims/ClaimGenerator'), {
+    loading: () => <div className="h-full flex items-center justify-center"><Loader2 className="w-8 h-8 text-cyan-500 animate-spin" /></div>
+});
+
+const AlertsPanel = dynamic(() => import('@/components/alerts/AlertsPanel'), {
+    loading: () => <div className="h-full flex items-center justify-center"><Loader2 className="w-8 h-8 text-cyan-500 animate-spin" /></div>
+});
+
 import { CompanyId, companies } from '@/data/knowledge-base';
 import { type KnowledgeItem } from '@/data/knowledge-base';
 import { motion, AnimatePresence } from 'framer-motion';
