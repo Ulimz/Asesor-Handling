@@ -82,28 +82,28 @@ export default function DashboardPage() {
                     <nav className="flex-1 px-4 py-6 space-y-2">
                         <button
                             onClick={() => setActiveTab('chat')}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'chat' ? 'bg-white/10 text-white shadow-lg shadow-black/20' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'chat' ? 'bg-[var(--panel-bg)] text-[var(--text-primary)] shadow-lg shadow-black/5 border border-[var(--panel-border)]' : 'text-[var(--text-secondary)] hover:bg-[var(--panel-bg)]/50 hover:text-[var(--text-primary)]'}`}
                         >
                             <MessageSquare size={20} />
                             <span className="hidden lg:block">Chat Asistente</span>
                         </button>
                         <button
                             onClick={() => setActiveTab('calculator')}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'calculator' ? 'bg-gradient-to-r from-emerald-500/20 to-green-500/10 border border-emerald-500/20 text-emerald-400 shadow-lg shadow-emerald-500/10' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'calculator' ? 'bg-gradient-to-r from-emerald-500/20 to-green-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400 shadow-lg shadow-emerald-500/10' : 'text-[var(--text-secondary)] hover:bg-[var(--panel-bg)]/50 hover:text-[var(--text-primary)]'}`}
                         >
                             <Calculator size={20} />
                             <span className="hidden lg:block">Calculadora</span>
                         </button>
                         <button
                             onClick={() => setActiveTab('claims')}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'claims' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 shadow-lg shadow-indigo-500/10' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'claims' ? 'bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 border border-indigo-500/20 shadow-lg shadow-indigo-500/10' : 'text-[var(--text-secondary)] hover:bg-[var(--panel-bg)]/50 hover:text-[var(--text-primary)]'}`}
                         >
                             <PenTool size={20} />
                             <span className="hidden lg:block">Reclamaciones</span>
                         </button>
                         <button
                             onClick={() => setActiveTab('alerts')}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'alerts' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-lg shadow-amber-500/10' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'alerts' ? 'bg-amber-500/10 text-amber-500 dark:text-amber-400 border border-amber-500/20 shadow-lg shadow-amber-500/10' : 'text-[var(--text-secondary)] hover:bg-[var(--panel-bg)]/50 hover:text-[var(--text-primary)]'}`}
                         >
                             <Bell size={20} />
                             <span className="hidden lg:block">Novedades</span>
