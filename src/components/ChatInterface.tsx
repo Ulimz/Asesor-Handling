@@ -182,9 +182,9 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
             </aside>
 
             {/* MAIN CONTENT */}
-            <main className="flex-1 flex flex-col h-full relative bg-slate-900 min-w-0">
+            <main className="flex-1 flex flex-col h-full relative bg-[var(--bg-primary)] min-w-0 transition-colors duration-300">
                 {/* MOBILE HEADER */}
-                <header className="md:hidden flex items-center justify-between p-4 border-b border-slate-800 bg-slate-950 z-20">
+                <header className="md:hidden flex items-center justify-between p-4 border-b border-[var(--panel-border)] bg-[var(--bg-primary)] z-20 transition-colors duration-300">
 
                     {/* Mobile Selector Removed */}
                 </header>
@@ -193,24 +193,24 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
                 <div className="flex-1 relative flex flex-col overflow-hidden">
 
                     {!selectedCompanyId && messages.length === 0 ? (
-                        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400 z-10">
-                            <div className="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center mb-6 border border-slate-700 shadow-xl">
+                        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-[var(--text-secondary)] z-10">
+                            <div className="w-20 h-20 bg-[var(--panel-bg)] rounded-full flex items-center justify-center mb-6 border border-[var(--panel-border)] shadow-xl">
                                 <Sparkles size={32} className="text-sky-400" />
                             </div>
-                            <h3 className="text-2xl font-bold text-white mb-2">Asistente Jurídico Expert</h3>
-                            <p className="max-w-xs mx-auto text-slate-400 text-sm leading-relaxed mb-8">
+                            <h3 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Asistente Jurídico Expert</h3>
+                            <p className="max-w-xs mx-auto text-[var(--text-secondary)] text-sm leading-relaxed mb-8">
                                 Selecciona tu empresa y pregunta sobre convenios, turnos o nóminas.
                             </p>
                         </div>
                     ) : messages.length === 0 ? (
-                        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400 z-10">
-                            <div className="w-16 h-16 bg-slate-800/50 rounded-2xl flex items-center justify-center mb-6 border border-slate-700 text-sky-500">
+                        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-[var(--text-secondary)] z-10">
+                            <div className="w-16 h-16 bg-[var(--panel-bg)] rounded-2xl flex items-center justify-center mb-6 border border-[var(--panel-border)] text-sky-500">
                                 <MessageSquare size={32} />
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-2">
+                            <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">
                                 ¿En qué puedo ayudarte hoy{user?.preferred_name ? `, ${user.preferred_name}` : ''}?
                             </h3>
-                            <p className="max-w-md mx-auto text-slate-400 text-sm mb-8">
+                            <p className="max-w-md mx-auto text-[var(--text-secondary)] text-sm mb-8">
                                 He cargado el convenio de <span className="text-sky-400 font-semibold uppercase">{selectedCompanyId}</span>.
                                 Pregúntame sobre cualquier duda legal o laboral.
                             </p>
@@ -226,7 +226,7 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
                                     <button
                                         key={i}
                                         onClick={() => { setInput(text); }}
-                                        className="p-3 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 hover:border-sky-500/50 rounded-xl text-sm text-slate-300 hover:text-white transition-all text-left flex items-center justify-between group"
+                                        className="p-3 bg-[var(--card-bg)] hover:bg-[var(--panel-bg)] border border-[var(--panel-border)] hover:border-sky-500/50 rounded-xl text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all text-left flex items-center justify-between group"
                                     >
                                         {text}
                                         <Send size={14} className="opacity-0 group-hover:opacity-100 text-sky-400 transition-opacity" />
@@ -261,7 +261,7 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
                     )}
 
                     {/* Input Area */}
-                    <div className="p-4 pb-36 md:p-6 z-20 bg-[var(--bg-primary)]/90 backdrop-blur-md border-t border-[var(--panel-border)] transition-colors duration-300">
+                    <div className="p-4 pb-28 md:p-6 z-20 bg-[var(--bg-primary)]/90 backdrop-blur-md border-t border-[var(--panel-border)] transition-colors duration-300">
                         <div className="max-w-3xl mx-auto">
                             <form onSubmit={handleSubmit} className="relative flex items-center bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-2 focus-within:ring-1 focus-within:ring-sky-500/50 transition-all shadow-lg">
                                 <input

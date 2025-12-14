@@ -32,7 +32,7 @@ export default function MobileNav({ activeTab, setActiveTab }: MobileNavProps) {
                             onClick={() => setActiveTab(tab.id)}
                             className={`relative flex flex-col items-center justify-center w-16 h-14 rounded-xl transition-all duration-300 ${isActive
                                 ? 'text-[var(--text-primary)]'
-                                : 'text-slate-500 hover:text-slate-400'
+                                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                                 }`}
                         >
                             {isActive && (
