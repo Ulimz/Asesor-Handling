@@ -16,20 +16,29 @@ export default function LandingPage() {
       {/* NAVBAR */}
       <nav className="fixed top-0 inset-x-0 z-50 h-20 flex items-center bg-[var(--bg-primary)]/80 backdrop-blur-xl border-b border-[var(--panel-border)] transition-colors duration-300">
         <div className="max-w-7xl mx-auto w-full px-6 flex items-center justify-between">
-          <BrandLogo iconSize={64} textSize="xl" />
+          <div className="flex items-center gap-2">
+            {/* Mobile Logo */}
+            <div className="md:hidden">
+              <BrandLogo iconSize={40} textSize="sm" />
+            </div>
+            {/* Desktop Logo */}
+            <div className="hidden md:block">
+              <BrandLogo iconSize={64} textSize="xl" />
+            </div>
+          </div>
 
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-[var(--text-secondary)]">
             {/* Links removed as per user request */}
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 md:gap-4">
             <div className="md:hidden">
               <ThemeToggle />
             </div>
-            <Link href="/login" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
+            <Link href="/login" className="hidden md:block text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
               Login
             </Link>
-            <Link href="/login" className="px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-sm font-bold rounded-full hover:shadow-lg hover:shadow-cyan-500/25 transition-all flex items-center gap-2">
+            <Link href="/login" className="px-4 py-2 md:px-5 md:py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-xs md:text-sm font-bold rounded-full hover:shadow-lg hover:shadow-cyan-500/25 transition-all flex items-center gap-2">
               Empezar Gratis
             </Link>
           </div>
@@ -53,7 +62,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-6xl md:text-8xl font-black tracking-tight text-[var(--text-primary)] mb-8 leading-[1.1]"
+            className="text-4xl sm:text-6xl md:text-8xl font-black tracking-tight text-[var(--text-primary)] mb-8 leading-[1.1]"
           >
             Tu Convenio, <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 drop-shadow-[0_0_30px_rgba(0,229,255,0.3)]">
