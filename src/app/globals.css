@@ -7,27 +7,98 @@
   --color-brand-purple: #d500f9;
 }
 
+/* 
+  VARIABLE DEFINITIONS
+  Default is DARK (Midnight) for continuity.
+  .light class overrides for OUTDOOR VISIBILITY.
+*/
+:root {
+  /* DARK MODE (Default) */
+  --bg-primary: #020617;
+  /* slate-950 */
+  --text-primary: #f1f5f9;
+  /* slate-100 */
+  --text-secondary: #94a3b8;
+  /* slate-400 */
+
+  --panel-bg: rgba(255, 255, 255, 0.05);
+  /* glass */
+  --panel-border: rgba(255, 255, 255, 0.1);
+
+  --card-bg: rgba(15, 23, 42, 0.4);
+  /* slate-900/40 */
+  --card-border: rgba(255, 255, 255, 0.05);
+
+  --scrollbar-thumb: #334155;
+  --scrollbar-track: transparent;
+}
+
+.light {
+  /* LIGHT MODE (High Contrast / Outdoor) */
+  --bg-primary: #ffffff;
+  /* White Pure */
+  --text-primary: #020617;
+  /* Slate 950 (Black-ish) */
+  --text-secondary: #475569;
+  /* Slate 600 */
+
+  --panel-bg: #f8fafc;
+  /* Slate 50 */
+  --panel-border: #cbd5e1;
+  /* Slate 300 (Visible border) */
+
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  /* Slate 200 */
+
+  --scrollbar-thumb: #94a3b8;
+  --scrollbar-track: #f1f5f9;
+}
+
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100 antialiased selection:bg-cyan-500/30 selection:text-cyan-200;
+    /* Apply variables */
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    @apply antialiased selection:bg-cyan-500/30 selection:text-cyan-900 transition-colors duration-300;
   }
 }
 
 @layer utilities {
   .glass-panel {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    @apply backdrop-blur-xl shadow-xl transition-colors duration-300;
   }
 
   .glass-card {
-    @apply bg-slate-900/40 backdrop-blur-lg border border-white/5 hover:border-white/10 transition-all duration-300;
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    @apply backdrop-blur-lg hover:border-brand-cyan/20 transition-all duration-300;
   }
 
-  .text-glow {
+  /* Only show glows in dark mode for readability */
+  :not(.light) .text-glow {
     text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
   }
 
-  .text-glow-purple {
+  :not(.light) .text-glow-purple {
     text-shadow: 0 0 10px rgba(213, 0, 249, 0.5);
+  }
+
+  /* In light mode, just use bold colors */
+  .light .text-glow {
+    color: #0891b2;
+    /* Cyan 600 darker for contrast */
+    text-shadow: none;
+    font-weight: 600;
+  }
+
+  .light .text-glow-purple {
+    color: #9333ea;
+    /* Purple 600 */
+    text-shadow: none;
+    font-weight: 600;
   }
 }
 
@@ -38,11 +109,11 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: var(--scrollbar-thumb);
   border-radius: 10px;
 }
 
@@ -52,13 +123,10 @@
 
 /* Print Styles */
 @media print {
-
-  /* Hide everything by default */
   body * {
     visibility: hidden;
   }
 
-  /* Reset html/body to avoid extra pages */
   html,
   body {
     height: auto !important;
@@ -69,13 +137,11 @@
     color: black !important;
   }
 
-  /* Show only the Results Panel and its children */
   #results-panel,
   #results-panel * {
     visibility: visible;
   }
 
-  /* Position the Results Panel at the top-left */
   #results-panel {
     position: absolute;
     left: 0;
@@ -83,23 +149,18 @@
     width: 100% !important;
     margin: 0 !important;
     padding: 20px !important;
-    /* Slight padding for paper aesthetic */
     border: none !important;
     background: white !important;
     text-shadow: none !important;
-    /* Remove neon glows */
     box-shadow: none !important;
     overflow: visible !important;
     max-height: none !important;
-    /* Ensure no internal scroll triggers paging */
   }
 
-  /* Hide specific elements within the panel if needed */
   .no-print {
     display: none !important;
   }
 
-  /* Black text for better contrast on paper */
   p,
   span,
   div,
@@ -107,13 +168,8 @@
   h2,
   h3,
   h4,
-  strong {
-    color: black !important;
-  }
-
-  /* Force emerald amounts to be dark/black for printing */
+  strong,
   .text-emerald-400 {
-    color: #000 !important;
-    font-weight: bold;
+    color: black !important;
   }
 }

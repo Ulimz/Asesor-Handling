@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import NeonLogo from '@/components/NeonLogo';
 import Image from 'next/image';
 import BrandLogo from '@/components/BrandLogo';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function DashboardPage() {
     const router = useRouter();
@@ -157,6 +158,7 @@ export default function DashboardPage() {
 
                         {/* RIGHT: User Profile & Company */}
                         <div className="flex items-center gap-4">
+                            <ThemeToggle />
                             <CompanyDropdown
                                 onSelect={handleCompanySelect}
                                 selectedCompanyId={selectedCompanyId}

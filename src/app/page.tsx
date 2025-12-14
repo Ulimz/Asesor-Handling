@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import NeonLogo from '@/components/NeonLogo';
 import BrandLogo from '@/components/BrandLogo';
+import ThemeToggle from '@/components/ThemeToggle';
 import { motion } from 'framer-motion';
 import { ArrowRight, MessageSquare, ShieldCheck, Scale, History, UserCheck, CheckCircle2, Zap, Globe, Lock } from 'lucide-react';
 import { companies } from '@/data/knowledge-base';
@@ -22,6 +23,7 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             <Link href="/login" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
               Login
             </Link>
