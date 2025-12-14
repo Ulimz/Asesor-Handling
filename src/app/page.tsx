@@ -10,7 +10,6 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, MessageSquare, ShieldCheck, Scale, History, UserCheck, CheckCircle2, Zap, Globe, Lock, Menu, X } from 'lucide-react';
 import { companies } from '@/data/knowledge-base';
-import { useState } from 'react';
 
 export default function LandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

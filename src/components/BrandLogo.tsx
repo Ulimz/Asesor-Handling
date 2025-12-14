@@ -3,12 +3,13 @@ import Image from 'next/image';
 interface BrandLogoProps {
     className?: string;
     iconSize?: number;
-    textSize?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+    textSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 }
 
 export default function BrandLogo({ className = '', iconSize = 64, textSize = 'xl' }: BrandLogoProps) {
     // Map textSize to font size classes and tracking
     const textClasses = {
+        'xs': 'text-[10px] tracking-[0.1em]',
         'sm': 'text-sm tracking-[0.15em]',
         'md': 'text-base tracking-[0.15em]',
         'lg': 'text-lg tracking-[0.2em]',
