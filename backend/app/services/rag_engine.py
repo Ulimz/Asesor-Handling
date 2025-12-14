@@ -23,7 +23,8 @@ class RagEngine:
         self.gen_model = None
         if api_key:
             genai.configure(api_key=api_key)
-            self.gen_model = genai.GenerativeModel('gemini-2.0-flash')
+            # Downgrade to 1.5-flash for stable Grounding support with string syntax
+            self.gen_model = genai.GenerativeModel('gemini-1.5-flash', tools='google_search_retrieval')
     
     @property
     def model(self):
@@ -353,16 +354,10 @@ RESPUESTA (Si es un dato de tabla, dalo directmente sin fórmulas):"""
                 print("🌍 No local context found. Delegating to Google Search.")
                 context_text = "No se encontró información específica en los documentos internos. Usa tu herramienta de búsqueda para responder basándote en normativa general (Estatuto Trabajadores, BOE, Seguridad Social)."
             else:
-                # Si hay contexto, le decimos que priorice el contexto pero puede complementar
                 pass
 
-            # Define tools dynamically (using the standard dict format for the SDK)
-            search_tool = {'google_search': {}}
-            
-            response = self.gen_model.generate_content(
-                final_prompt,
-                tools=[search_tool]
-            )
+            # Tools already configured in init for 1.5-flash
+            response = self.gen_model.generate_content(final_prompt)
             # Verificar si usó Grounding (esto añade fuentes al final)
             return response.text
         except Exception as e:
