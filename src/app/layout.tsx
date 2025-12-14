@@ -9,6 +9,10 @@ export const metadata: Metadata = {
   title: "Asistente Handling",
   description: "Resuelve tus dudas sobre el convenio y estatuto.",
   manifest: '/manifest.json',
+  icons: {
+    icon: '/icon-dark.png',
+    apple: '/icon-dark.png',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
