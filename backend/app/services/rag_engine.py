@@ -5,6 +5,8 @@ from app.db.models import DocumentChunk, LegalDocument
 import numpy as np
 import google.generativeai as genai
 import os
+import requests
+import json
 from app.constants import (
     EMBEDDING_MODEL_NAME,
     EMBEDDING_DIMENSION,
@@ -23,8 +25,8 @@ class RagEngine:
         self.gen_model = None
         if api_key:
             genai.configure(api_key=api_key)
-            # Downgrade to 1.5-flash (specific version) for stable Grounding support
-            self.gen_model = genai.GenerativeModel('gemini-1.5-flash-001', tools='google_search_retrieval')
+            # Use 2.0-flash and direct REST call for grounding to bypass SDK tool validation issues
+            self.gen_model = genai.GenerativeModel('gemini-2.0-flash')
     
     @property
     def model(self):
@@ -351,12 +353,36 @@ RESPUESTA (Si es un dato de tabla, dalo directmente sin fórmulas):"""
             
             enable_search = True
             if not context_chunks or len(context_chunks) == 0:
-                print("🌍 No local context found. Delegating to Google Search.")
+                print("🌍 No local context found. Delegating to Google Search (Direct REST).")
                 context_text = "No se encontró información específica en los documentos internos. Usa tu herramienta de búsqueda para responder basándote en normativa general (Estatuto Trabajadores, BOE, Seguridad Social)."
-            else:
-                pass
+                
+                # Use Direct REST call to bypass SDK "Unknown field" error
+                api_key = os.getenv("GOOGLE_API_KEY")
+                if api_key:
+                    try:
+                        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
+                        payload = {
+                            "contents": [{
+                                "parts": [{"text": final_prompt}]
+                            }],
+                            "tools": [{"google_search": {}}]
+                        }
+                        headers = {'Content-Type': 'application/json'}
+                        response = requests.post(url, headers=headers, data=json.dumps(payload))
+                        
+                        if response.status_code == 200:
+                            result = response.json()
+                            # Extract text from response
+                            try:
+                                return result['candidates'][0]['content']['parts'][0]['text']
+                            except (KeyError, IndexError):
+                                return "Error interpretando respuesta de Google Search."
+                        else:
+                            return f"Error en búsqueda externa: {response.text}"
+                    except Exception as e:
+                        return f"Excepción en búsqueda externa: {str(e)}"
 
-            # Tools already configured in init for 1.5-flash
+            # Standard SDK generation (no tools) if we have context or fallback failed (though fallback returns above)
             response = self.gen_model.generate_content(final_prompt)
             # Verificar si usó Grounding (esto añade fuentes al final)
             return response.text
