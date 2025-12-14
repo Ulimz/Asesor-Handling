@@ -352,10 +352,6 @@ RESPUESTA (Si es un dato de tabla, dalo directmente sin fórmulas):"""
             # Siempre pasamos el contexto local, pero habilitamos la herramienta de búsqueda
             # para que el modelo decida si necesita complementar la información.
             
-            context_text = ""
-            if context_chunks:
-                context_text = "\n\n".join([c.text for c in context_chunks])
-            
             # Prompt más flexible que permite usar búsqueda externa
             final_prompt = f"""
             Eres un asistente experto en normativa laboral de handling.
