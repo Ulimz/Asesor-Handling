@@ -11,12 +11,13 @@ import ClaimGenerator from '@/components/claims/ClaimGenerator';
 import { CompanyId, companies } from '@/data/knowledge-base';
 import { type KnowledgeItem } from '@/data/knowledge-base';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Calculator, Settings, LogOut, User, Bell, PenTool, Loader2, Plane, Menu, X } from 'lucide-react';
+import { MessageSquare, Calculator, Settings, LogOut, User, Bell, PenTool, Loader2, Plane, Menu, X, Download } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import NeonLogo from '@/components/NeonLogo';
 import Image from 'next/image';
 import BrandLogo from '@/components/BrandLogo';
 import ThemeToggle from '@/components/ThemeToggle';
+import PwaInstallGuide from '@/components/pwa/PwaInstallGuide';
 
 export default function DashboardPage() {
     const router = useRouter();
@@ -25,6 +26,7 @@ export default function DashboardPage() {
     const [isAuthorized, setIsAuthorized] = useState(false);
 
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [showInstallGuide, setShowInstallGuide] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('auth_token');
@@ -207,8 +209,17 @@ export default function DashboardPage() {
                                             <span className="text-sm font-medium text-[var(--text-secondary)]">Modo Oscuro</span>
                                             <ThemeToggle />
                                         </div>
+                                        <button
+                                            onClick={() => {
+                                                setShowInstallGuide(true);
+                                                setIsMobileMenuOpen(false);
+                                            }}
+                                            className="text-[var(--text-primary)] text-sm font-medium flex items-center gap-2 bg-[var(--panel-bg)]/50 px-3 py-1.5 rounded-lg border border-[var(--panel-border)]"
+                                        >
+                                            <Download size={16} className="text-cyan-400" /> Instalar App
+                                        </button>
                                         <button onClick={handleLogout} className="text-red-400 text-sm font-medium flex items-center gap-2">
-                                            <LogOut size={16} /> Cerrar Sesión
+                                            <LogOut size={16} /> Salir
                                         </button>
                                     </div>
                                 </div>
@@ -274,6 +285,8 @@ export default function DashboardPage() {
                     </div>
                 </main>
             </div >
+
+            <PwaInstallGuide isOpen={showInstallGuide} onClose={() => setShowInstallGuide(false)} />
 
             {/* MobileNav Removed */}
         </div >
