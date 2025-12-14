@@ -25,7 +25,7 @@ export default function LandingPage() {
           <div className="md:hidden flex items-center justify-between w-full relative h-full gap-2">
             {/* Left: Logo */}
             <div className="shrink-0">
-              <BrandLogo iconSize={28} textSize="xs" />
+              <BrandLogo iconSize={38} textSize="sm" />
             </div>
 
             {/* Center: CTA (Flexible width if needed, or just centered) */}
