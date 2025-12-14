@@ -80,7 +80,7 @@ export default function DashboardPage() {
                 <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 rounded-full blur-[100px] animate-pulse-slow delay-1000"></div>
             </div>
 
-            <div className="relative z-10 flex h-screen overflow-hidden">
+            <div className="relative z-10 flex h-full overflow-hidden">
 
                 {/* SIDEBAR (Desktop) */}
                 <aside className="hidden md:flex flex-col w-20 lg:w-64 glass-panel border-r border-[var(--panel-border)] transition-colors duration-300">
@@ -142,7 +142,7 @@ export default function DashboardPage() {
                                     {activeTab === 'calculator' && 'Herramientas de Nómina'}
                                     {activeTab === 'alerts' && 'Centro de Novedades'}
                                     {activeTab === 'claims' && 'Generador de Escritos'}
-                                </h1>
+                                    1</h1>
                             </div>
                         </div>
 
@@ -217,7 +217,7 @@ export default function DashboardPage() {
                     </AnimatePresence>
 
                     {/* Content Area */}
-                    <div className="flex-1 overflow-hidden relative p-4 md:p-6 min-w-0">
+                    <div className="flex-1 overflow-hidden relative p-0 md:p-6 min-w-0">
                         <AnimatePresence mode="wait">
                             {activeTab === 'chat' && (
                                 <motion.div
