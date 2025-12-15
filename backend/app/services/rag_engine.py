@@ -300,14 +300,33 @@ Pregunta reescrita:"""
 
         return rewritten
 
+        return rewritten
+
     def generate_answer(self, query: str, context_chunks: list, intent: IntentType = IntentType.GENERAL, user_context: dict = None):
         """
         Generate answer using Gemini based on provided context and intent
         """
         if not self.gen_model:
             return "Error: GOOGLE_API_KEY no configurada en el servidor."
+
+        # --- KINSHIP TABLE INJECTION ---
+        # If query contains family keywords, inject the official table
+        from app.data.kinship import KINSHIP_KEYWORDS, get_kinship_table_markdown
+        
+        normalized_q = query.lower()
+        is_family_related = any(k in normalized_q for k in KINSHIP_KEYWORDS)
+        
+        kinship_context = ""
+        if is_family_related:
+            kinship_context = get_kinship_table_markdown()
+            print("👨‍👩‍👧‍👦 Family intent detected: Injecting Kinship Table into context")
             
         context_text = "\n\n---\n\n".join([f"**{c.get('article_ref', 'Documento')}**\n{c['content']}" for c in context_chunks])
+        
+        # Prepend Kinship Table if relevant
+        if kinship_context:
+            context_text = f"{kinship_context}\n\n{context_text}"
+
         
         # Truncate if context is too long (Gemini has token limits)
         if len(context_text) > MAX_CONTEXT_CHARS:

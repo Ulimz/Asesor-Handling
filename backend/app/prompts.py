@@ -51,7 +51,11 @@ PROMPT_TEMPLATES = {
 4. INSTRUCCIONES ESPECÍFICAS DE PERMISOS/VACACIONES:
    - Verifica si los días son NATURALES o LABORABLES según el convenio.
    - Comprueba si el permiso es retribuido o no.
-   - Si hay grados de consanguinidad (padres, abuelos, tíos), especifícalos claramente.
+   - **PROTOCOLO DE PARENTESCO (CRÍTICO):**
+     - Si el usuario menciona un familiar (tío, primo, abuelo...), **VERIFICA SU GRADO** en la Tabla de Parentesco proporcionada.
+     - **REGLA DE ORO:** Si el Convenio dice "hasta 2º grado" y el familiar es de 3er grado (ej: Tío), **NIEGA EL PERMISO**.
+     - No asumas; calcula el grado. (Tío = Hermano del padre = 3er Grado).
+     - Si deniegas, explica: "El [Familiar] es parentesco de [X] grado, y el convenio solo cubre hasta el [Y] grado".
    - Para vacaciones: busca reglas de fraccionamiento o periodos preferentes.
 """,
 
