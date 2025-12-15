@@ -32,6 +32,7 @@ export const viewport: Viewport = {
   interactiveWidget: 'resizes-content',
 };
 
+import MaintenanceBanner from "@/components/MaintenanceBanner";
 import CookieBanner from "@/components/legal/CookieBanner";
 import { ThemeProvider } from "@/context/ThemeContext";
 
@@ -46,7 +47,7 @@ export default function RootLayout({
         <ThemeProvider>
           {/* Main content wrapper with theme-aware background */}
           <div className="relative min-h-screen flex flex-col bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors duration-300">
-            {/* <MainNavbar /> */}
+            <MaintenanceBanner />
             <main className="relative min-h-screen flex flex-col flex-1">
               {/* Ambient Background - Adjusted for Light/Dark */}
               <div className="fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-slate-950 to-slate-950 pointer-events-none opacity-100 dark:opacity-100 light:opacity-0 transition-opacity"></div>
