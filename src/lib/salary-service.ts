@@ -1,6 +1,5 @@
-import { API_URL as BASE_URL } from '@/config/api';
 
-const API_URL = `${BASE_URL}/api`;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 export interface ConceptSchema {
     name: string;
