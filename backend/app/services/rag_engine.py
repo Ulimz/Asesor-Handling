@@ -371,43 +371,34 @@ RESPUESTA (Si es un dato de tabla, dalo directmente sin fórmulas):"""
             # Siempre pasamos el contexto local, pero habilitamos la herramienta de búsqueda
             # para que el modelo decida si necesita complementar la información.
             
-            # Prompt más flexible que permite usar búsqueda externa
+            # Prompt más flexible que permite usar búsqueda externa, PERO respetando las instrucciones del System Prompt
             final_prompt = f"""
-            Eres un asistente experto en normativa laboral de handling.
+            {system_prompt}
+
+            {user_info}
             
-            INFORMACIÓN INTERNA (Prioritaria):
+            INFORMACIÓN INTERNA (Prioritaria - Incluye TABLA DE PARENTESCO si aplica):
             {context_text}
             
             PREGUNTA DEL USUARIO:
             {query}
             
-            INSTRUCCIONES:
+            INSTRUCCIONES ADICIONALES DE BÚSQUEDA Y JERARQUÍA:
             1. REGLA DE ORO: El usuario quiere la RESPUESTA, no explicaciones.
-            2. **PRINCIPIO DE JERARQUÍA NORMATIVA (CRÍTICO):**
-               Para resolver conflictos entre normas, aplica este orden estricto de prevalencia:
-               1º. Derecho de la UE y Tratados Internacionales.
-               2º. Constitución Española y Leyes Orgánicas (ej. Ley de Familias, Estatuto de los Trabajadores actualizado).
-               3º. Normas con rango de Ley (Reales Decretos).
-               4º. Convenios Colectivos (Tu información interna principal).
-               5º. Contrato de trabajo.
-               
-               --> SI UNA LEY NUEVA (Nivel 2 o 3) choca con el CONVENIO (Nivel 4), **PREVALECE LA LEY**.
-               --> Usa Google Search para confirmar si una Ley superior ha modificado lo que dice el Convenio.
-
-
-            3. **ANÁLISIS ESTRATÉGICO (SI APLICA):**
-               Si el usuario plantea un conflicto, despido, sanción o reclama un derecho:
-               - No te limites a citar la norma. Actúa como un abogado estratega.
-               - Identifica **FORTALEZAS**: Qué hechos o artículos apoyan su postura.
-               - Identifica **DEBILIDADES**: Plazos caducados, falta de preaviso, excepciones del convenio.
-               - Conclusión: Ofrece una valoración de viabilidad (si es prudente).
-
-            4. Si la información interna NO es suficiente o está desactualizada por una norma superior:
-               - IGNORA la información interna obsoleta.
-               - USA TU CAPACIDAD DE BÚSQUEDA para encontrar el dato vigente norma superior.
-               - RESPONDE DIRECTAMENTE con el dato encontrado.
-               - NO digas "voy a buscar". SIMPLEMENTE RESPONDE.
-            5. Se conciso y profesional.
+            2. **PRINCIPIO DE JERARQUÍA NORMATIVA:**
+               - 1º Derecho UE/Tratados.
+               - 2º Constitución/Leyes Orgánicas.
+               - 3º Leyes/Reales Decretos.
+               - 4º Convenios Colectivos.
+               - 5º Contrato.
+               --> SI UNA LEY MODIFICA AL CONVENIO, PREVALECE LA LEY. Usa Google Search para confirmar vigencia.
+               --> **EXCEPCIÓN CRÍTICA:** Para GRADOS DE PARENTESCO, la **TABLA PROPORCIONADA** en el contexto es la VERDAD ABSOLUTA. **NO BUSQUES EN GOOGLE** grados de parentesco si ya los tienes en la tabla.
+            
+            3. Si la información interna NO es suficiente o está desactualizada:
+               - USA TU CAPACIDAD DE BÚSQUEDA.
+               - RESPONDE DIRECTAMENTE.
+            
+            4. Se conciso y profesional.
             """
 
             # Use Direct REST call for ALL generations to ensure Tool availability
