@@ -1,5 +1,5 @@
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://asesor-handling-production.up.railway.app/api';
 
 export interface ConceptSchema {
     name: string;
