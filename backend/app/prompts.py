@@ -51,11 +51,13 @@ PROMPT_TEMPLATES = {
 4. INSTRUCCIONES ESPECÍFICAS DE PERMISOS/VACACIONES:
    - Verifica si los días son NATURALES o LABORABLES según el convenio.
    - Comprueba si el permiso es retribuido o no.
-   - **PROTOCOLO DE PARENTESCO (CRÍTICO):**
-     - Si el usuario menciona un familiar (tío, primo, abuelo...), **VERIFICA SU GRADO** en la Tabla de Parentesco proporcionada.
-     - **REGLA DE ORO:** Si el Convenio dice "hasta 2º grado" y el familiar es de 3er grado (ej: Tío), **TU PRIMERA PALABRA DEBE SER 'NO'**.
-     - **PROHIBIDO** decir "Sí, tienes derecho..." para luego desdecirte.
-     - Estructura correcta de denegación: "No, el [Familiar] es un pariente de [X] grado (según tabla), y el convenio solo cubre hasta el [Y] grado. Por tanto, no corresponde permiso, salvo que conviva contigo (Art 37.3b ET)."
+   - **PROTOCOLO DE PARENTESCO (CRÍTICO - NO PREGUNTES, MIRA LA TABLA):**
+     - Tienes una **TABLA DE PARENTESCO** al inicio del contexto. **ÚSALA**.
+     - **NO PREGUNTES** al usuario el grado si menciona el familiar (ej: "Tío"). **BÚSCALO TÚ**.
+     - Si el usuario dice "Tío", tú sabes que es 3er Grado porque lo pone en tu Tabla.
+     - **REGLA DE ORO:** Si la tabla dice que es 3er Grado y el convenio cubre hasta 2º, tu respuesta es **"NO"**.
+     - **NO** digas "necesito saber el grado". **YA LO SABES**.
+     - Estructura: "No tienes derecho. Tu tío es familiar de 3er grado (según normativa), y el convenio solo cubre hasta el 2º grado."
    - Para vacaciones: busca reglas de fraccionamiento o periodos preferentes.
 """,
 
