@@ -8,9 +8,10 @@ import { SalaryService } from '@/lib/salary-service';
 interface CascadingSelectorProps {
     onSelectionChange: (selection: { company: string; group: string; level: string }) => void;
     initialSelection?: { company: string; group: string; level: string };
+    className?: string;
 }
 
-export default function CascadingSelector({ onSelectionChange, initialSelection }: CascadingSelectorProps) {
+export default function CascadingSelector({ onSelectionChange, initialSelection, className }: CascadingSelectorProps) {
     const [companies, setCompanies] = useState<string[]>([]);
     const [groups, setGroups] = useState<string[]>([]);
     const [levels, setLevels] = useState<string[]>([]);
@@ -142,7 +143,7 @@ export default function CascadingSelector({ onSelectionChange, initialSelection 
     );
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className={className || "grid grid-cols-1 md:grid-cols-3 gap-4"}>
             {renderSelect(
                 "Company",
                 <Building2 size={18} />,
