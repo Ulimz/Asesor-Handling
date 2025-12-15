@@ -15,7 +15,7 @@ export default function OnboardingPage() {
         preferred_name: '',
         company_slug: '',
         job_group: '',
-        salary_level: 1,
+        salary_level: '',
         contract_type: 'Fijo',
         seniority_date: new Date().toISOString().split('T')[0]
     });
@@ -156,10 +156,11 @@ export default function OnboardingPage() {
                                 <div>
                                     <label className="block text-sm font-medium mb-2 text-slate-300">Nivel Salarial</label>
                                     <input
-                                        type="number" min="1" max="25"
+                                        type="text"
                                         value={formData.salary_level}
-                                        onChange={(e) => setFormData({ ...formData, salary_level: parseInt(e.target.value) })}
+                                        onChange={(e) => setFormData({ ...formData, salary_level: e.target.value })}
                                         className="w-full bg-slate-950 border border-white/10 rounded-lg p-3 focus:border-cyan-500 outline-none"
+                                        placeholder="Ej. Nivel 5"
                                     />
                                 </div>
                                 <div className="md:col-span-2">
