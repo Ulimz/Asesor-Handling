@@ -67,7 +67,9 @@ class CalculatorService:
         # 2. Base Salary Calculation
         # Annual base from table / Payments (14)
         annual_table_salary = active_prices.get("BASE_ANNUAL", 18450.87)
-        full_base_monthly = annual_table_salary / request.payments if request.payments > 0 else annual_table_salary / 14.0
+        
+        # LOGIC CHANGE: Base monthly is ALWAYS Annual / 14 (standard monthly payment)
+        full_base_monthly = annual_table_salary / 14.0
         
         # Apply Contract Percentage (Pro-rata)
         prorata_factor = request.contract_percentage / 100.0
@@ -81,6 +83,21 @@ class CalculatorService:
         # 3. Concepts List Population
         concepts = []
         concepts.append(SalaryConcept(name="Salario Base (Parte Proporcional)", amount=base_salary, type="devengo"))
+        
+        # --- PRORATA LOGIC SEPARATION ---
+        # If user selected 12 payments, we add specific concept "Prorrata Pagas Extra"
+        # Prorata Amount = (Annual / 14) * 2 / 12  -> (Standard Month * 2 Extras) / 12 Months
+        if request.payments == 12:
+            prorata_extras_total = (annual_table_salary * 2 / 14.0) * prorata_factor # Total extra pay for the year adjusted by contract %
+            prorata_monthly_concept = prorata_extras_total / 12.0
+            
+            concepts.append(SalaryConcept(name="Prorrata Pagas Extra", amount=prorata_monthly_concept, type="devengo"))
+            
+            # Update base for total calculation (Base + Prorata)
+            # CAREFUL: "base_salary" variable keeps tracking just the base. We add to gross later.
+            base_salary_for_gross = base_salary + prorata_monthly_concept
+        else:
+            base_salary_for_gross = base_salary
         
         total_variable = 0
         
@@ -117,7 +134,7 @@ class CalculatorService:
         # Not computing legacy night hours if not in dynamic vars, assuming DB definitions handle it.
 
         # Totales
-        gross_monthly = base_salary + total_variable
+        gross_monthly = base_salary_for_gross + total_variable
         
         # Deductions
         # 1. Seguridad Social (Detailed)
