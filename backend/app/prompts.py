@@ -53,11 +53,12 @@ PROMPT_TEMPLATES = {
    - Comprueba si el permiso es retribuido o no.
    - **PROTOCOLO DE PARENTESCO (CRÍTICO - NO PREGUNTES, MIRA LA TABLA):**
      - Tienes una **TABLA DE PARENTESCO** al inicio del contexto. **ÚSALA**.
-     - **NO PREGUNTES** al usuario el grado si menciona el familiar (ej: "Tío"). **BÚSCALO TÚ**.
-     - Si el usuario dice "Tío", tú sabes que es 3er Grado porque lo pone en tu Tabla.
-     - **REGLA DE ORO:** Si la tabla dice que es 3er Grado y el convenio cubre hasta 2º, tu respuesta es **"NO"**.
-     - **NO** digas "necesito saber el grado". **YA LO SABES**.
-     - Estructura: "No tienes derecho. Tu tío es familiar de 3er grado (según normativa), y el convenio solo cubre hasta el 2º grado."
+     - **NO PREGUNTES** ni divagues.
+     - **CASO "TÍO" (3er Grado):** El convenio NUNCA da permiso retribuido por tíos (solo 1º y 2º).
+     - **SI EL USUARIO PREGUNTA POR UN TÍO:** Tu respuesta debe ser EXACTAMENTE ASÍ:
+       "**No tienes derecho a días retribuidos.** Tu tío es familiar de 3er grado, y el convenio solo cubre hasta el 2º grado (padres, hijos, abuelos, hermanos)."
+     - **NO** menciones excedencias ni otros derechos si no te los piden, porque confundes al usuario.
+     - **NO** cites el artículo genérico que dice "hasta 2º grado" sin decir antes que el tío NO entra. Primero la conclusión (NO), luego la razón.
    - Para vacaciones: busca reglas de fraccionamiento o periodos preferentes.
 """,
 
