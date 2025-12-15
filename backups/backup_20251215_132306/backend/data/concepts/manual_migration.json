@@ -1,0 +1,26 @@
+[
+    {
+        "company_slug": "iberia",
+        "name": "Plus turno fijo de noche",
+        "variable_code": "PLUS_NOCHE_FIJO",
+        "description": "Plus por adscripción anual al turno fijo de noche (TMA/AMA)",
+        "type": "variable_monthly",
+        "default_price": 0.0
+    },
+    {
+        "company_slug": "azul",
+        "name": "Plus RCO",
+        "variable_code": "PLUS_RCO",
+        "description": "Plus fijo mensual RCO (300€)",
+        "type": "number",
+        "default_price": 300.0
+    },
+    {
+        "company_slug": "azul",
+        "name": "Plus ARCO",
+        "variable_code": "PLUS_ARCO",
+        "description": "Plus fijo mensual ARCO (175€)",
+        "type": "number",
+        "default_price": 175.0
+    }
+]

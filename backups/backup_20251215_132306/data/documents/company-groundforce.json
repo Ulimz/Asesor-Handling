@@ -1,0 +1,26 @@
+[
+    {
+        "id": "gf-art-jornada",
+        "title": "Jornada Laboral (Groundforce - V Convenio)",
+        "content": "La jornada laboral anual de referencia se establece en 1720 horas de trabajo efectivo. Dicha jornada podrá distribuirse irregularmente a lo largo del año para atender las necesidades operativas estacionales del tráfico aéreo.",
+        "tags": [
+            "jornada",
+            "horas",
+            "horario",
+            "turno"
+        ]
+    },
+    {
+        "id": "gf-art-fijos-discontinuos",
+        "title": "Garantía de Ocupación Fijos Discontinuos",
+        "content": "Los trabajadores fijos discontinuos tendrán una garantía de ocupación mínima de 3 meses consecutivos dentro de cada periodo de referencia de 12 meses. La retribución y jornada mínima garantizada se calculará proporcionalmente (33% de la jornada a tiempo completo) durante dicho periodo.",
+        "tags": [
+            "fijo discontinuo",
+            "garantía",
+            "meses",
+            "contrato",
+            "trabajo mínimo",
+            "llamamiento"
+        ]
+    }
+]
