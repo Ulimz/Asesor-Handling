@@ -48,7 +48,7 @@ export default function RegisterPage() {
                     company_slug: companySlug,
                     preferred_name: preferredName || fullName.split(' ')[0], // Default 1st name
                     job_group: jobGroup,
-                    salary_level: salaryLevel ? parseInt(salaryLevel) : null,
+                    salary_level: salaryLevel || null,
                     contract_type: contractType,
                     is_active: true
                 }),
@@ -215,12 +215,11 @@ export default function RegisterPage() {
                                 {/* Salary Level */}
                                 <div className="relative group">
                                     <input
-                                        type="number"
-                                        min="0" max="25"
+                                        type="text"
                                         value={salaryLevel}
                                         onChange={(e) => setSalaryLevel(e.target.value)}
                                         className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3.5 px-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all font-medium text-sm"
-                                        placeholder="Nivel Salarial (Nº)"
+                                        placeholder="Nivel Salarial (Ej. 1A)"
                                     />
                                 </div>
                             </div>
