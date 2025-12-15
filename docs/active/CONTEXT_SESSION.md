@@ -1,27 +1,18 @@
 ## 📅 Fecha
-2025-12-13
-2025-12-14
+2025-12-15 (Sesión 2 - Debugging Tarde)
 
-## ✅ Qué se hizo hoy
-1.  **Optimización Móvil (Completa)**:
-    *   **Fase 1 (Visibilidad)**: Implementado tema Claro/Oscuro y Alto Contraste para exteriores.
-    *   **Fase 2 (UX Táctil)**: Navegación nativa, logo simplificado, menús táctiles y fixes de teclado virtual.
-    *   **Fase 3 (PWA)**: Conversión total a App Instalable (Manifest, Iconos Apple/Android, Guía de Instalación).
-    *   **Fase 4 (Rendimiento)**: Compresión de Logo (1.2MB -> 0.2MB) y Lazy Loading de herramientas pesadas.
-2.  **Limpieza de Proyecto**:
-    *   Eliminada carpeta `auditoria_resultados/` y limpiado `.gitignore`.
-    *   Generado `walkthrough.md` con el resumen visual.
+## ✅ Qué se hizo hoy (continuación)
+1.  **Debugging Selectores Vacíos**:
+    *   Se identificó que el backend apuntaba al frontend (self-reference) causando 404 en `/api`.
+    *   Se corrigió `src/lib/salary-service.ts` para usar la URL correcta del backend (`intelligent-vitality...`).
+    *   Se verificó que la BBDD en producción tenía los datos correctos (4034 registros).
 
-## 📝 Estado Actual
-*   **App Móvil**: LISTA para despliegue y uso en rampa. Se siente como una app nativa.
-*   **Rendimiento**: Muy optimizado. Carga inicial rápida.
-*   **Código**: Más modular gracias al Code Splitting.
+## ⚠️ Estado Crítico
+*   A pesar de los fixes, el sistema presentó inestabilidad ("muchos fallos") según reporte del usuario.
+*   **ACCIÓN TOMADA**: 
+    *   Guardado el progreso de debugging en rama `wip-monday-fixes`.
+    *   **RESTAURADO BACKUP DE SEGURIDAD** (`backup_20251215_132306`) a la rama `main` para asegurar estabilidad operativa hasta la próxima sesión.
 
-## ⚠️ Advertencias para Mañana
-*   **Caché PWA**: Es posible que algunos usuarios antiguos sigan viendo el logo pesado hasta que el Service Worker se actualice (automático, pero puede tardar 24h).
-*   **Pruebas Reales**: Falta feedback de usuarios reales en iOS/Android a pie de pista.
-
-## 📋 Lista de Tareas (Próximos Pasos)
-- [ ] **Despliegue**: Subir cambios a Producción (Railway).
-- [ ] **Feedback de Campo**: Recopilar opiniones de usuarios sobre la nueva interfaz móvil.
-- [ ] **Validación Nómina**: Retomar la validación de cálculos pendientes (del día anterior).
+## � Lista de Tareas (Próximos Pasos)
+- [ ] Retomar desde `wip-monday-fixes` y verificar si el cambio de URL soluciona definitivamente el problema sin efectos secundarios.
+- [ ] Validar integridad de los datos en DB tras el restore.
