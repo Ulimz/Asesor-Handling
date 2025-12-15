@@ -18,6 +18,9 @@ export const metadata: Metadata = {
     statusBarStyle: 'black-translucent',
     title: 'Asistente',
   },
+  verification: {
+    google: 'KwLpXvOMw7FoITQi8HUaHAlKZt0JHJVCABoGfPcDuUI',
+  },
 };
 
 export const viewport: Viewport = {
