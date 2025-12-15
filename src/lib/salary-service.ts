@@ -1,5 +1,6 @@
+import { API_URL as BASE_URL } from '@/config/api';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://asesor-handling-production.up.railway.app/api';
+const API_URL = `${BASE_URL}/api`;
 
 export interface ConceptSchema {
     name: string;
