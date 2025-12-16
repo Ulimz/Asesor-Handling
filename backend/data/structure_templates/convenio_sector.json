@@ -79,7 +79,7 @@
             {
                 "id": "PLUS_JORNADA_IRREGULAR",
                 "name": "Plus Jornada Irregular",
-                "base_value_2022": 128.13,
+                "base_value_2022": 142.12,
                 "is_monthly": true,
                 "is_proportional": false,
                 "description": "Art 28.10. Fijo mensual si aplica jornada irregular."
@@ -92,17 +92,17 @@
                 "is_proportional": false,
                 "has_tiers": true,
                 "tiers": {
-                    "2_TURNOS": 73.92,
-                    "3_TURNOS": 98.56,
-                    "4_TURNOS": 113.35,
-                    "5_PLUS_TURNOS": 128.13
+                    "2_TURNOS": 81.99,
+                    "3_TURNOS": 109.32,
+                    "4_TURNOS": 125.72,
+                    "5_PLUS_TURNOS": 142.12
                 },
                 "description": "Art 28.11. Valor depende de número de turnos."
             },
             {
                 "id": "PLUS_SUPERVISION",
                 "name": "Plus Supervisión",
-                "base_value_2022": 69.00,
+                "base_value_2022": 76.53,
                 "is_monthly": true,
                 "is_proportional": true,
                 "description": "Art 28.12. Proporcional a jornada."
@@ -110,7 +110,7 @@
             {
                 "id": "PLUS_JEFATURA",
                 "name": "Plus Jefatura",
-                "base_value_2022": 118.28,
+                "base_value_2022": 131.90,
                 "is_monthly": true,
                 "is_proportional": true,
                 "description": "Art 28.12. Proporcional a jornada."
@@ -118,7 +118,7 @@
             {
                 "id": "PLUS_FTP",
                 "name": "Fijo Tiempo Parcial (FTP)",
-                "base_value_2022": 88.71,
+                "base_value_2022": 98.39,
                 "is_monthly": true,
                 "is_proportional": false,
                 "description": "Art 30.6. Fijo para FTP según turnos."
@@ -128,7 +128,7 @@
             {
                 "id": "PLUS_NOCTURNIDAD",
                 "name": "Plus Nocturnidad",
-                "base_value_2022": 1.45,
+                "base_value_2022": 1.61,
                 "unit": "hora",
                 "is_proportional": false,
                 "description": "Art 28.1. Hora trabajada 22:00-06:00."
@@ -154,42 +154,42 @@
             {
                 "id": "HORA_FESTIVA",
                 "name": "Hora Festiva",
-                "base_value_2022": 2.57,
+                "base_value_2022": 2.85,
                 "unit": "hora",
                 "description": "Art 28.4"
             },
             {
                 "id": "HORA_DOMINGO",
                 "name": "Hora Domingo",
-                "base_value_2022": 2.52,
+                "base_value_2022": 2.80,
                 "unit": "hora",
                 "description": "Art 28.5"
             },
             {
                 "id": "PLUS_JORNADA_FRACCIONADA",
                 "name": "Plus Jornada Fraccionada",
-                "base_value_2022": 10.22,
+                "base_value_2022": 11.34,
                 "unit": "dia",
                 "description": "Art 28.6"
             },
             {
                 "id": "PLUS_MADRUGUE",
                 "name": "Plus Madrugue",
-                "base_value_2022": 5.80,
+                "base_value_2022": 6.43,
                 "unit": "dia",
                 "description": "Art 28.7"
             },
             {
                 "id": "PLUS_TRANSPORTE",
                 "name": "Plus Transporte",
-                "base_value_2022": 2.55,
+                "base_value_2022": 2.83,
                 "unit": "dia",
                 "description": "Art 28.8"
             },
             {
                 "id": "AYUDA_MANUTENCION",
                 "name": "Ayuda Manutención",
-                "base_value_2022": 5.80,
+                "base_value_2022": 6.43,
                 "unit": "dia",
                 "description": "Art 28.9"
             }

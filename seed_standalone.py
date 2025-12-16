@@ -78,6 +78,91 @@ def seed_from_template(template_path, companies_to_seed):
             else:
                 logger.warning(f"general.xml not found at {xml_path}!")
 
+            # --- MANUAL OVERRIDE: 2025 DATA INJECTION ---
+            # User provided updated tables for 2025 (Base Annual, Extra Hour, Perentory Hour)
+            # We inject them as if they were extracted from XML
+            
+            manual_2025 = [
+                # --- BASE SALARY (Annual) ---
+                # Administrativos
+                {"group": "Administrativos", "level": "Nivel 1", "concept": "SALARIO_BASE", "amount": 18632.39, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 2", "concept": "SALARIO_BASE", "amount": 22065.51, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 3", "concept": "SALARIO_BASE", "amount": 22728.97, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 4", "concept": "SALARIO_BASE", "amount": 23183.55, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 5", "concept": "SALARIO_BASE", "amount": 23638.13, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 6", "concept": "SALARIO_BASE", "amount": 24583.65, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 7", "concept": "SALARIO_BASE", "amount": 25567.00, "year": 2025},
+                # Servicios Auxiliares
+                {"group": "Servicios Auxiliares", "level": "Nivel 1", "concept": "SALARIO_BASE", "amount": 18450.87, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 2", "concept": "SALARIO_BASE", "amount": 21850.75, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 3", "concept": "SALARIO_BASE", "amount": 22507.75, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 4", "concept": "SALARIO_BASE", "amount": 22957.90, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 5", "concept": "SALARIO_BASE", "amount": 23408.06, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 6", "concept": "SALARIO_BASE", "amount": 24344.38, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 7", "concept": "SALARIO_BASE", "amount": 25318.15, "year": 2025},
+                # Técnicos Gestores
+                {"group": "Técnicos Gestores", "level": "Nivel 1", "concept": "SALARIO_BASE", "amount": 28460.70, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 2", "concept": "SALARIO_BASE", "amount": 28516.35, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 3", "concept": "SALARIO_BASE", "amount": 29367.68, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 4", "concept": "SALARIO_BASE", "amount": 29955.04, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 5", "concept": "SALARIO_BASE", "amount": 30542.39, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 6", "concept": "SALARIO_BASE", "amount": 31764.09, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 7", "concept": "SALARIO_BASE", "amount": 33034.65, "year": 2025},
+
+                # --- HORA EXTRA (2025) ---
+                # Admin
+                {"group": "Administrativos", "level": "Nivel 1", "concept": "HORA_EXTRA", "amount": 16.33, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 2", "concept": "HORA_EXTRA", "amount": 19.33, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 3", "concept": "HORA_EXTRA", "amount": 19.91, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 4", "concept": "HORA_EXTRA", "amount": 20.31, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 5", "concept": "HORA_EXTRA", "amount": 20.71, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 6", "concept": "HORA_EXTRA", "amount": 21.54, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 7", "concept": "HORA_EXTRA", "amount": 22.40, "year": 2025},
+                # Aux
+                {"group": "Servicios Auxiliares", "level": "Nivel 1", "concept": "HORA_EXTRA", "amount": 16.17, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 2", "concept": "HORA_EXTRA", "amount": 19.14, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 3", "concept": "HORA_EXTRA", "amount": 19.72, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 4", "concept": "HORA_EXTRA", "amount": 20.11, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 5", "concept": "HORA_EXTRA", "amount": 20.51, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 6", "concept": "HORA_EXTRA", "amount": 21.33, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 7", "concept": "HORA_EXTRA", "amount": 22.18, "year": 2025},
+                # TG
+                {"group": "Técnicos Gestores", "level": "Nivel 1", "concept": "HORA_EXTRA", "amount": 24.94, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 2", "concept": "HORA_EXTRA", "amount": 24.99, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 3", "concept": "HORA_EXTRA", "amount": 25.73, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 4", "concept": "HORA_EXTRA", "amount": 26.25, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 5", "concept": "HORA_EXTRA", "amount": 26.76, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 6", "concept": "HORA_EXTRA", "amount": 27.83, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 7", "concept": "HORA_EXTRA", "amount": 28.94, "year": 2025},
+
+                # --- HORA PERENTORIA (2025) ---
+                # Admin
+                {"group": "Administrativos", "level": "Nivel 1", "concept": "HORA_PERENTORIA", "amount": 19.05, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 2", "concept": "HORA_PERENTORIA", "amount": 22.56, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 3", "concept": "HORA_PERENTORIA", "amount": 23.23, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 4", "concept": "HORA_PERENTORIA", "amount": 23.70, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 5", "concept": "HORA_PERENTORIA", "amount": 24.16, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 6", "concept": "HORA_PERENTORIA", "amount": 25.13, "year": 2025},
+                {"group": "Administrativos", "level": "Nivel 7", "concept": "HORA_PERENTORIA", "amount": 26.13, "year": 2025},
+                # Aux
+                {"group": "Servicios Auxiliares", "level": "Nivel 1", "concept": "HORA_PERENTORIA", "amount": 18.86, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 2", "concept": "HORA_PERENTORIA", "amount": 22.34, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 3", "concept": "HORA_PERENTORIA", "amount": 23.01, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 4", "concept": "HORA_PERENTORIA", "amount": 23.47, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 5", "concept": "HORA_PERENTORIA", "amount": 23.93, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 6", "concept": "HORA_PERENTORIA", "amount": 24.88, "year": 2025},
+                {"group": "Servicios Auxiliares", "level": "Nivel 7", "concept": "HORA_PERENTORIA", "amount": 25.88, "year": 2025},
+                # TG
+                {"group": "Técnicos Gestores", "level": "Nivel 1", "concept": "HORA_PERENTORIA", "amount": 29.09, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 2", "concept": "HORA_PERENTORIA", "amount": 29.15, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 3", "concept": "HORA_PERENTORIA", "amount": 30.02, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 4", "concept": "HORA_PERENTORIA", "amount": 30.62, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 5", "concept": "HORA_PERENTORIA", "amount": 31.22, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 6", "concept": "HORA_PERENTORIA", "amount": 32.47, "year": 2025},
+                {"group": "Técnicos Gestores", "level": "Nivel 7", "concept": "HORA_PERENTORIA", "amount": 33.77, "year": 2025},
+            ]
+            extracted_data.extend(manual_2025)
+
         def find_extracted_value(group_name, level_name, concept_key, year=2025):
             for r in extracted_data:
                 if r['year'] == year and r['concept'] == concept_key:

@@ -14,6 +14,7 @@
     *   Fixed `500 Internal Server Error` in `CalculatorService` (Data Structure Mismatch).
     *   Fixed `PLUS_FTP` proportionality (Changed input type to `select`).
     *   Added missing concepts: `PLUS_FRACCIONADA`, `PLUS_MADRUGUE`, `PLUS_TRANSPORTE`.
+    *   **CRITICAL DATA UPDATE**: Updated all Salary Concepts, Base Salaries, and Hour Rates to **2025 Values** (per User Tables).
     *   Fixed UI Duplicate inputs for Turnicity.
     *   Relaxed `UserSchema` validation for `salary_level`.
 *   **Solución**: Reestructuración completa de la clase `CalculatorService` y añadido mapeo explícito de empresas del sector.
