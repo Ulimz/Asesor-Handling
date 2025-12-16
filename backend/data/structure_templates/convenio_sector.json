@@ -1,0 +1,160 @@
+{
+    "meta": {
+        "company_id": "convenio-sector",
+        "name": "Convenio Sector General",
+        "description": "Estructura maestra basada en el V Convenio Colectivo General del Sector Handling",
+        "version": "1.0"
+    },
+    "groups": [
+        {
+            "name": "Administrativos",
+            "levels": [
+                "Nivel 1",
+                "Nivel 2",
+                "Nivel 3",
+                "Nivel 4",
+                "Nivel 5",
+                "Nivel 6",
+                "Nivel 7"
+            ],
+            "applicable_concepts": [
+                "PLUS_SUPERVISION",
+                "PLUS_JEFATURA",
+                "PLUS_TURNICIDAD",
+                "PLUS_NOCTURNIDAD",
+                "HORA_EXTRA"
+            ]
+        },
+        {
+            "name": "Servicios Auxiliares",
+            "levels": [
+                "Nivel 1",
+                "Nivel 2",
+                "Nivel 3",
+                "Nivel 4",
+                "Nivel 5",
+                "Nivel 6",
+                "Nivel 7"
+            ],
+            "applicable_concepts": [
+                "PLUS_SUPERVISION",
+                "PLUS_JEFATURA",
+                "PLUS_TURNICIDAD",
+                "PLUS_NOCTURNIDAD",
+                "HORA_EXTRA",
+                "PLUS_JORNADA_IRREGULAR",
+                "AYUDA_MANUTENCION"
+            ]
+        },
+        {
+            "name": "Técnicos Gestores",
+            "levels": [
+                "Nivel 1",
+                "Nivel 2",
+                "Nivel 3",
+                "Nivel 4",
+                "Nivel 5",
+                "Nivel 6",
+                "Nivel 7"
+            ],
+            "applicable_concepts": [
+                "PLUS_TURNICIDAD",
+                "PLUS_NOCTURNIDAD",
+                "HORA_EXTRA",
+                "AYUDA_MANUTENCION"
+            ]
+        }
+    ],
+    "concepts": {
+        "fixed": [
+            {
+                "id": "PLUS_JORNADA_IRREGULAR",
+                "name": "Plus Jornada Irregular",
+                "base_value_2022": 128.13,
+                "is_monthly": true,
+                "is_proportional": false,
+                "description": "Art 28.10. Fijo mensual si aplica jornada irregular."
+            },
+            {
+                "id": "PLUS_TURNICIDAD",
+                "name": "Plus Turnicidad",
+                "base_value_2022": 0.0,
+                "is_monthly": true,
+                "is_proportional": false,
+                "has_tiers": true,
+                "tiers": {
+                    "2_TURNOS": 73.92,
+                    "3_TURNOS": 98.56,
+                    "4_TURNOS": 113.35,
+                    "5_PLUS_TURNOS": 128.13
+                },
+                "description": "Art 28.11. Valor depende de número de turnos."
+            },
+            {
+                "id": "PLUS_SUPERVISION",
+                "name": "Plus Supervisión",
+                "base_value_2022": 69.00,
+                "is_monthly": true,
+                "is_proportional": true,
+                "description": "Art 28.12. Proporcional a jornada."
+            },
+            {
+                "id": "PLUS_JEFATURA",
+                "name": "Plus Jefatura",
+                "base_value_2022": 118.28,
+                "is_monthly": true,
+                "is_proportional": true,
+                "description": "Art 28.12. Proporcional a jornada."
+            }
+        ],
+        "variable": [
+            {
+                "id": "PLUS_NOCTURNIDAD",
+                "name": "Plus Nocturnidad",
+                "base_value_2022": 1.45,
+                "unit": "hora",
+                "is_proportional": false,
+                "description": "Art 28.1. Hora trabajada 22:00-06:00."
+            },
+            {
+                "id": "HORA_EXTRA",
+                "name": "Hora Extraordinaria",
+                "base_value_2022": null,
+                "unit": "hora",
+                "is_proportional": false,
+                "source": "xml_table",
+                "description": "Art 28.2. Valor depende de tabla anual."
+            },
+            {
+                "id": "HORA_PERENTORIA",
+                "name": "Hora Perentoria",
+                "base_value_2022": null,
+                "unit": "hora",
+                "is_proportional": false,
+                "source": "xml_table",
+                "description": "Art 28.3. Valor depende de tabla anual."
+            },
+            {
+                "id": "HORA_FESTIVA",
+                "name": "Hora Festiva",
+                "base_value_2022": 2.57,
+                "unit": "hora",
+                "description": "Art 28.4"
+            },
+            {
+                "id": "HORA_DOMINGO",
+                "name": "Hora Domingo",
+                "base_value_2022": 2.52,
+                "unit": "hora",
+                "description": "Art 28.5"
+            },
+            {
+                "id": "AYUDA_MANUTENCION",
+                "name": "Ayuda Manutención",
+                "base_value_2022": 5.80,
+                "unit": "dia",
+                "description": "Art 28.9"
+            }
+        ]
+    }
+}

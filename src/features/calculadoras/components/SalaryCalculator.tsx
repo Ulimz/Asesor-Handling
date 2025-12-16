@@ -307,13 +307,14 @@ export default function SalaryCalculator() {
                         <div className="flex items-center gap-2 text-emerald-400 text-sm font-semibold uppercase tracking-wider">
                             <Clock size={16} /> Variables Mensuales ({concepts.filter(c =>
                                 !c.code.startsWith('PLUS_TURNOS_') &&
+                                !c.code.startsWith('PLUS_TURNICIDAD_') &&
                                 !c.code.startsWith('PLUS_FRACC') &&
-                                !['PLUS_FIJI', 'PLUS_FTP', 'PLUS_SUPERV', 'PLUS_JEFE_SERV'].includes(c.code)
+                                !['PLUS_FIJI', 'PLUS_FTP', 'PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR'].includes(c.code)
                             ).length})
                         </div>
 
                         {/* 1. GRUPO EXCLUYENTE: Régimen de Turnos / Jornada */}
-                        {(concepts.some(c => c.code.startsWith('PLUS_TURNOS_')) || concepts.some(c => ['PLUS_FIJI', 'PLUS_FTP'].includes(c.code))) && (
+                        {(concepts.some(c => c.code.startsWith('PLUS_TURNOS_')) || concepts.some(c => c.code.startsWith('PLUS_TURNICIDAD_')) || concepts.some(c => ['PLUS_FIJI', 'PLUS_FTP', 'PLUS_JORNADA_IRREGULAR'].includes(c.code))) && (
                             <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5 space-y-2 mb-4">
                                 <label className="text-sm font-medium text-slate-300 block">Régimen de Turnos / Jornada (Mutuamente Excluyentes)</label>
                                 <select
@@ -323,28 +324,34 @@ export default function SalaryCalculator() {
                                         const newValues = { ...dynamicValues };
 
                                         // Reset ALL mutually exclusive items
-                                        concepts.filter(c => c.code.startsWith('PLUS_TURNOS_')).forEach(c => newValues[c.code] = 0);
+                                        concepts.filter(c => c.code.startsWith('PLUS_TURNOS_') || c.code.startsWith('PLUS_TURNICIDAD_')).forEach(c => newValues[c.code] = 0);
                                         if (concepts.find(c => c.code === 'PLUS_FIJI')) newValues['PLUS_FIJI'] = 0;
                                         if (concepts.find(c => c.code === 'PLUS_FTP')) newValues['PLUS_FTP'] = 0;
+                                        if (concepts.find(c => c.code === 'PLUS_JORNADA_IRREGULAR')) newValues['PLUS_JORNADA_IRREGULAR'] = 0;
 
                                         // Activate Selection
                                         if (selection === 'PLUS_FIJI') newValues['PLUS_FIJI'] = 1;
                                         else if (selection === 'PLUS_FTP') newValues['PLUS_FTP'] = 1;
-                                        else if (selection.startsWith('PLUS_TURNOS_')) newValues[selection] = 1;
+                                        else if (selection === 'PLUS_JORNADA_IRREGULAR') newValues['PLUS_JORNADA_IRREGULAR'] = 1;
+                                        else if (selection.startsWith('PLUS_TURNOS_') || selection.startsWith('PLUS_TURNICIDAD_')) newValues[selection] = 1;
 
                                         setDynamicValues(newValues);
                                     }}
                                     defaultValue=""
                                 >
                                     <option value="">-- Sin Plus de Régimen --</option>
-                                    {/* Turnicidad Options */}
-                                    {concepts.filter(c => c.code.startsWith('PLUS_TURNOS_')).sort((a, b) => a.code.localeCompare(b.code)).map(c => (
+                                    {/* Turnicidad Options (Legacy & Canonical) */}
+                                    {concepts.filter(c => c.code.startsWith('PLUS_TURNOS_') || c.code.startsWith('PLUS_TURNICIDAD_')).sort((a, b) => a.code.localeCompare(b.code)).map(c => (
                                         <option key={c.code} value={c.code}>
-                                            {c.name.replace('Plus Turnicidad', 'Turnicidad').trim()} ({c.default_price > 0 ? c.default_price.toFixed(2) + '€' : 'Variable'})
+                                            {c.name.replace('Plus Turnicidad', 'Turnicidad').replace('Turnicidad', 'Turnicidad').trim()} ({c.default_price > 0 ? c.default_price.toFixed(2) + '€' : 'Variable'})
                                         </option>
                                     ))}
                                     {/* Fiji / FTP Options */}
-                                    {concepts.find(c => c.code === 'PLUS_FIJI') && <option value="PLUS_FIJI">Jornada Irregular (Fiji)</option>}
+                                    {(concepts.find(c => c.code === 'PLUS_FIJI') || concepts.find(c => c.code === 'PLUS_JORNADA_IRREGULAR')) &&
+                                        <option value={concepts.find(c => c.code === 'PLUS_JORNADA_IRREGULAR') ? 'PLUS_JORNADA_IRREGULAR' : 'PLUS_FIJI'}>
+                                            Jornada Irregular / Fiji
+                                        </option>
+                                    }
                                     {concepts.find(c => c.code === 'PLUS_FTP') && <option value="PLUS_FTP">Fijo Tiempo Parcial (FTP)</option>}
                                 </select>
                                 <p className="text-xs text-slate-500">Selecciona tu régimen. Fiji, FTP y Turnicidad son incompatibles entre sí.</p>
@@ -352,11 +359,11 @@ export default function SalaryCalculator() {
                         )}
 
                         {/* 2. GRUPO FIJO: Pluses de Responsabilidad / Fijos */}
-                        {concepts.some(c => ['PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO'].includes(c.code)) && (
+                        {concepts.some(c => ['PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA'].includes(c.code)) && (
                             <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5 space-y-2 mb-4">
                                 <label className="text-sm font-medium text-slate-300 block">Pluses Fijos / Responsabilidad</label>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    {concepts.filter(c => ['PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO'].includes(c.code)).map(c => (
+                                    {concepts.filter(c => ['PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA'].includes(c.code)).map(c => (
                                         <label key={c.code} className="flex items-center gap-2 p-2 rounded-lg bg-slate-900/40 border border-white/5 cursor-pointer hover:bg-slate-900/60 transition-colors">
                                             <input
                                                 type="checkbox"
@@ -410,8 +417,9 @@ export default function SalaryCalculator() {
                             <div className="grid grid-cols-2 gap-4">
                                 {concepts.filter(c =>
                                     !c.code.startsWith('PLUS_TURNOS_') &&
+                                    !c.code.startsWith('PLUS_TURNICIDAD_') &&
                                     !c.code.startsWith('PLUS_FRACC') &&
-                                    !['PLUS_FIJI', 'PLUS_FTP', 'PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO'].includes(c.code)
+                                    !['PLUS_FIJI', 'PLUS_FTP', 'PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR'].includes(c.code)
                                 ).map((concept) => (
                                     <div key={concept.code} className="space-y-2">
                                         <label className="text-xs text-slate-300 flex items-center gap-2 truncate" title={concept.description}>

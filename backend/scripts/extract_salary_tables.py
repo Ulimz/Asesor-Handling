@@ -43,10 +43,14 @@ def clean_group_name(raw_name):
     # 3. Canonical Mappings for known abbreviations/variants
     text_lower = text.lower()
     
-    if "serv" in text_lower and "aux" in text_lower:
-        return "Servicios Auxiliares"
+    if ("téc" in text_lower or "tco" in text_lower) and "gestor" in text_lower:
+        return "Técnicos Gestores"
     if "admin" in text_lower:
         return "Administrativos"
+    if "serv" in text_lower and "aux" in text_lower:
+        return "Servicios Auxiliares"
+    if "agentes" in text_lower and "aux" in text_lower:
+         return "Servicios Auxiliares"
     if "gestores" in text_lower and "servicio" in text_lower:
         return "Gestores de Servicios"
     if "agentes" in text_lower and "jefes" in text_lower:
@@ -546,17 +550,56 @@ def extract_boe_salaries(xml_path, company_id):
     
     for i, table in enumerate(tables):
         # 1. Identify Context (Title/Preceding Text)
-        prev_p = table.find_previous(["p", "h1", "h2", "h3"])
-        title_text = prev_p.get_text(strip=True) if prev_p else ""
+        caption = table.find("caption")
+        if caption:
+            title_text = caption.get_text(strip=True)
+        else:
+            # Look backwards for a meaningful title
+            prev = table.find_previous(["p", "h1", "h2", "h3"])
+            title_text = ""
+            steps = 0
+            while prev and steps < 5:
+                # Basic heuristic: ignore empty or very short 'filler' texts
+                txt = prev.get_text(strip=True)
+                if len(txt) > 5 and "Euros" not in txt and "Tabla" not in txt:
+                    title_text = txt
+                    break
+                prev = prev.find_previous(["p", "h1", "h2", "h3"])
+                steps += 1
+            if not title_text and prev:
+                 title_text = prev.get_text(strip=True) # Fallback to immediate previous
         
         # Determine Year from title if possible
-        if "2023" in title_text: current_year = 2023
+        if "2021" in title_text: current_year = 2021
+        elif "2022" in title_text: current_year = 2022
+        elif "2023" in title_text: current_year = 2023
         elif "2024" in title_text: current_year = 2024
         elif "2025" in title_text: current_year = 2025
         
         # Determine Table Logic
         headers = [th.get_text(strip=True) for th in table.find_all("th")]
         header_text = " ".join(headers).lower()
+
+        # Swissport / Type 3 Detection: Check First Header Cell for Group Name
+        group_from_header = ""
+        if headers:
+            first_header = headers[0]
+            if "Administrativos" in first_header or "Auxiliares" in first_header or "Gestores" in first_header or "Jefes" in first_header:
+                group_from_header = first_header
+
+        # Also check previous paragraph for group name (Type 3 standard)
+        group_from_prev = ""
+        # We can use title_text which derives from caption or prev P
+        if "Administrativos" in title_text or "Auxiliares" in title_text or "Gestores" in title_text:
+            group_from_prev = title_text
+            
+        # Prioritize Header group (Swissport specific) then Prev P group
+        detected_group = group_from_header if group_from_header else group_from_prev
+        
+        # Clean group name immediately
+        if detected_group:
+            detected_group = clean_group_name(detected_group)
+
         
         # Skip non-salary tables (like Vacation Points in Menzies)
         if "enero" in header_text and "febrero" in header_text:
@@ -564,22 +607,26 @@ def extract_boe_salaries(xml_path, company_id):
         if "puntos" in header_text:
             continue
 
-        logger.info(f"Processing Table {i}: '{title_text}'")
+        logger.info(f"Processing Table {i}: '{title_text}' [Group: {detected_group}]")
 
         # --- Detection Strategy ---
         is_level_matrix = any(f"nivel {n}" in header_text for n in range(1, 4))
         is_concept_cols = "s. base" in header_text or "salario base" in header_text or "conceptos fijos" in header_text
 
         if is_level_matrix:
-            results.extend(_parse_level_matrix_table(table, company_id, current_year, title_text))
+            # Pass detected_group if available, otherwise it falls back to internal logic or "General"
+            # Note: _parse_level_matrix_table signature currently is (table, company_id, year, title_text)
+            # We might want to pass the detected group instead of title_text or separate argument.
+            # But for now, Level Matrix logic (Menzies/Aviapartner) handles it internally or via title text.
+             results.extend(_parse_level_matrix_table(table, company_id, current_year, title_text, detected_group))
         elif is_concept_cols:
-            results.extend(_parse_concept_columns_table(table, company_id, current_year))
+            results.extend(_parse_concept_columns_table(table, company_id, current_year, detected_group))
         else:
             logger.debug(f"Skipping undefined table structure: {title_text}")
             
     return results
 
-def _parse_level_matrix_table(table, company_id, year, title_text):
+def _parse_level_matrix_table(table, company_id, year, title_text, forced_group=None):
     """
     Parses tables where Columns = Levels (Nivel 1, Nivel 2...)
     and the Table Title defines the concept (e.g. "Precio Hora Perentoria").
@@ -623,6 +670,15 @@ def _parse_level_matrix_table(table, company_id, year, title_text):
     elif "HORA EXTRA" in title_upper: concept = "HORA_EXTRA"
     elif "NOCTURNA" in title_upper: concept = "HORA_NOCTURNA"
     elif "FESTIVA" in title_upper: concept = "HORA_FESTIVA"
+    elif "DOMINGO" in title_upper: concept = "HORA_DOMINGO"
+    elif "MANUTENCI" in title_upper: concept = "PLUS_MANUTENCION"
+    elif "TRANSPORTE" in title_upper: concept = "PLUS_TRANSPORTE"
+    elif "JORNADA" in title_upper and ("FRACCIONADA" in title_upper or "PARTIDA" in title_upper): concept = "PLUS_JORNADA_FRACCIONADA"
+    elif "MADRUGUE" in title_upper: concept = "PLUS_MADRUGUE"
+    elif "SALARIO BASE" in title_upper or "TABLAS SALARIALES" in title_upper or "TABLAS PMR" in title_upper or "AÑO 20" in title_upper:
+        # If the title is generic "Year 2021" or "Salary Tables", it's likely Base Salary
+        # BUT check if it's PMR tables which are essentially Base Salary tables.
+        concept = "SALARIO_BASE"
     
     # Parse Rows
     tbody = table.find("tbody")
@@ -742,7 +798,7 @@ def _parse_level_matrix_table(table, company_id, year, title_text):
                 })
     return results
 
-def _parse_concept_columns_table(table, company_id, year):
+def _parse_concept_columns_table(table, company_id, year, forced_group=None):
     """
     Parses tables where Columns = Concepts (S. Base, Plus X, Plus Y)
     Rows = Categories.
@@ -773,11 +829,18 @@ def _parse_concept_columns_table(table, company_id, year):
         elif "domingo" in text and "hora" in text: header_map[idx] = "HORA_DOMINGO"
         elif "jornada" in text and ("fraccionada" in text or "partida" in text): header_map[idx] = "PLUS_JORNADA_FRACCIONADA"
         elif "perentoria" in text and "hora" in text: header_map[idx] = "HORA_PERENTORIA"
+        elif "disposición" in text or "disposicion" in text: header_map[idx] = "PLUS_DISPOSICION"
+        elif "total" in text: header_map[idx] = "TOTAL_FIJO"
+        elif "antigüedad" in text or "antiguedad" in text: header_map[idx] = "PLUS_ANTIGUEDAD"
+        elif "residencia" in text: header_map[idx] = "PLUS_RESIDENCIA"
         
     tbody = table.find("tbody")
     if not tbody: return []
     
-    current_group = "General"
+    if forced_group:
+        current_group = forced_group
+    else:
+        current_group = "General"
     
     for row in tbody.find_all("tr"):
         cells = row.find_all("td")
@@ -815,19 +878,22 @@ def _parse_concept_columns_table(table, company_id, year):
                 pass
 
         # Determine Group and Category from labels
-        row_group = "General" 
+        row_group = current_group 
         row_category = "Base"
         
-        # Logic for EasyJet (Offset based) vs others
-        # EasyJet: Offset 2 [Group, Cat] or Offset 1 [Cat]
-        
         if len(label_texts) >= 2:
-            # First is Group, Second is Category
-            t0 = label_texts[0]
-            t1 = label_texts[1]
-            row_group = clean_group_name(t0)
-            row_category = t1
-            current_group = row_group
+            if forced_group:
+                 # If Group is known, the first label is the Category/Level.
+                 # The other labels are likely unmapped data columns (garbage/extra info).
+                 row_group = current_group
+                 row_category = label_texts[0]
+            else:
+                # Standard Type 2 Logic: Group + Category
+                t0 = label_texts[0]
+                t1 = label_texts[1]
+                row_group = clean_group_name(t0)
+                row_category = t1
+                current_group = row_group
             
         elif len(label_texts) == 1:
             # Single Label

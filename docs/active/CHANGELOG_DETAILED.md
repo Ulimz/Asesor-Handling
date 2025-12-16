@@ -7,6 +7,22 @@
 
 ## 📅 Sesión: 16 Diciembre 2025
 
+### [15:00] 🏛️ Implementación Convenio Sector (Estrategia Master Template)
+*   **Hito Arquitectónico**: Cambio de estrategia de extracción pura a **Modelo Híbrido (Template + XML)**.
+*   **Acciones**:
+    *   Creado `backend/data/structure_templates/convenio_sector.json`: Define la "verdad absoluta" (Grupos, Niveles, Pluses Fijos, Reglas).
+    *   Desarrollado `seed_standalone.py`: Script robusto que fusiona la estructura del Template con valores variables (2025) extraídos de `general.xml`.
+    *   **Resultado**: Base de datos poblada con estructura perfecta + valores reales actualizados.
+    *   **Cobertura**: Convenio Sector y empresas adheridas (Jet2, Norwegian, South).
+
+### [14:40] 🧹 Normalización Swissport (Type 3)
+*   **Problema**: Grupos incorrectos y Niveles perdidos ("Base").
+*   **Solución**:
+    *   Implementada detección de Grupo por Título de Tabla (Type 3).
+    *   Normalización forzada a los 3 Grupos Canónicos (`Administrativos`, `Servicios Auxiliares`, `Técnicos Gestores`).
+    *   Corrección de lógica de niveles en `extract_salary_tables.py`.
+    *   Validado con `verify_swissport_extraction.py`.
+
 ### [14:45] 🛠️ Fix: Estructura Salarial Menzies Aviation (Tipo 2 Complejo)
 *   **Problema**: La extracción generaba grupos "basura" (ej. "Agente adm (Supervisor...)") y niveles numéricos incorrectos ("10,73").
 *   **Causa Raíz**: En tablas de conceptos ("Tabla salarial 1"), la columna "Compen. festivo" no se detectaba como header mapeado, por lo que el script la interpretaba erróneamente como una columna de etiqueta secundaria (Category), desplazando la Categoría real a la posición de Grupo.
