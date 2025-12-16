@@ -41,31 +41,31 @@ La calculadora debe distinguir entre conceptos fijos (mensuales) y variables (po
 ### 3.1 Conceptos Fijos (Selectores "Sí/No" o Cantidad Mensual)
 Estos conceptos se añaden al salario base mensual si el usuario cumple la condición.
 
-| Concepto | ID Interno (Sugerido) | Valor Base (2022) | Regla de Aplicación | Artículo Convenio |
+| Concepto | ID Interno (Sugerido) | Valor Base (2025) | Regla de Aplicación | Artículo Convenio |
 | :--- | :--- | :--- | :--- | :--- |
-| **Plus de Jornada Irregular** | `PLUS_JORNADA_IRREGULAR` | 128.13 € | Fijo mensual si aplica jornada irregular. Incompatible con Turnicidad/FTP. | Art 28.10 |
-| **Plus Turnicidad (2 Turnos)** | `PLUS_TURNICIDAD_2` | 73.92 € | Si realiza 2 turnos/mes. | Art 28.11 |
-| **Plus Turnicidad (3 Turnos)** | `PLUS_TURNICIDAD_3` | 98.56 € | Si realiza 3 turnos/mes. | Art 28.11 |
-| **Plus Turnicidad (4 Turnos)** | `PLUS_TURNICIDAD_4` | 113.35 € | Si realiza 4 turnos/mes. | Art 28.11 |
-| **Plus Turnicidad (5+ Turnos)** | `PLUS_TURNICIDAD_5` | 128.13 € | Si realiza 5+ turnos/mes. | Art 28.11 |
-| **Plus Supervisión** | `PLUS_SUPERVISION` | 69.00 € | Mensual. Proporcional a jornada. | Art 28.12 |
-| **Plus Jefatura** | `PLUS_JEFATURA` | 118.28 € | Mensual. Proporcional a jornada. | Art 28.12 |
-| **Plus FTP** | `PLUS_FTP` | Max 88.71 € | Proporcional a % jornada. Incompatible con Irregular/Turnicidad. | Art 28.13 |
+| **Plus de Jornada Irregular** | `PLUS_JORNADA_IRREGULAR` | 142.12 € | Fijo mensual si aplica jornada irregular. Incompatible con Turnicidad/FTP. | Art 28.10 |
+| **Plus Turnicidad (2 Turnos)** | `PLUS_TURNICIDAD_2` | 81.99 € | Si realiza 2 turnos/mes. | Art 28.11 |
+| **Plus Turnicidad (3 Turnos)** | `PLUS_TURNICIDAD_3` | 109.32 € | Si realiza 3 turnos/mes. | Art 28.11 |
+| **Plus Turnicidad (4 Turnos)** | `PLUS_TURNICIDAD_4` | 125.72 € | Si realiza 4 turnos/mes. | Art 28.11 |
+| **Plus Turnicidad (5+ Turnos)** | `PLUS_TURNICIDAD_5` | 142.12 € | Si realiza 5+ turnos/mes. | Art 28.11 |
+| **Plus Supervisión** | `PLUS_SUPERVISION` | 76.53 € | Mensual. Proporcional a jornada. | Art 28.12 |
+| **Plus Jefatura** | `PLUS_JEFATURA` | 131.90 € | Mensual. Proporcional a jornada. | Art 28.12 |
+| **Plus FTP** | `PLUS_FTP` | Max 98.39 € | Proporcional a % jornada. Incompatible con Irregular/Turnicidad. | Art 28.13 |
 
 ### 3.2 Conceptos Variables (Inputs Numéricos: Horas/Días)
 Estos dependen de la actividad real del mes.
 
-| Concepto | ID Interno (Sugerido) | Valor Base (2022) | Unidad | Artículo |
+| Concepto | ID Interno (Sugerido) | Valor Base (2025) | Unidad | Artículo |
 | :--- | :--- | :--- | :--- | :--- |
-| **Plus Nocturnidad** | `PLUS_NOCTURNIDAD` | 1.45 € | Hora (22:00 - 06:00) | Art 28.1 |
+| **Plus Nocturnidad** | `PLUS_NOCTURNIDAD` | 1.61 € | Hora (22:00 - 06:00) | Art 28.1 |
 | **Hora Extraordinaria** | `HORA_EXTRA` | (Anual/1712)*1.5 | Hora | Art 28.2 |
 | **Hora Perentoria** | `HORA_PERENTORIA` | (Anual/1712)*1.75 | Hora | Art 28.3 |
-| **Hora Festiva** | `HORA_FESTIVA` | 2.57 € | Hora trabajada en festivo | Art 28.4 |
-| **Hora Domingo** | `HORA_DOMINGO` | 2.52 € | Hora trabajada en domingo | Art 28.5 |
-| **Jornada Fraccionada** | `PLUS_FRACCIONADA` | 10.22 € | Día | Art 28.6 |
-| **Plus Madrugue** | `PLUS_MADRUGUE` | 5.80 € | Día (Inicio 04:00-06:55) | Art 28.7 |
-| **Plus Transporte** | `PLUS_TRANSPORTE` | 2.55 € | Día trabajado | Art 28.8 |
-| **Ayuda Manutención** | `AYUDA_MANUTENCION` | 5.80 € | Día (Según horario comidas) | Art 28.9 |
+| **Hora Festiva** | `HORA_FESTIVA` | 2.85 € | Hora trabajada en festivo | Art 28.4 |
+| **Hora Domingo** | `HORA_DOMINGO` | 2.80 € | Hora trabajada en domingo | Art 28.5 |
+| **Jornada Fraccionada** | `PLUS_FRACCIONADA` | 11.34 € | Día | Art 28.6 |
+| **Plus Madrugue** | `PLUS_MADRUGUE` | 6.43 € | Día (Inicio 04:00-06:55) | Art 28.7 |
+| **Plus Transporte** | `PLUS_TRANSPORTE` | 2.83 € | Día trabajado | Art 28.8 |
+| **Ayuda Manutención** | `AYUDA_MANUTENCION` | 6.43 € | Día (Según horario comidas) | Art 28.9 |
 
 ---
 
