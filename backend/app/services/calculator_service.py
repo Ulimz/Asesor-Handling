@@ -31,7 +31,7 @@ class CalculatorService:
 
         # 2. Base Salary Calculation
         # Annual base from table / Payments (14)
-        annual_table_salary = active_prices.get("BASE_ANNUAL", 18450.87)
+        annual_table_salary = active_prices.get("SALARIO_BASE", active_prices.get("BASE_ANNUAL", 18450.87))
         
         # LOGIC CHANGE: Base monthly is ALWAYS Annual / 14 (standard monthly payment)
         full_base_monthly = annual_table_salary / 14.0
