@@ -521,16 +521,16 @@ export default function SalaryCalculator() {
                 <div className="text-center pb-6 border-b border-white/5">
                     <p className="text-slate-400 text-sm mb-1 uppercase tracking-widest">Neto Estimado</p>
                     <div className="text-5xl font-bold text-emerald-400 font-mono tracking-tight">
-                        {result.net_salary_monthly?.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}
+                        {result?.net_salary_monthly?.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}
                     </div>
                     <div className="mt-2 text-xs text-slate-500">
-                        Bruto: {result.gross_monthly_total.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}
+                        Bruto: {result?.gross_monthly_total.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}
                     </div>
                 </div>
 
                 <div className="space-y-3 flex-1 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar print:max-h-none print:overflow-visible">
                     <h4 className="text-xs font-semibold text-slate-500 uppercase">Desglose de Conceptos</h4>
-                    {result.breakdown.map((item, idx) => (
+                    {result?.breakdown.map((item, idx) => (
                         <div key={idx} className="flex justify-between text-sm group hover:bg-white/5 p-1 rounded transition-colors">
                             <span className={item.type === 'deduccion' ? "text-red-400" : "text-slate-300"}>
                                 {item.name}
@@ -545,7 +545,7 @@ export default function SalaryCalculator() {
                 <div className="pt-4 mt-auto border-t border-white/5">
                     <div className="flex justify-between items-center text-xs text-slate-500 mb-4">
                         <span>Variables Totales</span>
-                        <span className="text-white">{result.variable_salary.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}</span>
+                        <span className="text-white">{result?.variable_salary.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}</span>
                     </div>
 
                     {/* Legal Disclaimer */}
