@@ -106,3 +106,99 @@ def delete_user_me(db: Session = Depends(get_db), current_user: UserModel = Depe
     db.delete(current_user)
     db.commit()
     return None
+
+# ==========================================
+# PHASE 2: MULTI-PROFILE ENDPOINTS
+# ==========================================
+
+from app.schemas.profile import Profile as PydanticProfile, ProfileCreate, ProfileUpdate
+from .models import UserProfile
+
+@router.get("/me/profiles", response_model=list[PydanticProfile])
+def get_my_profiles(db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+    """List all professional profiles for the current user."""
+    return db.query(UserProfile).filter(UserProfile.user_id == current_user.id).all()
+
+@router.post("/me/profiles", response_model=PydanticProfile)
+def create_profile(profile: ProfileCreate, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+    """Create a new professional profile."""
+    # Ensure only one is active if it's the first one
+    existing_count = db.query(UserProfile).filter(UserProfile.user_id == current_user.id).count()
+    is_first = existing_count == 0
+    
+    db_profile = UserProfile(
+        user_id=current_user.id,
+        alias=profile.alias,
+        company_slug=profile.company_slug,
+        job_group=profile.job_group,
+        salary_level=profile.salary_level,
+        contract_percentage=profile.contract_percentage,
+        contract_type=profile.contract_type,
+        is_active=True if is_first else profile.is_active  # Auto-activate first profile
+    )
+    
+    if db_profile.is_active:
+        # Deactivate others
+        db.query(UserProfile).filter(UserProfile.user_id == current_user.id).update({"is_active": False})
+    
+    db.add(db_profile)
+    db.commit()
+    db.refresh(db_profile)
+    return db_profile
+
+@router.put("/me/profiles/{profile_id}", response_model=PydanticProfile)
+def update_profile(
+    profile_id: int, 
+    profile_data: ProfileUpdate, 
+    db: Session = Depends(get_db), 
+    current_user: UserModel = Depends(get_current_user)
+):
+    """Update a specific profile."""
+    db_profile = db.query(UserProfile).filter(UserProfile.id == profile_id, UserProfile.user_id == current_user.id).first()
+    if not db_profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    
+    # Update fields
+    if profile_data.alias is not None: db_profile.alias = profile_data.alias
+    if profile_data.company_slug is not None: db_profile.company_slug = profile_data.company_slug
+    if profile_data.job_group is not None: db_profile.job_group = profile_data.job_group
+    if profile_data.salary_level is not None: db_profile.salary_level = profile_data.salary_level
+    if profile_data.contract_percentage is not None: db_profile.contract_percentage = profile_data.contract_percentage
+    if profile_data.contract_type is not None: db_profile.contract_type = profile_data.contract_type
+    
+    # Handle Active Switch
+    if profile_data.is_active is not None:
+        if profile_data.is_active:
+            db.query(UserProfile).filter(UserProfile.user_id == current_user.id).update({"is_active": False})
+        db_profile.is_active = profile_data.is_active
+        
+    db.commit()
+    db.refresh(db_profile)
+    return db_profile
+
+@router.delete("/me/profiles/{profile_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_profile(profile_id: int, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+    """Delete a profile."""
+    db_profile = db.query(UserProfile).filter(UserProfile.id == profile_id, UserProfile.user_id == current_user.id).first()
+    if not db_profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    
+    db.delete(db_profile)
+    db.commit()
+    return None
+
+@router.post("/me/profiles/{profile_id}/activate", response_model=PydanticProfile)
+def activate_profile(profile_id: int, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+    """Set a profile as the active one."""
+    db_profile = db.query(UserProfile).filter(UserProfile.id == profile_id, UserProfile.user_id == current_user.id).first()
+    if not db_profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    
+    # Deactivate all
+    db.query(UserProfile).filter(UserProfile.user_id == current_user.id).update({"is_active": False})
+    
+    # Activate target
+    db_profile.is_active = True
+    db.commit()
+    db.refresh(db_profile)
+    return db_profile
