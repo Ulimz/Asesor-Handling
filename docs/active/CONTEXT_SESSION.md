@@ -1,27 +1,40 @@
 ## 📅 Fecha
-2025-12-13
-2025-12-14
+2025-12-16
 
-## ✅ Qué se hizo hoy
-1.  **Optimización Móvil (Completa)**:
-    *   **Fase 1 (Visibilidad)**: Implementado tema Claro/Oscuro y Alto Contraste para exteriores.
-    *   **Fase 2 (UX Táctil)**: Navegación nativa, logo simplificado, menús táctiles y fixes de teclado virtual.
-    *   **Fase 3 (PWA)**: Conversión total a App Instalable (Manifest, Iconos Apple/Android, Guía de Instalación).
-    *   **Fase 4 (Rendimiento)**: Compresión de Logo (1.2MB -> 0.2MB) y Lazy Loading de herramientas pesadas.
-2.  **Limpieza de Proyecto**:
-    *   Eliminada carpeta `auditoria_resultados/` y limpiado `.gitignore`.
-    *   Generado `walkthrough.md` con el resumen visual.
+## ✅ Qué se ha completado recientemente (Sincronización)
+1.  **Data Foundations (Backend)**:
+    *   **Extracción de Salarios**: `extract_salary_tables.py` refinado para Iberia, Groundforce, Swissport, Menzies.
+    *   **Seeding**: `seed_salary_tables.py` implementado con bucle multi-compañía.
+    *   **Modelos**: `SalaryTable` poblado con datos reales del BOE.
+
+2.  **Lógica y API**:
+    *   Nuevos endpoints de metadatos: `/metadata/companies`, `/groups`, `/levels`.
+    *   `CalculatorService` adaptado para usar datos de base de datos.
+
+3.  **UX Dinámica (Frontend)**:
+    *   **CascadingSelector**: Componente implementado para selección jerárquica (Empresa -> Grupo -> Nivel).
+    *   **Persistencia**: Selección del usuario se guarda en su perfil (`salary_level` migrado a String).
+
+4.  **IA Integrada**:
+    *   **Chat Context**: El perfil del usuario (Empresa, Nivel) se inyecta en el prompt del sistema RAG.
+
+5.  **Mantenimiento y Limpieza**:
+    *   **Auditoría Profunda**: Generados reportes en `auditoria_resultados/`.
+    *   **Limpieza de Documentación**: Archivos raíz (`GUIA_SOLUCION.md`, `DOCKER_SETUP.md`, etc.) movidos a `docs/active/`.
+    *   **Backup**: Generado backup completo en `backups/backup_full_20251216_XXXX.zip`.
 
 ## 📝 Estado Actual
-*   **App Móvil**: LISTA para despliegue y uso en rampa. Se siente como una app nativa.
-*   **Rendimiento**: Muy optimizado. Carga inicial rápida.
-*   **Código**: Más modular gracias al Code Splitting.
+*   **Base de Datos**: Contiene datos reales de convenios y tablas salariales.
+*   **Calculadora**: Totalmente dinámica, impulsada por datos del backend.
+*   **Chat**: Contexto-consciente y con reglas de parentesco implementadas (`rag_engine.py`).
+*   **Documentación**: Organizada en `docs/active/` siguiendo directrices MANTRA.
 
-## ⚠️ Advertencias para Mañana
-*   **Caché PWA**: Es posible que algunos usuarios antiguos sigan viendo el logo pesado hasta que el Service Worker se actualice (automático, pero puede tardar 24h).
-*   **Pruebas Reales**: Falta feedback de usuarios reales en iOS/Android a pie de pista.
+## ⚠️ Advertencias / Bloqueos
+*   **Despliegue Pendiente**: El código está listo, falta subir a Railway/Vercel.
 
-## 📋 Lista de Tareas (Próximos Pasos)
-- [ ] **Despliegue**: Subir cambios a Producción (Railway).
-- [ ] **Feedback de Campo**: Recopilar opiniones de usuarios sobre la nueva interfaz móvil.
-- [ ] **Validación Nómina**: Retomar la validación de cálculos pendientes (del día anterior).
+## 📋 Lista de Tareas Activas
+- [ ] **Deploy to Production (Railway)**: Push a GitHub y verificar build.
+- [ ] **Fix AI Kinship & Leave Logic**: (Verificado en código, falta test de campo).
+- [ ] **Refine Prompt Structure**: (Verificado en código).
+- [x] **System Backup**: Completado.
+- [x] **Documentation Cleanup**: Completado.

@@ -43,8 +43,11 @@ yarn-error.log*
 next-env.d.ts
 
 # Auditoria & Debug
-
 debug_*.txt
 verify_*.txt
 debug_*.py
 debug_*.txt
+
+# Backups & Private Reports
+/backups
+/auditoria_resultados

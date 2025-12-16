@@ -13,12 +13,26 @@ ANTES DE CREAR CUALQUIER ARCHIVO:
    2. Verificar en docs/active/, docs/deprecated/, root
    3. Si existe: ACTUALIZAR, no crear nuevo
    4. Si no existe: proceder con creación
-### 2️⃣ Seguir la Estructura
-**Regla de oro**: 
-- ❌ NO crear archivos .md en root
-- ✅ SÍ crear archivos .md en docs/active/
-- ❌ NO mezclar archivos en diferentes carpetas
-- ✅ SÍ mantener cada tipo en su lugar
+### 2️⃣ Seguir la Estructura (v1.1 - OFICIAL)
+**Estructura de Carpetas Permitida**:
+
+*   📂 **root/**: Configuración del proyecto (`package.json`, `.env`, `docker-compose.yml`, `README.md`).
+    *   ❌ PROHIBIDO: Documentación suelta (.md) o scripts sueltos (mover a `scripts/`).
+*   📂 **docs/active/**: ÚNICA ubicación para documentación viva (`PROJECT_STATUS.md`, `MANTRA.md`).
+*   📂 **docs/deprecated/**: Cementerio de archivos antiguos.
+*   📂 **backend/**:
+    *   `app/`: Código fuente API.
+    *   `scripts/`: Scripts de utilidad Python (`seed_*.py`, `extract_*.py`).
+    *   `data/`: Archivos JSON/XML de referencia.
+*   📂 **src/**: Código fuente Frontend (Next.js).
+*   📂 **scripts/**: Scripts de mantenimiento general del proyecto.
+*   📂 **auditoria_resultados/**: Reportes temporales de análisis.
+
+**Regla de oro**:
+- ❌ NO crear archivos .md en root (Solo permitido `README.md`).
+- ✅ SÍ crear archivos .md en `docs/active/`.
+- ❌ NO mezclar scripts de backend en root (usar `backend/scripts/`).
+- ✅ SÍ mantener limpieza absoluta en el directorio raíz.
 ### 3️⃣ Evitar Duplicados Completamente
 
 ```
@@ -153,7 +167,7 @@ DECISIÓN FINAL:
 ❌ NO hacer esto:
 
 1. Crear archivo X sin buscar si ya existe
-2. Guardar documentación en root (excepto README, PUSH_A_REMOTO, .env)
+2. Guardar documentación en root (excepto README.md, .env)
 3. Tener 2+ versiones de "mismo contenido" en diferentes carpetas
 4. Reorganizar carpetas "para ver cómo queda"
 5. Cambiar estructura después de haber hecho commit
@@ -249,7 +263,7 @@ INDICADOR                          META            ESTADO
    
 2. Buscar archivos similares:
    grep_search "performance"
-   → Encuentra PROJECT_STATE.md menciona algo
+   → Encuentra PROJECT_STATUS.md menciona algo
    → Pero es contenido diferente
    
 3. Decidir ubicación:
@@ -284,7 +298,7 @@ INDICADOR                          META            ESTADO
 **Confirmo que entiendo estas directivas:**
 
 - ✅ Verificar SIEMPRE si existe antes de crear
-- ✅ NUNCA crear en root (excepto README, PUSH_A_REMOTO, .env)
+- ✅ NUNCA crear en root (excepto README.md, .env)
 - ✅ SIEMPRE seguir estructura v1.1
 - ✅ NUNCA tener duplicados
 - ✅ NUNCA reorganizar múltiples veces
