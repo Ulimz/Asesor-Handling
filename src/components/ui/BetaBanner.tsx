@@ -15,20 +15,20 @@ export default function BetaBanner() {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, height: 0 }}
-                className="bg-amber-500/10 border-b border-amber-500/20 backdrop-blur-md relative z-50"
+                className="fixed top-0 left-0 right-0 z-[100] bg-orange-600 text-white shadow-lg shadow-orange-900/20"
             >
-                <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3 text-amber-500 text-xs md:text-sm font-medium">
-                        <AlertTriangle size={16} className="shrink-0" />
+                <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 text-white text-xs md:text-sm font-bold tracking-wide">
+                        <AlertTriangle size={18} className="shrink-0 fill-white text-orange-600" />
                         <p>
-                            <span className="font-bold">BETA ABIERTA:</span> Estamos en mantenimiento y actualización constante. Es posible que experimentes errores puntuales. Disculpen las molestias.
+                            <span className="uppercase">⚠️ Beta Abierta:</span> Estamos en mantenimiento y actualización constante. Servicio inestable.
                         </p>
                     </div>
                     <button
                         onClick={() => setIsVisible(false)}
-                        className="p-1 hover:bg-amber-500/10 rounded-full transition-colors text-amber-500/70 hover:text-amber-500"
+                        className="p-1 hover:bg-black/20 rounded-full transition-colors text-white/80 hover:text-white"
                     >
-                        <X size={14} />
+                        <X size={16} />
                     </button>
                 </div>
             </motion.div>
