@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { apiService } from '@/lib/api-service';
 import CompanyDropdown from '@/components/CompanyDropdown';

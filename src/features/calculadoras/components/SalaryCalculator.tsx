@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { Calculator, DollarSign, PieChart, ArrowRight, User, Building2, Briefcase, Moon, Sun, Clock, Printer, RotateCcw } from 'lucide-react';
 import { API_URL } from '@/config/api';
