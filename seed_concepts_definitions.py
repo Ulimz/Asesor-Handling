@@ -97,12 +97,16 @@ def seed_concepts(template_path):
 
         # 3. Variable Concepts
         for c in template['concepts']['variable']:
+            inp_type = "number"
+            if c['id'] == 'PLUS_AD_PERSONAM' or c.get('unit') == 'euro':
+                 inp_type = "manual"
+
             concepts_to_add.append(SalaryConceptDefinition(
                 company_slug=company_id,
                 name=c['name'],
                 code=c['id'],
                 description=f"Variable: {c['name']}",
-                input_type="number",
+                input_type=inp_type,
                 default_price=c.get('base_value_2022', 0.0), # Will be overridden by dynamic values in calculation, but good for reference
                 is_active=True
             ))

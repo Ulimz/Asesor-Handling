@@ -26,7 +26,8 @@
                 "HORA_PERENTORIA",
                 "PLUS_JORNADA_FRACCIONADA",
                 "PLUS_MADRUGUE",
-                "PLUS_TRANSPORTE"
+                "PLUS_TRANSPORTE",
+                "PLUS_AD_PERSONAM"
             ]
         },
         {
@@ -51,7 +52,8 @@
                 "AYUDA_MANUTENCION",
                 "PLUS_JORNADA_FRACCIONADA",
                 "PLUS_MADRUGUE",
-                "PLUS_TRANSPORTE"
+                "PLUS_TRANSPORTE",
+                "PLUS_AD_PERSONAM"
             ]
         },
         {
@@ -73,7 +75,8 @@
                 "AYUDA_MANUTENCION",
                 "PLUS_JORNADA_FRACCIONADA",
                 "PLUS_MADRUGUE",
-                "PLUS_TRANSPORTE"
+                "PLUS_TRANSPORTE",
+                "PLUS_AD_PERSONAM"
             ]
         }
     ],
@@ -188,6 +191,13 @@
                 "base_value_2022": 2.83,
                 "unit": "dia",
                 "description": "Art 28.8"
+            },
+            {
+                "id": "PLUS_AD_PERSONAM",
+                "name": "Garantía Personal (Ad Personam)",
+                "base_value_2022": 0.0,
+                "unit": "euro",
+                "description": "Cantidad fija personal (Manual)."
             },
             {
                 "id": "AYUDA_MANUTENCION",

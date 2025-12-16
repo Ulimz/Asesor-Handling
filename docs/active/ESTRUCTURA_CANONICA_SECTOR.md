@@ -66,6 +66,7 @@ Estos dependen de la actividad real del mes.
 | **Plus Madrugue** | `PLUS_MADRUGUE` | 6.43 € | Día (Inicio 04:00-06:55) | Art 28.7 |
 | **Plus Transporte** | `PLUS_TRANSPORTE` | 2.83 € | Día trabajado | Art 28.8 |
 | **Ayuda Manutención** | `AYUDA_MANUTENCION` | 6.43 € | Día (Según horario comidas) | Art 28.9 |
+| **Garantía Personal (Ad Personam)** | `PLUS_AD_PERSONAM` | (Manual) | Euros (Valor Fijo) | - |
 
 ---
 
