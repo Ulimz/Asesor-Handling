@@ -90,3 +90,33 @@ def calcular_nomina_inteligente(
 ):
     service = CalculatorService(db)
     return service.calculate_smart_salary(request)
+
+# Temporary Endpoint for Production Seeding (User Self-Service)
+@router.post("/seed/sector")
+def seed_sector_definitions():
+    import os
+    from seed_concepts_definitions import seed_concepts
+    
+    template_path = os.path.join(os.getcwd(), 'app', '..', 'data', 'structure_templates', 'convenio_sector.json')
+    try:
+        # Resolving path relative to backend root where app runs
+        # If running from /backend, it's backend/data/...
+        # But inside docker container, likely /app/backend/data or similar?
+        # Let's try standard relative path: "data/structure_templates/convenio_sector.json"
+        
+        # Robust path finding
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        # base_dir is /app
+        # data is in /app/data if copied, or ../data?
+        # In Dockerfile: COPY backend /app. So data is at /app/data ?
+        # Let's check where seed_concepts_definitions.py looks: os.path.join('backend', 'data'...)
+        
+        # We will try absolute path based on known structure
+        real_path = os.path.join(os.getcwd(), "data", "structure_templates", "convenio_sector.json")
+        if not os.path.exists(real_path):
+             return {"status": "error", "message": f"Template not found at {real_path}"}
+             
+        seed_concepts(real_path)
+        return {"status": "success", "message": "Sector definitions updated from template"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
