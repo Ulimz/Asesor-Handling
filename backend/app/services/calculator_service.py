@@ -69,7 +69,7 @@ class CalculatorService:
         # --- DYNAMIC CONCEPT LOGIC ---
         # MAPPING FIX: Sector Companies use 'convenio-sector' definitions
         target_slug_for_definitions = request.company_slug
-        if request.company_slug in ["jet2", "norwegian", "south", "azul-handling"]:
+        if request.company_slug in ["jet2", "norwegian", "south"]:
             target_slug_for_definitions = "convenio-sector"
 
         # Fetch definitions from DB for this company
