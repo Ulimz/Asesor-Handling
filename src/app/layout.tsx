@@ -32,6 +32,7 @@ export const viewport: Viewport = {
   interactiveWidget: 'resizes-content',
 };
 
+import BetaBanner from "@/components/ui/BetaBanner";
 import CookieBanner from "@/components/legal/CookieBanner";
 import { ThemeProvider } from "@/context/ThemeContext";
 
@@ -46,6 +47,7 @@ export default function RootLayout({
         <ThemeProvider>
           {/* Main content wrapper with theme-aware background */}
           <div className="relative min-h-screen flex flex-col bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors duration-300">
+            <BetaBanner />
             {/* <MainNavbar /> */}
             <main className="relative min-h-screen flex flex-col flex-1">
               {/* Ambient Background - Adjusted for Light/Dark */}

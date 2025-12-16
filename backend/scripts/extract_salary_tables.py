@@ -23,6 +23,45 @@ def parse_spanish_number(text):
     except ValueError:
         return 0.0
 
+def clean_group_name(raw_name):
+    """
+    Cleans dirty group names extracted from PDF/XML text.
+    Removes amounts, trailing dots, and standardizes known variations.
+    Example: "Serv. Auxiliares. 17.500,00" -> "Servicios Auxiliares"
+    """
+    if not raw_name: return "General"
+    
+    # 1. Remove numbers and currency-like patterns (17.500,00)
+    # This regex looks for digits possibly followed by dots/commas and more digits
+    text = re.sub(r'\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?', '', raw_name)
+    
+    # 2. Cleanup whitespace and punctuation
+    text = text.replace(":", "").replace(".", "").strip()
+    
+    # 3. Canonical Mappings for known abbreviations/variants
+    text_lower = text.lower()
+    
+    if "serv" in text_lower and "aux" in text_lower:
+        return "Servicios Auxiliares"
+    if "admin" in text_lower:
+        return "Administrativos"
+    if "gestores" in text_lower and "servicio" in text_lower:
+        return "Gestores de Servicios"
+    if "agentes" in text_lower and "jefes" in text_lower:
+        return "Agentes Jefes"
+    if "supervisores" in text_lower:
+        return "Supervisores"
+    if "téc" in text_lower and "mant" in text_lower and "aeron" in text_lower:
+        return "Técnicos Mantenimiento Aeronaves"
+    if "téc" in text_lower and "mant" in text_lower: # Catch-all for other maintenance
+        return text # Keep full name but cleaned
+        
+    # If empty after clean (e.g. it was just a number), return Original or General
+    if not text:
+        return "General"
+        
+    return text
+
 def extract_iberia_salaries(xml_path):
     """
     Extracts salary data from Iberia's XML.
@@ -81,7 +120,8 @@ def extract_iberia_salaries(xml_path):
         text = p.get_text(strip=True)
         if "Cuantías máximas por categoría" in text:
             # Extract group name
-            group_name = text.replace("Cuantías máximas por categoría", "").strip().rstrip(".").rstrip(":")
+            raw = text.replace("Cuantías máximas por categoría", "").strip()
+            group_name = clean_group_name(raw)
             if group_name:
                 known_groups.add(group_name)
     
@@ -238,7 +278,8 @@ def extract_iberia_salaries(xml_path):
     for p in soup.find_all("p"):
         txt = p.get_text(strip=True)
         if "Cuantías máximas por categoría" in txt:
-            g_name = txt.replace("Cuantías máximas por categoría", "").strip().strip(":").strip(".")
+            raw = txt.replace("Cuantías máximas por categoría", "").strip()
+            g_name = clean_group_name(raw)
             # Find table
             nxt = p.find_next_sibling()
             while nxt and nxt.name != "table":
@@ -374,7 +415,7 @@ def extract_groundforce_salaries(xml_path):
         text_values = [c.get_text(strip=True) for c in cells]
         
         if len(text_values) >= 10:
-            current_group = text_values[0].strip(".").strip() # "Administrativos." -> "Administrativos"
+            current_group = clean_group_name(text_values[0]) # Clean it!
             category = text_values[1].strip(".").strip()
             # Indices for data
             idx_annual = 2
@@ -598,7 +639,7 @@ def _parse_level_matrix_table(table, company_id, year, title_text):
                 if txt and txt not in ["-", "N/A"]:
                     category_parts.append(txt)
             
-        category_name = " ".join(category_parts).strip().rstrip(".").rstrip(":")
+        category_name = clean_group_name(" ".join(category_parts))
         
         # Iterate data cells
         for idx, cell in enumerate(cells):
@@ -672,7 +713,7 @@ def _parse_concept_columns_table(table, company_id, year):
             txt = cells[i].get_text(strip=True)
             if txt:
                 category_parts.append(txt)
-        category_name = " ".join(category_parts).strip().rstrip(".").rstrip(":")
+        category_name = clean_group_name(" ".join(category_parts))
 
         for header_idx, concept in header_map.items():
             data_idx = header_idx + offset
