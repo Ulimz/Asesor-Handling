@@ -109,7 +109,7 @@
             {
                 "id": "PLUS_FTP",
                 "name": "Fijo Tiempo Parcial (FTP)",
-                "base_value_2022": 44.82,
+                "base_value_2022": 88.71,
                 "is_monthly": true,
                 "is_proportional": false,
                 "description": "Art 30.6. Fijo para FTP según turnos."
