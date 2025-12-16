@@ -306,8 +306,8 @@ export default function SalaryCalculator() {
                     <div className="space-y-4">
                         <div className="flex items-center gap-2 text-emerald-400 text-sm font-semibold uppercase tracking-wider">
                             <Clock size={16} /> Variables Mensuales ({concepts.filter(c =>
-                                !c.code.startsWith('PLUS_TURNOS_') &&
-                                !c.code.startsWith('PLUS_TURNICIDAD_') &&
+                                !c.code.startsWith('PLUS_TURNOS') &&
+                                !c.code.startsWith('PLUS_TURNICIDAD') &&
                                 !c.code.startsWith('PLUS_FRACC') &&
                                 !['PLUS_FIJI', 'PLUS_FTP', 'PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR'].includes(c.code)
                             ).length})
@@ -416,8 +416,8 @@ export default function SalaryCalculator() {
                         ) : (
                             <div className="grid grid-cols-2 gap-4">
                                 {concepts.filter(c =>
-                                    !c.code.startsWith('PLUS_TURNOS_') &&
-                                    !c.code.startsWith('PLUS_TURNICIDAD_') &&
+                                    !c.code.startsWith('PLUS_TURNOS') &&
+                                    !c.code.startsWith('PLUS_TURNICIDAD') &&
                                     !c.code.startsWith('PLUS_FRACC') &&
                                     !['PLUS_FIJI', 'PLUS_FTP', 'PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR'].includes(c.code)
                                 ).map((concept) => (
