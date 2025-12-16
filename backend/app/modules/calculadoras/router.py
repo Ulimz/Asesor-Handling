@@ -59,7 +59,7 @@ def get_company_concepts(company_slug: str, db: Session = Depends(get_db)):
     
     # Mapping for Sector Agreement companies
     target_slug = company_slug
-    if company_slug in ["jet2", "norwegian", "south", "azul-handling"]:
+    if company_slug in ["jet2", "norwegian", "south"]:
         target_slug = "convenio-sector"
         
     concepts = db.query(SalaryConceptDefinition).filter(
