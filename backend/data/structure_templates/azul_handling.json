@@ -1,0 +1,276 @@
+{
+    "meta": {
+        "company_id": "azul-handling",
+        "name": "Azul Handling",
+        "description": "Estructura basada en Convenio Azul Handling 2025 y Acuerdos Extra-Convenio",
+        "version": "1.0"
+    },
+    "groups": [
+        {
+            "name": "Administrativos",
+            "levels": [
+                "Nivel 1",
+                "Nivel 2",
+                "Nivel 3",
+                "Nivel 4",
+                "Nivel 5",
+                "Nivel 6",
+                "Nivel 7"
+            ],
+            "applicable_concepts": [
+                "PLUS_SUPERVISION",
+                "PLUS_JEFATURA",
+                "PLUS_TURNICIDAD",
+                "PLUS_NOCTURNIDAD",
+                "HORA_EXTRA",
+                "HORA_PERENTORIA",
+                "HORA_COMPLEMENTARIA_ESP",
+                "PLUS_FRACCIONADA_T1",
+                "PLUS_FRACCIONADA_T2",
+                "PLUS_FRACCIONADA_T3",
+                "PLUS_MADRUGUE",
+                "PLUS_TRANSPORTE",
+                "PLUS_AD_PERSONAM",
+                "AYUDA_MANUTENCION",
+                "PLUS_RCO",
+                "PLUS_ARCO",
+                "PLUS_DIFERENTE_PUESTO"
+            ]
+        },
+        {
+            "name": "Servicios Auxiliares",
+            "levels": [
+                "Nivel 1",
+                "Nivel 2",
+                "Nivel 3",
+                "Nivel 4",
+                "Nivel 5",
+                "Nivel 6",
+                "Nivel 7"
+            ],
+            "applicable_concepts": [
+                "PLUS_SUPERVISION",
+                "PLUS_JEFATURA",
+                "PLUS_TURNICIDAD",
+                "PLUS_NOCTURNIDAD",
+                "HORA_EXTRA",
+                "HORA_PERENTORIA",
+                "HORA_COMPLEMENTARIA_ESP",
+                "PLUS_JORNADA_IRREGULAR",
+                "AYUDA_MANUTENCION",
+                "PLUS_FRACCIONADA_T1",
+                "PLUS_FRACCIONADA_T2",
+                "PLUS_FRACCIONADA_T3",
+                "PLUS_MADRUGUE",
+                "PLUS_TRANSPORTE",
+                "PLUS_AD_PERSONAM",
+                "PLUS_RCO",
+                "PLUS_ARCO",
+                "PLUS_DIFERENTE_PUESTO"
+            ]
+        },
+        {
+            "name": "Técnicos Gestores",
+            "levels": [
+                "Nivel 1",
+                "Nivel 2",
+                "Nivel 3",
+                "Nivel 4",
+                "Nivel 5",
+                "Nivel 6",
+                "Nivel 7"
+            ],
+            "applicable_concepts": [
+                "PLUS_TURNICIDAD",
+                "PLUS_NOCTURNIDAD",
+                "HORA_EXTRA",
+                "HORA_PERENTORIA",
+                "HORA_COMPLEMENTARIA_ESP",
+                "AYUDA_MANUTENCION",
+                "PLUS_FRACCIONADA_T1",
+                "PLUS_FRACCIONADA_T2",
+                "PLUS_FRACCIONADA_T3",
+                "PLUS_MADRUGUE",
+                "PLUS_TRANSPORTE",
+                "PLUS_AD_PERSONAM",
+                "PLUS_RCO",
+                "PLUS_ARCO",
+                "PLUS_DIFERENTE_PUESTO"
+            ]
+        }
+    ],
+    "concepts": {
+        "fixed": [
+            {
+                "id": "PLUS_JORNADA_IRREGULAR",
+                "name": "Plus Jornada Irregular",
+                "base_value_2022": 142.12,
+                "is_monthly": true,
+                "is_proportional": false,
+                "description": "Art 28.10. Fijo mensual si aplica jornada irregular."
+            },
+            {
+                "id": "PLUS_TURNICIDAD",
+                "name": "Plus Turnicidad",
+                "base_value_2022": 0.0,
+                "is_monthly": true,
+                "is_proportional": true,
+                "has_tiers": true,
+                "tiers": {
+                    "2_TURNOS": 81.99,
+                    "3_TURNOS": 109.32,
+                    "4_TURNOS": 125.72,
+                    "5_PLUS_TURNOS_FIJI": 142.12
+                },
+                "description": "Art 28.11. Valor depende de número de turnos. (Incluye Fiji en 5+)"
+            },
+            {
+                "id": "PLUS_SUPERVISION",
+                "name": "Plus Supervisión",
+                "base_value_2022": 76.53,
+                "is_monthly": true,
+                "is_proportional": true,
+                "description": "Art 28.12. Proporcional a jornada."
+            },
+            {
+                "id": "PLUS_JEFATURA",
+                "name": "Plus Jefatura",
+                "base_value_2022": 131.90,
+                "is_monthly": true,
+                "is_proportional": true,
+                "description": "Art 28.12. Proporcional a jornada."
+            },
+            {
+                "id": "PLUS_FTP",
+                "name": "Fijo Tiempo Parcial (FTP)",
+                "base_value_2022": 98.39,
+                "is_monthly": true,
+                "is_proportional": true,
+                "description": "Art 30.6. Fijo para FTP según turnos."
+            },
+            {
+                "id": "PLUS_RCO",
+                "name": "Plus RCO",
+                "base_value_2022": 300.00,
+                "is_monthly": true,
+                "is_proportional": false,
+                "description": "Acuerdo Extra-Convenio. Fijo NO proporcional."
+            },
+            {
+                "id": "PLUS_ARCO",
+                "name": "Plus ARCO",
+                "base_value_2022": 175.00,
+                "is_monthly": true,
+                "is_proportional": false,
+                "description": "Acuerdo Extra-Convenio. Fijo NO proporcional."
+            }
+        ],
+        "variable": [
+            {
+                "id": "PLUS_NOCTURNIDAD",
+                "name": "Plus Nocturnidad",
+                "base_value_2022": 1.61,
+                "unit": "hora",
+                "is_proportional": false,
+                "description": "Hora trabajada 22:00-06:00."
+            },
+            {
+                "id": "HORA_EXTRA",
+                "name": "Hora Extraordinaria",
+                "base_value_2022": null,
+                "unit": "hora",
+                "is_proportional": false,
+                "source": "xml_table",
+                "description": "Valor depende de tabla anual."
+            },
+            {
+                "id": "HORA_PERENTORIA",
+                "name": "Hora Perentoria",
+                "base_value_2022": null,
+                "unit": "hora",
+                "is_proportional": false,
+                "source": "xml_table",
+                "description": "Valor depende de tabla anual."
+            },
+            {
+                "id": "HORA_COMPLEMENTARIA_ESP",
+                "name": "Hora Compl. Especial",
+                "base_value_2022": null,
+                "unit": "hora",
+                "is_proportional": false,
+                "source": "xml_table",
+                "description": "Valor depende de tabla anual."
+            },
+            {
+                "id": "HORA_FESTIVA",
+                "name": "Hora Festiva",
+                "base_value_2022": 2.85,
+                "unit": "hora",
+                "description": "Hora en festivo."
+            },
+            {
+                "id": "HORA_DOMINGO",
+                "name": "Hora Domingo",
+                "base_value_2022": 2.80,
+                "unit": "hora",
+                "description": "Hora en domingo."
+            },
+            {
+                "id": "PLUS_FRACCIONADA_T1",
+                "name": "Fraccionada (1-4h)",
+                "base_value_2022": 11.34,
+                "unit": "dia",
+                "description": "Tramo corto: 1 a 4 horas."
+            },
+            {
+                "id": "PLUS_FRACCIONADA_T2",
+                "name": "Fraccionada (4-7h)",
+                "base_value_2022": 14.74,
+                "unit": "dia",
+                "description": "Tramo medio: 4 a 7 horas."
+            },
+            {
+                "id": "PLUS_FRACCIONADA_T3",
+                "name": "Fraccionada (>7h)",
+                "base_value_2022": 17.02,
+                "unit": "dia",
+                "description": "Tramo largo: más de 7 horas."
+            },
+            {
+                "id": "PLUS_MADRUGUE",
+                "name": "Plus Madrugue",
+                "base_value_2022": 6.43,
+                "unit": "dia",
+                "description": "Inicio antes 07:00."
+            },
+            {
+                "id": "PLUS_TRANSPORTE",
+                "name": "Plus Transporte",
+                "base_value_2022": 2.83,
+                "unit": "dia",
+                "description": "Desplazamiento."
+            },
+            {
+                "id": "AYUDA_MANUTENCION",
+                "name": "Ayuda Manutención",
+                "base_value_2022": 6.43,
+                "unit": "dia",
+                "description": "Dieta comida."
+            },
+            {
+                "id": "PLUS_DIFERENTE_PUESTO",
+                "name": "Plus Diferente Puesto",
+                "base_value_2022": 0.80,
+                "unit": "hora",
+                "description": "Variable por hora."
+            },
+            {
+                "id": "PLUS_AD_PERSONAM",
+                "name": "Garantía Personal (Ad Personam)",
+                "base_value_2022": 0.0,
+                "unit": "euro",
+                "description": "Cantidad fija personal (Manual)."
+            }
+        ]
+    }
+}

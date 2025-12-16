@@ -27,7 +27,7 @@ class SalaryConceptDefinition(Base):
     name = Column(String)
     code = Column(String, index=True)
     description = Column(String, nullable=True)
-    input_type = Column(String, default="number") # number, checkbox, select
+    input_type = Column(String, default="number") # number, checkbox, select, manual
     is_active = Column(Boolean, default=True)
     default_price = Column(Float, default=0.0)
     
@@ -39,7 +39,8 @@ def seed_concepts(template_path):
         template = json.load(f)
         
     session = SessionLocal()
-    company_id = "convenio-sector"
+    # Dynamic Company ID from template
+    company_id = template['meta'].get('company_id', 'convenio-sector')
     
     try:
         logger.info(f"Seeding Concept Definitions for: {company_id}")
@@ -50,21 +51,23 @@ def seed_concepts(template_path):
         concepts_to_add = []
         
         # 2. Fixed Concepts (Checkboxes usually, or auto-calc)
-        # For frontend purposes, we expose those that act as flags (is_proportional, etc) or have specific UI logic
-        # Ideally we expose ALL, and let Frontend decide how to render based on code.
-        
         for c in template['concepts']['fixed']:
             code = c['id']
-            # Determine input type
-            # If it has tiers or is a flag like Supervision, it might be checkbox or select
-            # BUT: Frontend logic (SalaryCalculator) now handles specific codes. 
-            # We just need to ensure they EXIST in this list so they are returned by API.
-            
             # Map known checkboxes/selects
             inp_type = "number" 
-            if code in ['PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR', 'PLUS_FTP', 'PLUS_FIJI']:
-                # These are strictly 1/0 flags or mutually exclusive selects -> Proportional fixed amounts
-                inp_type = "select" if code in ['PLUS_FTP', 'PLUS_FIJI', 'PLUS_JORNADA_IRREGULAR'] else "checkbox"
+            
+            # Update list for Azul concepts
+            checkbox_codes = [
+                'PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR', 
+                'PLUS_FTP', 'PLUS_FIJI', 'PLUS_RCO', 'PLUS_ARCO'
+            ]
+            
+            if code in checkbox_codes:
+                # Selects vs Checkboxes
+                if code in ['PLUS_FTP', 'PLUS_FIJI', 'PLUS_JORNADA_IRREGULAR']:
+                    inp_type = "select"
+                else:
+                    inp_type = "checkbox"
             
             concepts_to_add.append(SalaryConceptDefinition(
                 company_slug=company_id,
@@ -76,12 +79,7 @@ def seed_concepts(template_path):
                 is_active=True
             ))
             
-            # If it has tiers, we might need to expose them?
-            # Creating specific concepts for tiers if needed by frontend logic?
-            # SalaryCalculator logic: `c.code.startsWith('PLUS_TURNICIDAD_')`
-            # So we DO need to exist entries for `PLUS_TURNICIDAD_2_TURNOS`, etc?
-            # The calculator iterates: `concepts.filter(...)`
-            # So YES, we need entries for every specific option if we want them in the lists.
+            # Tiers (Turnicidad, etc)
             if 'tiers' in c:
                 for tier_key, tier_val in c['tiers'].items():
                     tier_code = f"{code}_{tier_key}" # e.g. PLUS_TURNICIDAD_2_TURNOS
@@ -100,14 +98,15 @@ def seed_concepts(template_path):
             inp_type = "number"
             if c['id'] == 'PLUS_AD_PERSONAM' or c.get('unit') == 'euro':
                  inp_type = "manual"
-
+            # Explicit Fraccionada Tiers check if needed, but 'number' is default.
+            
             concepts_to_add.append(SalaryConceptDefinition(
                 company_slug=company_id,
                 name=c['name'],
                 code=c['id'],
                 description=f"Variable: {c['name']}",
                 input_type=inp_type,
-                default_price=c.get('base_value_2022', 0.0), # Will be overridden by dynamic values in calculation, but good for reference
+                default_price=c.get('base_value_2022', 0.0), # Reference price
                 is_active=True
             ))
 
@@ -122,5 +121,10 @@ def seed_concepts(template_path):
         session.close()
 
 if __name__ == "__main__":
+    # SEED SECTOR
     template = os.path.join('backend', 'data', 'structure_templates', 'convenio_sector.json')
-    seed_concepts(template)
+    if os.path.exists(template): seed_concepts(template)
+    
+    # SEED AZUL
+    template_azul = os.path.join('backend', 'data', 'structure_templates', 'azul_handling.json')
+    if os.path.exists(template_azul): seed_concepts(template_azul)

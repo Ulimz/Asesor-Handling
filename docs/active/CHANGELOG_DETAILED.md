@@ -7,7 +7,19 @@
 
 ## 📅 Sesión: 16 Diciembre 2025
 
+### [21:20] 🔷 Azul Handling Implementation & Data Fixes
+- **New Feature**: Full implementation of **Azul Handling** salary structure.
+    - **Canonical Data**: Created `ESTRUCTURA_CANONICA_AZUL.md` (2025 Data).
+    - **Template**: Added `azul_handling.json` with segmented "Jornada Fraccionada" (T1, T2, T3) and new Agreement Pluses (RCO, ARCO).
+    - **Logic**: Updated `seed_standalone.py` to support hybrid seeding (Manual Base Salary + XML Variables).
+    - **Verification**: Confirmed Base Salary (31.7k€) and Pluses in local database.
+- **Bug Fixes**:
+    - **Calculator**: Fixed "Hora Perentoria" missing from applicable concepts.
+    - **Data**: Removed duplicate "Garantía Personal".
+    - **Isolation**: Verified that Azul data does not interfere with Sector/Jet2 companies.
+
 ### [15:45] 🐛 Corrección Critica: Error 500 Calculadora
+
 *   **Error**: `ResponseValidationError` (None returned) en `POST /smart`.
 *   **Causa**: Error de indentación en `CalculatorService.py` hacía que la lógica principal fuera inalcanzable, retornando `None` implícitamente.
 *   **Calculator Fixes** (Critical):
