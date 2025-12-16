@@ -23,7 +23,7 @@
                 "PLUS_TURNICIDAD",
                 "PLUS_NOCTURNIDAD",
                 "HORA_EXTRA",
-                "PLUS_FRACCIONADA",
+                "PLUS_JORNADA_FRACCIONADA",
                 "PLUS_MADRUGUE",
                 "PLUS_TRANSPORTE"
             ]
@@ -47,7 +47,7 @@
                 "HORA_EXTRA",
                 "PLUS_JORNADA_IRREGULAR",
                 "AYUDA_MANUTENCION",
-                "PLUS_FRACCIONADA",
+                "PLUS_JORNADA_FRACCIONADA",
                 "PLUS_MADRUGUE",
                 "PLUS_TRANSPORTE"
             ]
@@ -68,7 +68,7 @@
                 "PLUS_NOCTURNIDAD",
                 "HORA_EXTRA",
                 "AYUDA_MANUTENCION",
-                "PLUS_FRACCIONADA",
+                "PLUS_JORNADA_FRACCIONADA",
                 "PLUS_MADRUGUE",
                 "PLUS_TRANSPORTE"
             ]
@@ -166,7 +166,7 @@
                 "description": "Art 28.5"
             },
             {
-                "id": "PLUS_FRACCIONADA",
+                "id": "PLUS_JORNADA_FRACCIONADA",
                 "name": "Plus Jornada Fraccionada",
                 "base_value_2022": 10.22,
                 "unit": "dia",
