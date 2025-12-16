@@ -7,6 +7,15 @@
 
 ## 📅 Sesión: 16 Diciembre 2025
 
+### [14:45] 🛠️ Fix: Estructura Salarial Menzies Aviation (Tipo 2 Complejo)
+*   **Problema**: La extracción generaba grupos "basura" (ej. "Agente adm (Supervisor...)") y niveles numéricos incorrectos ("10,73").
+*   **Causa Raíz**: En tablas de conceptos ("Tabla salarial 1"), la columna "Compen. festivo" no se detectaba como header mapeado, por lo que el script la interpretaba erróneamente como una columna de etiqueta secundaria (Category), desplazando la Categoría real a la posición de Grupo.
+*   **Solución** (`extract_salary_tables.py`):
+    *   Ajustada la regex de detección de columnas para incluir `compen` + `festiv` como `HORA_FESTIVA`.
+*   **Resultado**:
+    *   **Menzies**: Ahora muestra limpiamente los 3 grupos: "Administrativos", "Servicios Auxiliares", "TÉCNICOS GESTORES".
+    *   Niveles correctos: "Agente administrativo", "Jefe de Turno - Nivel 1", etc.
+
 ### [14:00] 🛠️ Fix: Estructura Salarial Aviapartner, WFS & Azul (Tipo 1)
 *   **Problema Critico**: El selector de "Grupo" mostraba solo "General" porque los grupos reales ("Técnicos Gestores", "Administrativos") se extraían incorrectamente como categorías/niveles.
 *   **Solución Backend** (`extract_salary_tables.py`):

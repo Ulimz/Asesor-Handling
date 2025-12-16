@@ -646,6 +646,7 @@ def _parse_level_matrix_table(table, company_id, year, title_text):
         # Stronger heuristic: The Last N columns are data. The rest are labels.
         
         label_cols_count = num_cells - num_levels
+        
         if label_cols_count < 0: label_cols_count = 0 # Should check malformed
 
         # Extract Group and Category
@@ -768,7 +769,7 @@ def _parse_concept_columns_table(table, company_id, year):
         elif "manutencion" in text or "manutención" in text: header_map[idx] = "PLUS_MANUTENCION"
         elif "madrugue" in text: header_map[idx] = "PLUS_MADRUGUE"
         elif "nocturn" in text and "hora" in text: header_map[idx] = "HORA_NOCTURNA"
-        elif "festiv" in text and "hora" in text: header_map[idx] = "HORA_FESTIVA"
+        elif "festiv" in text and ("hora" in text or "compen" in text): header_map[idx] = "HORA_FESTIVA"
         elif "domingo" in text and "hora" in text: header_map[idx] = "HORA_DOMINGO"
         elif "jornada" in text and ("fraccionada" in text or "partida" in text): header_map[idx] = "PLUS_JORNADA_FRACCIONADA"
         elif "perentoria" in text and "hora" in text: header_map[idx] = "HORA_PERENTORIA"
