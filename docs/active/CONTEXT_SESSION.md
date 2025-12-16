@@ -67,6 +67,20 @@
 
 ## ⚠️ Advertencias para Mañana
 
+### 🔴 CRÍTICO: Bug de Visualización de Perfiles
+- **Síntoma**: ProfileSwitcher muestra "Sin Perfil" a pesar de haber creado perfiles exitosamente
+- **Impacto**: Usuarios no pueden ver ni cambiar entre sus perfiles, bloqueando funcionalidad del chat
+- **Posibles causas**:
+  1. Backend no devuelve perfiles correctamente en `/api/users/me/profiles`
+  2. `ProfileContext.refreshProfiles()` no se ejecuta después de crear perfil
+  3. Problema con activación automática del primer perfil (`is_active`)
+  4. Error de autenticación/token en la llamada API
+- **Acción inmediata**: 
+  - [ ] Verificar logs del backend para `/api/users/me/profiles`
+  - [ ] Comprobar en consola del navegador si hay errores de API
+  - [ ] Revisar que `createProfile` llama a `refreshProfiles()` correctamente
+  - [ ] Verificar que el backend marca `is_active=true` en el primer perfil
+
 ### 1. Verificar Despliegue
 - [ ] **Confirmar build exitoso** en Railway/Vercel
 - [ ] **Probar en producción**:
@@ -97,6 +111,14 @@
 ---
 
 ## 📋 Lista de Tareas Actualizada
+
+### 🔴 URGENTE (Próxima Sesión - Primera Prioridad)
+- [ ] **FIX CRÍTICO: "Sin Perfil" Bug**
+  - Investigar por qué ProfileSwitcher no muestra perfiles creados
+  - Verificar respuesta de API `/api/users/me/profiles`
+  - Comprobar que `ProfileContext.refreshProfiles()` funciona
+  - Validar que backend activa primer perfil automáticamente
+  - Probar flujo completo: crear perfil → ver en switcher → cambiar perfil
 
 ### Inmediato (Próxima Sesión)
 - [ ] Verificar build exitoso en producción
@@ -174,6 +196,7 @@ SELECT * FROM user_profiles LIMIT 5;
 
 ---
 
-**Última Actualización**: 2025-12-16 23:10  
-**Estado General**: ✅ Sistema Funcional, ⚠️ Pendiente Verificación en Producción  
-**Próximo Paso**: Confirmar despliegue exitoso y probar en cloud
+**Última Actualización**: 2025-12-16 23:20  
+**Estado General**: ⚠️ Sistema Funcional con Bug Crítico Pendiente  
+**Próximo Paso**: Resolver bug "Sin Perfil" antes de cualquier otra tarea  
+**Sesión**: Finalizada - Continuar mañana

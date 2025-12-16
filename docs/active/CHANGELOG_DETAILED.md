@@ -49,6 +49,15 @@
 - **Fix**: Restored `'use client'` in `src/app/dashboard/page.tsx` and `SalaryCalculator.tsx`.
 - **Status**: Fix pushed, awaiting successful deployment.
 
+### [23:20] 🐛 Bug Fix: Profile Creation Modal
+- **Issue 1**: Modal validation was too generic, showing "Por favor completa todos los campos" without specifying which field was missing.
+- **Issue 2**: Modal state wasn't resetting between opens, causing confusion.
+- **Fix**: 
+    - Improved validation with specific error messages ("El nombre del perfil es obligatorio", "Por favor selecciona Empresa, Grupo y Nivel")
+    - Added `handleClose()` function to reset all form state (alias, selection, error) when modal closes
+    - Applied to all close scenarios (X button, Cancel button, backdrop click)
+- **Status**: Partially resolved. "Sin Perfil" display issue pending investigation (requires checking backend API response and ProfileContext refresh logic).
+
 ### [22:45] 🛠️ UX Fix: Profile Decoupling vs Calculator
 - **Fix**: Disabled aggressive "Auto-Save" in Calculator. Now changing inputs does NOT overwrite your profile.
 - **Feat**: Added manual "Guardar esta configuración en mi Perfil" button in Calculator.
