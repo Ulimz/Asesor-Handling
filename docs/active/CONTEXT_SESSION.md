@@ -31,7 +31,22 @@
   - `src/features/calculadoras/components/SalaryCalculator.tsx`
 - ✅ **Estado**: Fix pusheado, esperando despliegue exitoso
 
-### 3. Documentación Actualizada
+### 3. Correcciones de Build
+- ✅ **Error identificado**: Falta de directivas `'use client'` en componentes refactorizados
+- ✅ **Archivos corregidos**:
+  - `src/app/dashboard/page.tsx`
+  - `src/features/calculadoras/components/SalaryCalculator.tsx`
+- ✅ **Estado**: Fix pusheado, esperando despliegue exitoso
+
+### 4. Bug Fix: Modal de Creación de Perfiles
+- ✅ **Problema identificado**: Validación genérica y estado no se reseteaba
+- ✅ **Solución implementada**:
+  - Mensajes de error específicos por campo
+  - Reset automático del formulario al cerrar
+  - Validación mejorada (trim de espacios)
+- ⚠️ **Pendiente**: Investigar por qué ProfileSwitcher muestra "Sin Perfil" después de crear perfiles
+
+### 5. Documentación Actualizada
 - ✅ `CHANGELOG_DETAILED.md`: Añadidas entradas de Multi-Profile System
 - ✅ `task.md`: Marcadas Phases 1 y 2 como completadas
 - ✅ `walkthrough_profiles.md`: Creado walkthrough del nuevo sistema
