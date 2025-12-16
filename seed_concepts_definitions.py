@@ -103,7 +103,7 @@ def seed_concepts(template_path):
 
             concepts_to_add.append(SalaryConceptDefinition(
                 company_slug=company_id,
-                name=c['name'],
+                name="Garantía Personal (TEST)",
                 code=c['id'],
                 description=f"Variable: {c['name']}",
                 input_type=inp_type,
