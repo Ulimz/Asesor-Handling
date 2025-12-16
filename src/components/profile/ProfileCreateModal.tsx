@@ -18,23 +18,38 @@ export default function ProfileCreateModal({ isOpen, onClose }: ProfileCreateMod
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    // Reset form when modal closes
+    const handleClose = () => {
+        setAlias('');
+        setSelection({ company: '', group: '', level: '' });
+        setError(null);
+        onClose();
+    };
+
     const handleSave = async () => {
         setSaving(true);
         setError(null);
         try {
-            if (alias && selection.company && selection.group && selection.level) {
-                await createProfile({
-                    alias,
-                    company_slug: selection.company,
-                    job_group: selection.group,
-                    salary_level: selection.level,
-                    contract_percentage: 100,
-                    contract_type: 'indefinido'
-                });
-                onClose();
-            } else {
-                setError("Por favor completa todos los campos.");
+            if (!alias.trim()) {
+                setError("El nombre del perfil es obligatorio.");
+                setSaving(false);
+                return;
             }
+            if (!selection.company || !selection.group || !selection.level) {
+                setError("Por favor selecciona Empresa, Grupo y Nivel.");
+                setSaving(false);
+                return;
+            }
+
+            await createProfile({
+                alias: alias.trim(),
+                company_slug: selection.company,
+                job_group: selection.group,
+                salary_level: selection.level,
+                contract_percentage: 100,
+                contract_type: 'indefinido'
+            });
+            handleClose();
         } catch (err: any) {
             console.error(err);
             setError(err.message || "Error al crear perfil.");
@@ -53,7 +68,7 @@ export default function ProfileCreateModal({ isOpen, onClose }: ProfileCreateMod
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
-                        onClick={onClose}
+                        onClick={handleClose}
                     />
 
                     {/* Modal */}
@@ -67,7 +82,7 @@ export default function ProfileCreateModal({ isOpen, onClose }: ProfileCreateMod
                             <h3 className="text-xl font-bold text-white flex items-center gap-2">
                                 <UserPlus size={24} className="text-emerald-500" /> Nuevo Perfil Profesional
                             </h3>
-                            <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors">
+                            <button onClick={handleClose} className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors">
                                 <X size={20} />
                             </button>
                         </div>
@@ -93,7 +108,7 @@ export default function ProfileCreateModal({ isOpen, onClose }: ProfileCreateMod
 
                         <div className="flex justify-end gap-3">
                             <button
-                                onClick={onClose}
+                                onClick={handleClose}
                                 className="px-4 py-2 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
                             >
                                 Cancelar
