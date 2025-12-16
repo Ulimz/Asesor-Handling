@@ -23,6 +23,7 @@
                 "PLUS_TURNICIDAD",
                 "PLUS_NOCTURNIDAD",
                 "HORA_EXTRA",
+                "HORA_PERENTORIA",
                 "PLUS_JORNADA_FRACCIONADA",
                 "PLUS_MADRUGUE",
                 "PLUS_TRANSPORTE"
@@ -45,6 +46,7 @@
                 "PLUS_TURNICIDAD",
                 "PLUS_NOCTURNIDAD",
                 "HORA_EXTRA",
+                "HORA_PERENTORIA",
                 "PLUS_JORNADA_IRREGULAR",
                 "AYUDA_MANUTENCION",
                 "PLUS_JORNADA_FRACCIONADA",
@@ -67,6 +69,7 @@
                 "PLUS_TURNICIDAD",
                 "PLUS_NOCTURNIDAD",
                 "HORA_EXTRA",
+                "HORA_PERENTORIA",
                 "AYUDA_MANUTENCION",
                 "PLUS_JORNADA_FRACCIONADA",
                 "PLUS_MADRUGUE",
