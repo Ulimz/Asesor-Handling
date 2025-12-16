@@ -660,18 +660,44 @@ def _parse_level_matrix_table(table, company_id, year, title_text):
             row_category = t1
             current_group = row_group
         elif label_cols_count == 1:
-            # Short row or Single Label: [Category, Data...]
+            # Short row or Single Label: [Category|Group, Data...]
             t0 = cells[0].get_text(strip=True)
-            # If we are in a mode with explicit groups (like EasyJet), inherit
-            if current_group != "General":
-                row_category = t0
-                row_group = current_group
+            t0_clean = clean_group_name(t0) # Clean potential group name
+            
+            # CRITICAL LOGIC FOR AVIAPARTNER / WFS / AZUL (Type 1 Matrix)
+            # If we are in a matrix table (multiple salary levels in columns)
+            # AND existing logic implies General/Inherit.
+            # We assume this single label IS the Group Name.
+            if num_levels > 1: # Matrix Table
+                 # Case 1: Sub-row of a previously defined group (EasyJet style)
+                 # Usually indented or implicit, but for Aviapartner each row is a new Group.
+                 # Heuristic: If t0 looks like a major group name?
+                 
+                 # Since Aviapartner has "Técnicos Gestores" in Col 0 and Level 1..7 in Col 1..7
+                 # We should treat t0 as the Group.
+                 
+                 # NOTE: For EasyJet, we used rowspans to populate 'current_group'.
+                 # If 'current_group' is set from a rowspan in a previous row (label_cols=2),
+                 # and this row only has 1 label col (label_cols=1), 
+                 # then this row is likely a Category under that Group.
+                 
+                 # But for Aviapartner, every row has 1 label col. 'current_group' starts as 'General'.
+                 if current_group == "General":
+                     row_group = t0_clean
+                     row_category = "Base" # Levels will handle differentiation
+                 else:
+                     # We are inside a group (e.g. Menzies/EasyJet subrow)
+                     row_category = t0
+                     row_group = current_group
             else:
+                # Not a matrix table? Or just 1 level? 
                 # Fallback: Treat as Category, Group=General
-                row_category = t0
-                row_group = "General"
-                # Optional: Try to detect group keywords in text? 
-                # Keeping it simple for now to avoid false positives.
+                if current_group != "General":
+                    row_category = t0
+                    row_group = current_group
+                else:
+                    row_category = t0
+                    row_group = "General"
         else:
             # No labels? Inherit everything?
             row_group = current_group
@@ -698,7 +724,11 @@ def _parse_level_matrix_table(table, company_id, year, title_text):
             # Or use "Level 1" as level and "Jefe Area" as... ? 
             # In DB: Group="Tecnicos", Level="Jefe Area - Nivel 1" is best for selector.
             
-            final_level_str = f"{row_category} - Nivel {level_val}"
+            # Clean up Level String
+            if row_category == "Base" or row_category == "":
+                 final_level_str = f"Nivel {level_val}"
+            else:
+                 final_level_str = f"{row_category} - Nivel {level_val}"
             
             if amount > 0:
                 results.append({

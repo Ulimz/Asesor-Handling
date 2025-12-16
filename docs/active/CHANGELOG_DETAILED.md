@@ -7,6 +7,15 @@
 
 ## 📅 Sesión: 16 Diciembre 2025
 
+### [14:00] 🛠️ Fix: Estructura Salarial Aviapartner, WFS & Azul (Tipo 1)
+*   **Problema Critico**: El selector de "Grupo" mostraba solo "General" porque los grupos reales ("Técnicos Gestores", "Administrativos") se extraían incorrectamente como categorías/niveles.
+*   **Solución Backend** (`extract_salary_tables.py`):
+    *   Implementada detección para **Tablas Matriz Tipo 1**: Si una fila tiene 1 etiqueta pero múltiples columnas de datos (niveles), esa etiqueta se promueve a **Grupo**.
+    *   **Limpieza de Niveles**: Refinado el nombre del nivel en DB. Si la categoría es "Base", el nivel se guarda como "Nivel X" (limpio) en lugar de "Base - Nivel X".
+*   **Impacto**: 
+    *   **Aviapartner, WFS, Azul Handling**: Ahora tienen sus grupos reales correctamente poblados.
+*   **Verificación**: `verify_structure.py` confirma múltiples grupos y niveles limpios.
+
 ### [13:00] 🛠️ Fix: EasyJet Data Structure (Groups vs Levels)
 *   **Problema Detectado**: El selector "Grupo" en EasyJet mostraba categorías específicas ("Jefe de Área", "AR con función") mezcladas con grupos reales, y textos sucios.
 *   **Solución Backend**: 

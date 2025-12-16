@@ -7,7 +7,7 @@ Estos tres principios DEBEN ser seguidos SIEMPRE, sin excepciones:
 ```
 ANTES DE CREAR CUALQUIER ARCHIVO:
 
-❌ INCORRECTO: Crear archivo nuevo sin revisar
+❌ INCORRECTO: Crear archivo o script nuevo sin revisar
 ✅ CORRECTO: 
    1. Buscar si ya existe con file_search o grep_search
    2. Verificar en docs/active/, docs/deprecated/, root
