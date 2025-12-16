@@ -1,8 +1,8 @@
-'use client';
-
 import { useState, useEffect } from 'react';
 import { apiService } from '@/lib/api-service';
 import CompanyDropdown from '@/components/CompanyDropdown';
+import ProfileSwitcher from '@/components/profile/ProfileSwitcher';
+import { useProfile } from '@/context/ProfileContext';
 import dynamic from 'next/dynamic';
 
 import ChatInterface from "@/components/ChatInterface";
@@ -36,6 +36,7 @@ import PwaInstallGuide from '@/components/pwa/PwaInstallGuide';
 
 export default function DashboardPage() {
     const router = useRouter();
+    const { activeProfile, loading: profileLoading } = useProfile();
     const [selectedCompanyId, setSelectedCompanyId] = useState<CompanyId | null>(null);
     const [activeTab, setActiveTab] = useState<'chat' | 'calculator' | 'alerts' | 'claims'>('chat');
     const [isAuthorized, setIsAuthorized] = useState(false);
@@ -53,15 +54,21 @@ export default function DashboardPage() {
         // Verify profile completeness
         apiService.getMe(token)
             .then(user => {
-                if (!user.company_slug) {
-                    router.push('/onboarding');
-                } else {
-                    setIsAuthorized(true);
-                    if (user.company_slug) setSelectedCompanyId(user.company_slug as any);
-                }
+                // With multi-profile, we check if they have at least one profile or require onboarding?
+                // For now, allow access if token is valid.
+                setIsAuthorized(true);
+                // Fallback to user's legacy company if no profile active yet
+                if (user.company_slug && !selectedCompanyId) setSelectedCompanyId(user.company_slug as any);
             })
             .catch(() => router.push('/login'));
     }, [router]);
+
+    // Sync selected company with active profile
+    useEffect(() => {
+        if (activeProfile) {
+            setSelectedCompanyId(activeProfile.company_slug as CompanyId);
+        }
+    }, [activeProfile]);
 
     if (!isAuthorized) {
         return (
@@ -175,10 +182,7 @@ export default function DashboardPage() {
 
                             {/* Desktop User Area */}
                             <div className="hidden md:flex items-center gap-4">
-                                <CompanyDropdown
-                                    onSelect={handleCompanySelect}
-                                    selectedCompanyId={selectedCompanyId}
-                                />
+                                <ProfileSwitcher />
                                 <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-500 p-[1px] shadow-lg shadow-cyan-500/20">
                                     <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center">
                                         <User size={20} className="text-slate-400" />
