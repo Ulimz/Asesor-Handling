@@ -7,6 +7,25 @@
 
 ## 📅 Sesión: 16 Diciembre 2025
 
+### [15:45] 🐛 Corrección Critica: Error 500 Calculadora
+*   **Error**: `ResponseValidationError` (None returned) en `POST /smart`.
+*   **Causa**: Error de indentación en `CalculatorService.py` hacía que la lógica principal fuera inalcanzable, retornando `None` implícitamente.
+*   **Calculator Fixes** (Critical):
+    *   Fixed `500 Internal Server Error` in `CalculatorService` (Data Structure Mismatch).
+    *   Fixed `PLUS_FTP` proportionality (Changed input type to `select`).
+    *   Added missing concepts: `PLUS_FRACCIONADA`, `PLUS_MADRUGUE`, `PLUS_TRANSPORTE`.
+    *   Fixed UI Duplicate inputs for Turnicity.
+    *   Relaxed `UserSchema` validation for `salary_level`.
+*   **Solución**: Reestructuración completa de la clase `CalculatorService` y añadido mapeo explícito de empresas del sector.
+*   **Estado**: Desplegando corrección.
+
+### [15:35] 🚀 Producción: Carga de Datos Remota (Railway)
+*   **Acción Manual**: Ejecución de scripts de carga (`seed_standalone.py` y `seed_concepts_definitions.py`) directamente contra la base de datos de producción usando credenciales proporcionadas.
+*   **Datos Cargados**:
+    *   **Estructura**: Definiciones de conceptos para Convenio Sector (Jet2, Norwegian, etc.).
+    *   **Valores**: Tablas salariales 2025 completas para 5 empresas.
+*   **Estado**: Base de Datos de Nube sincronizada con Local.
+
 ### [15:30] 🔥 Hotfix: Conceptos Calculadora Ausentes
 *   **Problema Critico**: Calculadora mostraba lista vacía para Jet2/Azul/Norwegian (solo "Garantía Personal").
 *   **Causa**: Faltaba poblar la tabla `SalaryConceptDefinition` para el Convenio Sector, y las empresas mapeadas no apuntaban a él.

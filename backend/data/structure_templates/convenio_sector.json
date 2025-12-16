@@ -22,7 +22,10 @@
                 "PLUS_JEFATURA",
                 "PLUS_TURNICIDAD",
                 "PLUS_NOCTURNIDAD",
-                "HORA_EXTRA"
+                "HORA_EXTRA",
+                "PLUS_FRACCIONADA",
+                "PLUS_MADRUGUE",
+                "PLUS_TRANSPORTE"
             ]
         },
         {
@@ -43,7 +46,10 @@
                 "PLUS_NOCTURNIDAD",
                 "HORA_EXTRA",
                 "PLUS_JORNADA_IRREGULAR",
-                "AYUDA_MANUTENCION"
+                "AYUDA_MANUTENCION",
+                "PLUS_FRACCIONADA",
+                "PLUS_MADRUGUE",
+                "PLUS_TRANSPORTE"
             ]
         },
         {
@@ -61,7 +67,10 @@
                 "PLUS_TURNICIDAD",
                 "PLUS_NOCTURNIDAD",
                 "HORA_EXTRA",
-                "AYUDA_MANUTENCION"
+                "AYUDA_MANUTENCION",
+                "PLUS_FRACCIONADA",
+                "PLUS_MADRUGUE",
+                "PLUS_TRANSPORTE"
             ]
         }
     ],
@@ -155,6 +164,27 @@
                 "base_value_2022": 2.52,
                 "unit": "hora",
                 "description": "Art 28.5"
+            },
+            {
+                "id": "PLUS_FRACCIONADA",
+                "name": "Plus Jornada Fraccionada",
+                "base_value_2022": 10.22,
+                "unit": "dia",
+                "description": "Art 28.6"
+            },
+            {
+                "id": "PLUS_MADRUGUE",
+                "name": "Plus Madrugue",
+                "base_value_2022": 5.80,
+                "unit": "dia",
+                "description": "Art 28.7"
+            },
+            {
+                "id": "PLUS_TRANSPORTE",
+                "name": "Plus Transporte",
+                "base_value_2022": 2.55,
+                "unit": "dia",
+                "description": "Art 28.8"
             },
             {
                 "id": "AYUDA_MANUTENCION",
