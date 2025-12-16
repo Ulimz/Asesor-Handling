@@ -29,28 +29,6 @@ class CalculatorService:
                  "HORA_PERENT": 14.0
              }
 
-    def _get_salary_prices_from_db(self, company_slug: str, group: str, level: str) -> dict:
-        """
-        Fetches salary concepts from the database and returns a flattened dictionary
-        like {"BASE_ANNUAL": 20000, "HORA_EXTRA": 15.5}
-        """
-        rows = self.db.query(SalaryTable).filter(
-            SalaryTable.company_id == company_slug,
-            SalaryTable.year == 2025, # TODO: Dynamic Year
-            SalaryTable.group == group,
-            SalaryTable.level == level
-        ).all()
-        
-        if not rows:
-             # Retry with default group if not found (or handle partial matching here)
-             return {}
-             
-        prices = {}
-        for row in rows:
-            prices[row.concept] = row.amount
-            
-        return prices
-
         # 2. Base Salary Calculation
         # Annual base from table / Payments (14)
         annual_table_salary = active_prices.get("BASE_ANNUAL", 18450.87)
@@ -89,9 +67,14 @@ class CalculatorService:
         total_variable = 0
         
         # --- DYNAMIC CONCEPT LOGIC ---
+        # MAPPING FIX: Sector Companies use 'convenio-sector' definitions
+        target_slug_for_definitions = request.company_slug
+        if request.company_slug in ["jet2", "norwegian", "south", "azul-handling"]:
+            target_slug_for_definitions = "convenio-sector"
+
         # Fetch definitions from DB for this company
         db_concepts = self.db.query(SalaryConceptDefinition).filter(
-            SalaryConceptDefinition.company_slug == request.company_slug,
+            SalaryConceptDefinition.company_slug == target_slug_for_definitions,
             SalaryConceptDefinition.is_active == True
         ).all()
         
@@ -126,7 +109,7 @@ class CalculatorService:
                         type="devengo"
                     ))
                     total_variable += amount
-
+                    
         # --- LEGACY FALLBACKS REMOVED OR SIMPLIFIED ---
         # Not computing legacy night hours if not in dynamic vars, assuming DB definitions handle it.
 
@@ -172,3 +155,24 @@ class CalculatorService:
             annual_gross=round(annual_gross_est, 2)
         )
 
+    def _get_salary_prices_from_db(self, company_slug: str, group: str, level: str) -> dict:
+        """
+        Fetches salary concepts from the database and returns a flattened dictionary
+        like {"BASE_ANNUAL": 20000, "HORA_EXTRA": 15.5}
+        """
+        rows = self.db.query(SalaryTable).filter(
+            SalaryTable.company_id == company_slug,
+            SalaryTable.year == 2025, # TODO: Dynamic Year
+            SalaryTable.group == group,
+            SalaryTable.level == level
+        ).all()
+        
+        if not rows:
+             # Retry with default group if not found (or handle partial matching here)
+             return {}
+             
+        prices = {}
+        for row in rows:
+            prices[row.concept] = row.amount
+            
+        return prices
