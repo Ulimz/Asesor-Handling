@@ -10,14 +10,14 @@ class UserCreate(UserBase):
     company_slug: str | None = None
     preferred_name: str | None = None
     job_group: str | None = None
-    salary_level: int | None = None
+    salary_level: str | None = None
     contract_type: str | None = None
 
 class UserProfileUpdate(BaseModel):
     preferred_name: str | None = None
     company_slug: str | None = None
     job_group: str | None = None
-    salary_level: int | None = None
+    salary_level: str | None = None
     contract_type: str | None = None
     seniority_date: str | None = None
 
@@ -26,7 +26,7 @@ class User(UserBase):
     preferred_name: str | None = None
     company_slug: str | None = None
     job_group: str | None = None
-    salary_level: int | None = None
+    salary_level: str | None = None
     contract_type: str | None = None
     seniority_date: str | None = None
     
