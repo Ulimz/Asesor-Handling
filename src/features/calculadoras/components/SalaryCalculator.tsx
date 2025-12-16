@@ -1,10 +1,9 @@
-'use client';
-
 import { useState, useEffect } from 'react';
 import { Calculator, DollarSign, PieChart, ArrowRight, User, Building2, Briefcase, Moon, Sun, Clock, Printer, RotateCcw } from 'lucide-react';
 import { API_URL } from '@/config/api';
-import { apiService } from '@/lib/api-service';
+// import { apiService } from '@/lib/api-service'; // We use context now
 import CascadingSelector from '@/components/calculators/CascadingSelector';
+import { useProfile } from '@/context/ProfileContext';
 
 interface CalculationResult {
     base_salary_monthly: number;
@@ -19,22 +18,19 @@ interface CalculationResult {
     annual_gross: number;
 }
 
-interface UserProfile {
-    company_slug?: string;
-    job_group?: string;
-    salary_level?: string;
-}
-
 export default function SalaryCalculator() {
+    const { activeProfile, updateProfile: updateActiveProfile, createProfile, loading: profileLoading } = useProfile();
+
     // Basic Inputs
-    const [grossSalary, setGrossSalary] = useState<number>(25000); // Fallback
+    const [grossSalary, setGrossSalary] = useState<number>(25000);
     const [payments, setPayments] = useState<number>(14);
     const [age, setAge] = useState<number>(30);
-    const [contractPct, setContractPct] = useState<number>(100); // 100% full time
+    const [contractPct, setContractPct] = useState<number>(100);
     const [contractType, setContractType] = useState<string>('indefinido');
-    const [irpf, setIrpf] = useState<number>(15); // Default 15%
+    const [irpf, setIrpf] = useState<number>(15);
 
     // Smart Inputs (Profile)
+    // Initialized from activeProfile if available, otherwise defaults
     const [company, setCompany] = useState<string>('iberia');
     const [group, setGroup] = useState<string>('Tecnicos');
     const [level, setLevel] = useState<string>('Nivel 1');
@@ -42,10 +38,7 @@ export default function SalaryCalculator() {
 
     // Variable Inputs
     const [nightHours, setNightHours] = useState<number>(0);
-    const [madrugues, setMadrugues] = useState<number>(0);
-    const [extraHours, setExtraHours] = useState<number>(0);
-    const [perentoryHours, setPerentoryHours] = useState<number>(0);
-    const [complementaryHours, setComplementaryHours] = useState<number>(0);
+    // ... (other states)
 
     const [result, setResult] = useState<CalculationResult | null>(null);
     const [loading, setLoading] = useState(false);
@@ -60,16 +53,14 @@ export default function SalaryCalculator() {
         setDynamicValues({});
         setResult(null);
         setError(null);
-        // Optional: Reset profile inputs? No, usually users want to calculate same profile again.
     };
 
     // Helper to fetch concepts
     const loadConcepts = async (companySlug: string) => {
         const token = localStorage.getItem('auth_token');
-        setConcepts([]); // Clear previous
-        setDynamicValues({}); // Clear values
+        setConcepts([]);
+        setDynamicValues({});
         try {
-            // Fetch concepts for the company
             const res = await fetch(`${API_URL}/api/calculadoras/concepts/${companySlug}`, {
                 headers: { 'Authorization': `Bearer ${token || ''}` }
             });
@@ -82,35 +73,21 @@ export default function SalaryCalculator() {
         }
     };
 
-    // Initial Profile Load
+    // Sync with Active Profile
     useEffect(() => {
-        const init = async () => {
-            const token = localStorage.getItem('auth_token');
-            if (token) {
-                try {
-                    const res = await fetch(`${API_URL}/api/users/me`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    if (res.ok) {
-                        const userData = await res.json();
-                        if (userData.company_slug) {
-                            setCompany(userData.company_slug); // This will trigger the effect below or we call load here
-                            // loadConcepts(userData.company_slug); // We let the dependency array handle it
-                            setHasProfile(true);
-                        } else {
-                            loadConcepts('iberia');
-                        }
-                        if (userData.job_group) setGroup(userData.job_group);
-                        if (userData.salary_level) setLevel(userData.salary_level);
-                        return;
-                    }
-                } catch (e) { console.error(e) }
-            }
-            // Fallback
+        if (activeProfile) {
+            setCompany(activeProfile.company_slug);
+            setGroup(activeProfile.job_group);
+            setLevel(activeProfile.salary_level);
+            setContractPct(activeProfile.contract_percentage || 100);
+            setContractType(activeProfile.contract_type || 'indefinido');
+            setHasProfile(true);
+            // loadConcepts triggered by company change effect below
+        } else if (!profileLoading) {
+            // Only set default if not loading
             loadConcepts('iberia');
-        };
-        init();
-    }, []);
+        }
+    }, [activeProfile, profileLoading]);
 
     // Reload concepts when company changes
     useEffect(() => {
@@ -174,7 +151,7 @@ export default function SalaryCalculator() {
                 <div>
                     <h2 className="text-2xl font-bold text-white">Calculadora Inteligente (Dinámica)</h2>
                     <p className="text-slate-400 text-sm">
-                        {hasProfile ? `Configurada para ${company} (${group} - ${level})` : 'Personaliza tu perfil y variables mensuales'}
+                        {activeProfile ? `Perfil: ${activeProfile.alias} (${company})` : 'Personaliza tu perfil y variables mensuales'}
                     </p>
                 </div>
             </div>
@@ -212,18 +189,19 @@ export default function SalaryCalculator() {
                             </div>
 
                             {/* Manual Save Profile Button */}
-                            {hasProfile && (
+                            {hasProfile && activeProfile && (
                                 <div className="flex justify-end pt-2">
                                     <button
                                         type="button"
                                         onClick={async () => {
-                                            const token = localStorage.getItem('auth_token');
-                                            if (token && company && group && level) {
+                                            if (company && group && level) {
                                                 try {
-                                                    await apiService.updateProfile(token, {
+                                                    await updateActiveProfile(activeProfile.id, {
                                                         company_slug: company,
                                                         job_group: group,
-                                                        salary_level: level
+                                                        salary_level: level,
+                                                        contract_percentage: contractPct,
+                                                        contract_type: contractType
                                                     });
                                                     alert("Perfil actualizado correctamente");
                                                 } catch (e) {
@@ -234,8 +212,15 @@ export default function SalaryCalculator() {
                                         }}
                                         className="text-xs flex items-center gap-1 text-emerald-400 hover:text-emerald-300 transition-colors"
                                     >
-                                        <User size={14} /> Guardar esta configuración en mi Perfil
+                                        <User size={14} /> Actualizar Perfil Activo ({activeProfile.alias})
                                     </button>
+                                </div>
+                            )}
+
+                            {/* Save As New Button (Always visible if logged in?) - Simplified for now */}
+                            {!activeProfile && (
+                                <div className="flex justify-end pt-2">
+                                    {/* Logic for creating first profile usually handled by registration or dashboard, but we can add 'Save as New' here later if needed */}
                                 </div>
                             )}
                         </div>
