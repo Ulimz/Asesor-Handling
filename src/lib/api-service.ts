@@ -130,5 +130,48 @@ export const apiService = {
         });
 
         if (!response.ok) throw new Error('Error eliminando cuenta');
+    },
+
+    profiles: {
+        async getAll(token: string) {
+            const res = await fetch(`${API_URL}/api/users/me/profiles`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!res.ok) throw new Error('Failed to fetch profiles');
+            return res.json();
+        },
+        async create(token: string, data: any) {
+            const res = await fetch(`${API_URL}/api/users/me/profiles`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (!res.ok) throw new Error('Failed to create profile');
+            return res.json();
+        },
+        async update(token: string, id: number, data: any) {
+            const res = await fetch(`${API_URL}/api/users/me/profiles/${id}`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (!res.ok) throw new Error('Failed to update profile');
+            return res.json();
+        },
+        async delete(token: string, id: number) {
+            const res = await fetch(`${API_URL}/api/users/me/profiles/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!res.ok) throw new Error('Failed to delete profile');
+        },
+        async activate(token: string, id: number) {
+            const res = await fetch(`${API_URL}/api/users/me/profiles/${id}/activate`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!res.ok) throw new Error('Failed to activate profile');
+            return res.json();
+        }
     }
 };
