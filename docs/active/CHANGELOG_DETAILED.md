@@ -18,7 +18,57 @@
     - **Data**: Removed duplicate "Garantía Personal".
     - **Isolation**: Verified that Azul data does not interfere with Sector/Jet2 companies.
 
+### [21:50] 🌩️ Hotfix: Cloud Data Synchronization
+- **Issue**: Cloud database missing new Azul concepts (Fraccionada Tiers, RCO/ARCO) after deployment.
+- **Root Cause**: Deployment does not automatically run seeding scripts. Data was stale.
+- **Fix**: Created `backend/seed_production.py` (One-Click Fix) to force-seed correct definitions and values in production.
+- **Action Required**: Run `python backend/seed_production.py` in Prod Console.
+
+### [22:05] 🐛 Critical Fix: Azul Handling Concept Visibility
+- **Issue**: User reporting "nothing appears" or generic sector fields despite correct seeding.
+- **Root Cause**: Backend API `router.py` was forcefully remapping `azul-handling` requests to `convenio-sector`, ignoring the custom Azul definitions in DB.
+- **Fix**: Removed `azul-handling` from the "Sector Alias" list. Now it loads its own specific `azul-handling` concepts.
+
+### [23:00] 🔄 Multi-Profile System (Phase 1 & 2)
+- **Phase 1 - Calculator Decoupling**:
+    - **Problem**: Calculator was auto-saving to user profile on every change, causing data corruption.
+    - **Solution**: Removed auto-save behavior. Added explicit "Guardar esta configuración en mi Perfil" button.
+    - **Result**: Calculator now operates as a "Sandbox" - changes are temporary until user explicitly saves.
+- **Phase 2 - Multi-Profile Architecture**:
+    - **Database**: Created `user_profiles` table (One-to-Many with `users`).
+    - **Backend API**: Implemented full CRUD endpoints (`/api/users/me/profiles`).
+    - **Frontend**: 
+        - Created `ProfileContext` for global state management.
+        - Added `ProfileSwitcher` component in Dashboard header.
+        - Created `ProfileCreateModal` for new profile creation.
+        - Integrated `SalaryCalculator` with active profile context.
+    - **Result**: Users can now manage multiple professional profiles (e.g., "Iberia Morning", "Azul Weekend").
+
+### [23:05] 🔧 Build Fix
+- **Issue**: Deployment failed due to missing `'use client'` directives in refactored components.
+- **Fix**: Restored `'use client'` in `src/app/dashboard/page.tsx` and `SalaryCalculator.tsx`.
+- **Status**: Fix pushed, awaiting successful deployment.
+
+### [22:45] 🛠️ UX Fix: Profile Decoupling vs Calculator
+- **Fix**: Disabled aggressive "Auto-Save" in Calculator. Now changing inputs does NOT overwrite your profile.
+- **Feat**: Added manual "Guardar esta configuración en mi Perfil" button in Calculator.
+- **Impact**: Solves issues where testing scenarios corrupted the user's real saved data.
+
+### [22:30] ✅ Final Fix: Azul Handling Logic & UI
+- **UI**: Added price display `(300.00€)` to Checkbox concepts (RCO, ARCO) in `SalaryCalculator`.
+- **Logic**: Removed hardcoded mapping in `CalculatorService` that prevented Azul variables from being calculated.
+- **Data**: Verified Cloud Database has clean, segregated Azul 2025 data (Turnicidad, Fraccionada, etc).
+- **Status**: **FULLY OPERATIONAL**.
+
+### [21:25] 🛡️ Security Patch: Next.js Upgrade
+
+
+- **Critical Fix**: Upgraded `next` from `16.0.7` to `16.0.10`.
+- **Reason**: Blocked by Railway due to CVE-2025-55183/55184.
+- **Status**: Patch applied and pushed to trigger new build.
+
 ### [15:45] 🐛 Corrección Critica: Error 500 Calculadora
+
 
 *   **Error**: `ResponseValidationError` (None returned) en `POST /smart`.
 *   **Causa**: Error de indentación en `CalculatorService.py` hacía que la lógica principal fuera inalcanzable, retornando `None` implícitamente.
