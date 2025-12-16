@@ -10,7 +10,12 @@ from sqlalchemy.orm import sessionmaker
 sys.stdout.reconfigure(encoding='utf-8')
 
 # --- STANDALONE DATABASE SETUP ---
-DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/asistente_handling"
+# Allow overriding via env var for Production Seeding
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/asistente_handling")
+# Fix postgres:// legacy protocol for SQLAlchemy
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
@@ -55,10 +60,11 @@ def seed_concepts(template_path):
             # BUT: Frontend logic (SalaryCalculator) now handles specific codes. 
             # We just need to ensure they EXIST in this list so they are returned by API.
             
-            # Map known checkboxes
+            # Map known checkboxes/selects
             inp_type = "number" 
-            if code in ['PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR']:
-                inp_type = "checkbox"
+            if code in ['PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR', 'PLUS_FTP', 'PLUS_FIJI']:
+                # These are strictly 1/0 flags or mutually exclusive selects -> Proportional fixed amounts
+                inp_type = "select" if code in ['PLUS_FTP', 'PLUS_FIJI', 'PLUS_JORNADA_IRREGULAR'] else "checkbox"
             
             concepts_to_add.append(SalaryConceptDefinition(
                 company_slug=company_id,
