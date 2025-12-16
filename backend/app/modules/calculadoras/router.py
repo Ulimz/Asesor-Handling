@@ -34,7 +34,7 @@ def get_companies(db: Session = Depends(get_db)):
     """Retorna lista de empresas disponibles"""
     companies = db.query(SalaryTable.company_id).distinct().all()
     # companies is a list of tuples like [('iberia',), ('groundforce',)]
-    return [c[0] for c in companies if c[0]]
+    return [c[0] for c in companies if c[0] and c[0] != "convenio-sector"]
 
 @router.get("/metadata/{company_id}/groups", response_model=List[str])
 def get_company_groups(company_id: str, db: Session = Depends(get_db)):

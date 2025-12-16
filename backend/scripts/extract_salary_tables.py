@@ -33,7 +33,9 @@ def clean_group_name(raw_name):
     
     # 1. Remove numbers and currency-like patterns (17.500,00)
     # This regex looks for digits possibly followed by dots/commas and more digits
-    text = re.sub(r'\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?', '', raw_name)
+    # Also explicitly remove Euro symbol
+    text = re.sub(r'[€]', '', raw_name)
+    text = re.sub(r'\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?', '', text)
     
     # 2. Cleanup whitespace and punctuation
     text = text.replace(":", "").replace(".", "").strip()
@@ -602,10 +604,13 @@ def _parse_level_matrix_table(table, company_id, year, title_text):
         text = th.get_text(strip=True).lower()
         headers.append(text)
         if "nivel" in text:
-            # Extract number
-            level_match = re.search(r'nivel\s*(\d+)', text)
-            if level_match:
-                level_map[idx] = level_match.group(1)
+            if "entrada" in text or "base" in text:
+                level_map[idx] = 1
+            else:
+                # Extract number
+                level_match = re.search(r'nivel\s*(\d+)', text)
+                if level_match:
+                    level_map[idx] = level_match.group(1)
     
     if not level_map:
         return []

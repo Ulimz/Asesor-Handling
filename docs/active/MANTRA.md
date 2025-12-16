@@ -13,6 +13,8 @@ ANTES DE CREAR CUALQUIER ARCHIVO:
    2. Verificar en docs/active/, docs/deprecated/, root
    3. Si existe: ACTUALIZAR, no crear nuevo
    4. Si no existe: proceder con creación
+
+
 ### 2️⃣ Seguir la Estructura (v1.1 - OFICIAL)
 **Estructura de Carpetas Permitida**:
 
@@ -33,6 +35,8 @@ ANTES DE CREAR CUALQUIER ARCHIVO:
 - ✅ SÍ crear archivos .md en `docs/active/`.
 - ❌ NO mezclar scripts de backend en root (usar `backend/scripts/`).
 - ✅ SÍ mantener limpieza absoluta en el directorio raíz.
+
+
 ### 3️⃣ Evitar Duplicados Completamente
 
 ```

@@ -7,6 +7,53 @@
 
 ## 📅 Sesión: 16 Diciembre 2025
 
+### [12:30] 🛠️ Fix: Selector de Compañía & Aviapartner
+*   **Selector Frontend/Backend**:
+    *   **Acción**: Modificado `backend/app/modules/calculadoras/router.py`.
+    *   **Detalle**: Filtrado explícito de `convenio-sector` en endpoint `/metadata/companies`.
+    *   **Resultado**: "Convenio Sector" ya no aparece en el selector del usuario (UI limpia).
+*   **Aviapartner Data**:
+    *   **Fix Crítico**: Mapeo de "Nivel entrada" / "base" -> **Nivel 1** en `extract_salary_tables.py`.
+    *   **Limpieza**: Eliminado símbolo `€` de nombres de grupo (ej. "Técnicos gestores").
+    *   **Validación**: Script `verify_aviapartner.py` confirma presencia de Nivel 1 y nombres limpios en DB Producción.
+
+### [12:00] 🧹 Limpieza de Datos & 🚧 Banner Beta
+*   **Limpieza Backend**: Implementado `clean_group_name()` en scripts de extracción.
+    *   Elimina precios ("17.500") y textos basura de los selectores.
+    *   Ejecutado Seed en Producción: **6284 registros limpios**.
+*   **UX Frontend**: Añadido `BetaBanner` global (Layout).
+    *   FIX: Elevado a `z-100` y `fixed top-0` para evitar solapamiento con Navbar.
+    *   Estilo: Fondo Sólido Naranja (Alta Visibilidad).
+*   **Despliegue**: Push realizado a `main`.
+
+### [11:45] 🌍 Expansión de Base de Datos (Todas las Compañías)
+*   **Solicitud**: Usuario reporta que faltaban compañías (Aviapartner, Sector...).
+*   **Acción**: Actualizado `seed_salary_tables.py` para procesar TODOS los XMLs disponibles.
+*   **Resultado**: Insertados **5393 registros** (antes 4034).
+*   **Nuevas Compañías Activas**:
+    *   `aviapartner`, `wfs`, `easyjet`, `azul-handling`
+    *   `convenio-sector` (Generico)
+    *   **Mapped**: `jet2`, `norwegian`, `south` (Usan datos sector)
+*   **Verificación**: `verify_companies.py` confirma 12 compañías únicas en DB.
+
+### [11:35] 🚀 Despliegue v1.7-FIXED (Conectividad Definitiva)
+*   **Problema**: Frontend no conectaba con Backend (Selectores vacíos).
+*   **Causa**: `salary-service.ts` ignoraba `api.ts` y CORS estaba restrictivo.
+*   **Solución**: 
+    *   Unificado servicio para usar `src/config/api.ts`.
+    *   Abierto CORS a `*` (Wildcard) en Backend.
+    *   Añadida marca visible `v1.7-FIXED`.
+
+### [11:30] 🧪 Debugging en Producción (v1.6-DEBUG)
+*   **Acción**: Añadida marca de agua visible en `layout.tsx` y logs en consola.
+*   **Objetivo**: Confirmar si el despliegue se estaba realizando (cache busting).
+
+### [11:27] 🌱 Seeding DB Producción (Railway)
+*   **Problema**: Selectores vacíos en entorno de producción.
+*   **Causa**: Base de datos de nube estaba vacía (solo se llenó la local).
+*   **Acción**: Ejecutado `seed_salary_tables.py` apuntando a `interchange.proxy.rlwy.net`.
+*   **Resultado**: Insertados 4034 registros en la nube.
+
 ### [11:25] 🚀 Redespliegue Manual (Solicitado por Usuario)
 *   **Motivo**: Usuario reporta no ver los cambios en producción.
 *   **Acción**: Forzar push de todo el estado actual para disparar build en Railway/Vercel.
