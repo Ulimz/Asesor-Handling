@@ -27,13 +27,16 @@ export default function CascadingSelector({ onSelectionChange, initialSelection 
     useEffect(() => {
         async function loadCompanies() {
             try {
+                console.log("CascadingSelector: Fetching companies...");
                 const data = await SalaryService.getCompanies();
+                console.log("CascadingSelector: Companies loaded:", data);
                 setCompanies(data);
                 if (initialSelection?.company && data.includes(initialSelection.company)) {
                     setSelectedCompany(initialSelection.company);
                 }
             } catch (err) {
-                console.error("Failed to load companies", err);
+                console.error("CascadingSelector: Failed to load companies", err);
+                setCompanies([]); // Ensure empty state on error
             } finally {
                 setLoadingCompanies(false);
             }

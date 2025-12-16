@@ -56,6 +56,10 @@ export default function RootLayout({
               </div>
             </main>
             <CookieBanner />
+            {/* Version Marker for User Verification */}
+            <div className="fixed bottom-1 right-1 text-[10px] text-slate-700 pointer-events-none opacity-50 z-50">
+              v1.6-DEBUG (Manual Push)
+            </div>
           </div>
         </ThemeProvider>
       </body>
