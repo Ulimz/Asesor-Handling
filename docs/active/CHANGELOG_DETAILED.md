@@ -7,6 +7,22 @@
 
 ## 📅 Sesión: 16 Diciembre 2025
 
+### [15:30] 🔥 Hotfix: Conceptos Calculadora Ausentes
+*   **Problema Critico**: Calculadora mostraba lista vacía para Jet2/Azul/Norwegian (solo "Garantía Personal").
+*   **Causa**: Faltaba poblar la tabla `SalaryConceptDefinition` para el Convenio Sector, y las empresas mapeadas no apuntaban a él.
+*   **Solución**:
+    *   **Backend Router**: Mapeado explícito de `jet2`, `norwegian`, `south`, `azul-handling` -> `convenio-sector` en `/concepts/` endpoint.
+    *   **Data Injection**: Ejecutado `seed_concepts_definitions.py` para traducir el Master Template a definiciones de frontend.
+*   **Resultado**: Ahora aparecen todos los Turnos, Pluses y Variables en la calculadora para estas empresas.
+
+### [15:15] 🧮 Frontend: Calculadora Inteligente Sectorial (v2.0)
+*   **Adaptación**: Actualizado `SalaryCalculator.tsx` para soportar la nueva estructura canónica.
+*   **Mejoras UX**:
+    *   **Turnos**: Desplegable reconoce `PLUS_TURNICIDAD_` (2, 3, 4, 5+ turnos) y `PLUS_JORNADA_IRREGULAR`.
+    *   **Responsabilidad**: Nuevos checkboxes para `PLUS_SUPERVISION` y `PLUS_JEFATURA`.
+    *   **Limpieza**: Filtros actualizados para evitar que estos conceptos aparezcan duplicados como inputs genéricos.
+*   **Despliegue**: Código subido a GitHub (Trigger Railway/Vercel).
+
 ### [15:00] 🏛️ Implementación Convenio Sector (Estrategia Master Template)
 *   **Hito Arquitectónico**: Cambio de estrategia de extracción pura a **Modelo Híbrido (Template + XML)**.
 *   **Acciones**:

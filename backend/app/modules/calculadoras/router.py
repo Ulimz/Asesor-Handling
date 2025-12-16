@@ -56,8 +56,14 @@ def get_group_levels(company_id: str, group_id: str, db: Session = Depends(get_d
 @router.get("/concepts/{company_slug}", response_model=List[ConceptSchema])
 def get_company_concepts(company_slug: str, db: Session = Depends(get_db)):
     """Devuelve los conceptos variables disponibles para una empresa"""
+    
+    # Mapping for Sector Agreement companies
+    target_slug = company_slug
+    if company_slug in ["jet2", "norwegian", "south", "azul-handling"]:
+        target_slug = "convenio-sector"
+        
     concepts = db.query(SalaryConceptDefinition).filter(
-        (SalaryConceptDefinition.company_slug == company_slug) | (SalaryConceptDefinition.company_slug == "global"),
+        (SalaryConceptDefinition.company_slug == target_slug) | (SalaryConceptDefinition.company_slug == "global"),
         SalaryConceptDefinition.is_active == True
     ).all()
     
