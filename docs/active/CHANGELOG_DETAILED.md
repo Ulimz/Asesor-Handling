@@ -7,6 +7,22 @@
 
 ## 📅 Sesión: 16 Diciembre 2025
 
+### [11:25] 🚀 Redespliegue Manual (Solicitado por Usuario)
+*   **Motivo**: Usuario reporta no ver los cambios en producción.
+*   **Acción**: Forzar push de todo el estado actual para disparar build en Railway/Vercel.
+*   **Estado Cógido**: Verificado `src/config/api.ts` (Backend URL correcta) y lógica de Parentesco.
+
+### [11:15] 🐞 Bug Fix: Register Page UI & Logic
+*   **Problema**: Orden de campos incorrecto y selectores estáticos (no cascading).
+*   **Solución**: 
+    *   Refactorizado `register/page.tsx` para usar `CascadingSelector`.
+    *   Movido input "Preferred Name" a posición superior (antes de selectores).
+    *   Eliminada lógica legacy de `knowledge-base`.
+
+### [10:00] 🔄 Restauración de Estado (Backup Ayer)
+*   **Estado**: El usuario confirma que se cargó el backup de ayer correctamente.
+*   **Integridad**: No se han perdido cambios. Continuamos desde el punto de "Fallo de Cascada" corregido.
+
 ### [11:00] 🌐 Sincronización Dominio (SEO)
 *   **Acción**: Actualizado fallback domain en `sitemap.ts` y `robots.ts`.
 *   **Valor**: `https://asistentehandling.es` (Producción).
@@ -49,9 +65,10 @@
 
 ---
 
-### [11:05] 🚀 Despliegue v1.1 (GitHub & Production)
+### [11:10] 🚀 Despliegue v1.1 (GitHub & Production)
 *   **Acción**: `git push` a repositorio `Ulimz/Asesor-Handling`.
-*   **Contenido**: Limpieza de docs, SEO (`robots.ts`), Backup y Data Foundations.
+*   **Fix Crítico**: Se excluyó `backups/` y `auditoria_resultados/` en `.gitignore` para evitar archivos >100MB.
+*   **Contenido**: Limpieza de docs, SEO (`robots.ts`), Data Foundations.
 *   **Trigger**: Inicia despliegue automático en Railway/Vercel.
 
 ## 📋 Próximos Cambios Previstos
