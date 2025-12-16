@@ -56,8 +56,6 @@ export default function SalaryCalculator() {
     const [dynamicValues, setDynamicValues] = useState<Record<string, number>>({});
 
     // Reset handler
-
-    // Reset handler
     const handleReset = () => {
         setDynamicValues({});
         setResult(null);
@@ -274,292 +272,284 @@ export default function SalaryCalculator() {
                             </button>
                         </div>
                     </div>
-            </div>
 
-            {/* Sección Impuestos (IRPF) */}
-            <div className="bg-slate-800/30 p-4 rounded-xl border border-white/5 space-y-4">
-                <div className="flex items-center gap-2 text-emerald-400 text-sm font-semibold uppercase tracking-wider mb-2">
-                    <DollarSign size={16} /> Retenciones
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                        <label className="text-xs text-slate-400 block mb-1">IRPF Voluntario (%)</label>
-                        <div className="relative">
-                            <input
-                                type="number"
-                                value={irpf}
-                                onChange={e => setIrpf(Number(e.target.value))}
-                                className="w-full bg-slate-900/50 border border-white/10 rounded-lg py-2 pl-3 pr-8 text-sm text-white focus:border-emerald-500/50"
-                                step="0.1"
-                            />
-                            <span className="absolute right-3 top-2 text-slate-500 text-sm">%</span>
+                    {/* Sección Impuestos (IRPF) */}
+                    <div className="bg-slate-800/30 p-4 rounded-xl border border-white/5 space-y-4">
+                        <div className="flex items-center gap-2 text-emerald-400 text-sm font-semibold uppercase tracking-wider mb-2">
+                            <DollarSign size={16} /> Retenciones
                         </div>
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-xs text-slate-400 block mb-1">Seguridad Social</label>
-                        <div className="w-full bg-slate-900/30 border border-white/5 rounded-lg py-2 px-3 text-sm text-slate-500 cursor-not-allowed">
-                            <div className="flex flex-col gap-1">
-                                <div className="flex justify-between">
-                                    <span>Contingencias:</span>
-                                    <span className="text-white">4.70%</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>Desempleo:</span>
-                                    <span className={contractType === 'temporal' ? 'text-amber-400 font-bold' : 'text-white'}>
-                                        {contractType === 'temporal' ? '1.60%' : '1.55%'}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>F.P.:</span>
-                                    <span className="text-white">0.10%</span>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label className="text-xs text-slate-400 block mb-1">IRPF Voluntario (%)</label>
+                                <div className="relative">
+                                    <input
+                                        type="number"
+                                        value={irpf}
+                                        onChange={e => setIrpf(Number(e.target.value))}
+                                        className="w-full bg-slate-900/50 border border-white/10 rounded-lg py-2 pl-3 pr-8 text-sm text-white focus:border-emerald-500/50"
+                                        step="0.1"
+                                    />
+                                    <span className="absolute right-3 top-2 text-slate-500 text-sm">%</span>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Variables Mensuales DINÁMICAS */}
-            <div className="space-y-4">
-                <div className="flex items-center gap-2 text-emerald-400 text-sm font-semibold uppercase tracking-wider">
-                    <Clock size={16} /> Variables Mensuales ({concepts.filter(c =>
-                        !c.code.startsWith('PLUS_TURNOS') &&
-                        !c.code.startsWith('PLUS_TURNICIDAD') &&
-                        !c.code.startsWith('PLUS_FRACC') &&
-                        !['PLUS_FIJI', 'PLUS_FTP', 'PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR'].includes(c.code)
-                    ).length})
-                </div>
-
-                {/* 1. GRUPO EXCLUYENTE: Régimen de Turnos / Jornada */}
-                {(concepts.some(c => c.code.startsWith('PLUS_TURNOS_')) || concepts.some(c => c.code.startsWith('PLUS_TURNICIDAD_')) || concepts.some(c => ['PLUS_FIJI', 'PLUS_FTP', 'PLUS_JORNADA_IRREGULAR'].includes(c.code))) && (
-                    <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5 space-y-2 mb-4">
-                        <label className="text-sm font-medium text-slate-300 block">Régimen de Turnos / Jornada (Mutuamente Excluyentes)</label>
-                        <select
-                            className="w-full bg-slate-900/50 border border-white/10 rounded-lg py-2 px-3 text-sm text-white focus:border-emerald-500/50"
-                            onChange={(e) => {
-                                const selection = e.target.value; // "TURNOS_2", "FIJI", "FTP", etc.
-                                const newValues = { ...dynamicValues };
-
-                                // Reset ALL mutually exclusive items
-                                concepts.filter(c => c.code.startsWith('PLUS_TURNOS_') || c.code.startsWith('PLUS_TURNICIDAD_')).forEach(c => newValues[c.code] = 0);
-                                if (concepts.find(c => c.code === 'PLUS_FIJI')) newValues['PLUS_FIJI'] = 0;
-                                if (concepts.find(c => c.code === 'PLUS_FTP')) newValues['PLUS_FTP'] = 0;
-                                if (concepts.find(c => c.code === 'PLUS_JORNADA_IRREGULAR')) newValues['PLUS_JORNADA_IRREGULAR'] = 0;
-
-                                // Activate Selection
-                                if (selection === 'PLUS_FIJI') newValues['PLUS_FIJI'] = 1;
-                                else if (selection === 'PLUS_FTP') newValues['PLUS_FTP'] = 1;
-                                else if (selection === 'PLUS_JORNADA_IRREGULAR') newValues['PLUS_JORNADA_IRREGULAR'] = 1;
-                                else if (selection.startsWith('PLUS_TURNOS_') || selection.startsWith('PLUS_TURNICIDAD_')) newValues[selection] = 1;
-
-                                setDynamicValues(newValues);
-                            }}
-                            defaultValue=""
-                        >
-                            <option value="">-- Sin Plus de Régimen --</option>
-                            {/* Turnicidad Options (Legacy & Canonical) */}
-                            {concepts.filter(c => c.code.startsWith('PLUS_TURNOS_') || c.code.startsWith('PLUS_TURNICIDAD_')).sort((a, b) => a.code.localeCompare(b.code)).map(c => (
-                                <option key={c.code} value={c.code}>
-                                    {c.name.replace('Plus Turnicidad', 'Turnicidad').replace('Turnicidad', 'Turnicidad').trim()} ({c.default_price > 0 ? c.default_price.toFixed(2) + '€' : 'Variable'})
-                                </option>
-                            ))}
-                            {/* Fiji / FTP Options */}
-                            {(concepts.find(c => c.code === 'PLUS_FIJI') || concepts.find(c => c.code === 'PLUS_JORNADA_IRREGULAR')) &&
-                                <option value={concepts.find(c => c.code === 'PLUS_JORNADA_IRREGULAR') ? 'PLUS_JORNADA_IRREGULAR' : 'PLUS_FIJI'}>
-                                    Jornada Irregular / Fiji
-                                </option>
-                            }
-                            {concepts.find(c => c.code === 'PLUS_FTP') && <option value="PLUS_FTP">Fijo Tiempo Parcial (FTP)</option>}
-                        </select>
-                        <p className="text-xs text-slate-500">Selecciona tu régimen. Fiji, FTP y Turnicidad son incompatibles entre sí.</p>
-                    </div>
-                )}
-
-                {/* 2. GRUPO FIJO: Pluses de Responsabilidad / Fijos */}
-                {concepts.some(c => ['PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA'].includes(c.code)) && (
-                    <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5 space-y-2 mb-4">
-                        <label className="text-sm font-medium text-slate-300 block">Pluses Fijos / Responsabilidad</label>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            {concepts.filter(c => ['PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA'].includes(c.code)).map(c => (
-                                <label key={c.code} className="flex items-center gap-2 p-2 rounded-lg bg-slate-900/40 border border-white/5 cursor-pointer hover:bg-slate-900/60 transition-colors">
-                                    <input
-                                        type="checkbox"
-                                        className="w-4 h-4 rounded border-slate-600 text-emerald-500 focus:ring-emerald-500/50 bg-slate-800"
-                                        checked={dynamicValues[c.code] === 1}
-                                        onChange={(e) => {
-                                            setDynamicValues(prev => ({
-                                                ...prev,
-                                                [c.code]: e.target.checked ? 1 : 0
-                                            }));
-                                        }}
-                                    />
-                                    <span className="text-sm text-slate-300 select-none">
-                                        {c.name.replace('Plus ', '').replace('de ', '')}
-                                        {c.default_price > 0 && <span className="text-emerald-500/80 text-xs ml-1">({c.default_price.toFixed(2)}€)</span>}
-                                    </span>
-                                </label>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {/* Special Group: Plus Jornada Fraccionada */}
-                {concepts.some(c => c.code.startsWith('PLUS_FRACC')) && (
-                    <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5 space-y-3 mb-4">
-                        <label className="text-sm font-medium text-slate-300 block">Plus Jornada Fraccionada (Desglose)</label>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            {concepts.filter(c => c.code.startsWith('PLUS_FRACC')).map(fracc => (
-                                <div key={fracc.code} className="bg-slate-900/40 p-2 rounded-lg border border-white/5">
-                                    <label className="text-xs text-slate-400 block mb-1 min-h-[32px]">{fracc.name.replace('Plus Fraccionada', '').replace('(', '').replace(')', '').trim() || fracc.name}</label>
-                                    <div className="relative">
-                                        <input
-                                            type="number"
-                                            placeholder="Días"
-                                            value={dynamicValues[fracc.code] || ''}
-                                            onChange={(e) => setDynamicValues(prev => ({
-                                                ...prev,
-                                                [fracc.code]: Number(e.target.value)
-                                            }))}
-                                            className="w-full bg-slate-900/50 border border-white/10 rounded-lg py-2 px-3 text-sm text-white focus:border-emerald-500/50"
-                                        />
-                                        <div className="text-[10px] text-emerald-500/80 mt-1 text-right">{fracc.default_price.toFixed(2)}€/día</div>
+                            <div className="space-y-2">
+                                <label className="text-xs text-slate-400 block mb-1">Seguridad Social</label>
+                                <div className="w-full bg-slate-900/30 border border-white/5 rounded-lg py-2 px-3 text-sm text-slate-500 cursor-not-allowed">
+                                    <div className="flex flex-col gap-1">
+                                        <div className="flex justify-between">
+                                            <span>Contingencias:</span>
+                                            <span className="text-white">4.70%</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span>Desempleo:</span>
+                                            <span className={contractType === 'temporal' ? 'text-amber-400 font-bold' : 'text-white'}>
+                                                {contractType === 'temporal' ? '1.60%' : '1.55%'}
+                                            </span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span>F.P.:</span>
+                                            <span className="text-white">0.10%</span>
+                                        </div>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-                        <p className="text-xs text-slate-500">Introduce los días realizados en cada tramo de fraccionada.</p>
-                    </div>
-                )}
-
-                {concepts.length === 0 ? (
-                    <div className="text-slate-500 text-sm italic">Cargando conceptos del convenio...</div>
-                ) : (
-                    <div className="grid grid-cols-2 gap-4">
-                        {concepts.filter(c =>
-                            !c.code.startsWith('PLUS_TURNOS') &&
-                            !c.code.startsWith('PLUS_TURNICIDAD') &&
-                            !c.code.startsWith('PLUS_FRACC') &&
-                            !['PLUS_FIJI', 'PLUS_FTP', 'PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR'].includes(c.code)
-                        ).map((concept) => (
-                            <div key={concept.code} className="space-y-2">
-                                <label className="text-xs text-slate-300 flex items-center gap-2 truncate" title={concept.description}>
-                                    {concept.name}
-                                </label>
-                                <input
-                                    type="number"
-                                    value={dynamicValues[concept.code] || ''}
-                                    onChange={(e) => setDynamicValues(prev => ({
-                                        ...prev,
-                                        [concept.code]: Number(e.target.value)
-                                    }))}
-                                    className="w-full bg-slate-800/50 border border-white/10 rounded-xl py-2 px-3 text-white focus:outline-none focus:border-emerald-500/50 text-sm"
-                                    placeholder="0"
-                                />
                             </div>
-                        ))}
-                    </div>
-                )}
-
-                <div className="space-y-2 pt-4 border-t border-white/5">
-                    <label className="text-sm font-medium text-slate-300">Pagas</label>
-                    <select
-                        value={payments}
-                        onChange={(e) => setPayments(Number(e.target.value))}
-                        className="w-full bg-slate-800/50 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-emerald-500/50"
-                    >
-                        <option value={14}>14 Pagas</option>
-                        <option value={12}>12 Pagas</option>
-                    </select>
-                </div>
-            </div>
-
-            <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-4 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl font-bold text-white hover:shadow-lg hover:shadow-emerald-500/25 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-            >
-                {loading ? 'Calculando...' : <>Calcular Nómina Inteligente <ArrowRight size={18} /></>}
-            </button>
-        </form>
-
-                {/* RESULTS PANEL */ }
-    <div id="results-panel" className="lg:col-span-5 bg-white/5 border border-white/5 rounded-2xl p-6 relative overflow-hidden flex flex-col">
-
-        {/* Buttons: Reset & Print */}
-        <div className="absolute top-4 right-4 flex gap-2 z-20 no-print">
-            {result && (
-                <button
-                    onClick={handleReset}
-                    className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                    title="Nueva Nómina (Limpiar)"
-                >
-                    <RotateCcw size={20} />
-                </button>
-            )}
-            <button
-                onClick={() => window.print()}
-                className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                title="Imprimir / Guardar PDF"
-            >
-                <Printer size={20} />
-            </button>
-        </div>
-
-        {error && (
-            <div className="bg-red-500/10 border border-red-500/20 text-red-200 text-sm p-3 rounded-lg mb-4">
-                <strong>Ha ocurrido un error:</strong> {typeof error === 'object' ? JSON.stringify(error) : error}
-            </div>
-        )}
-
-        {!result ? (
-            <div className="h-full flex flex-col items-center justify-center text-slate-500 text-center opacity-60 min-h-[300px]">
-                <PieChart size={48} className="mb-4 text-slate-600" />
-                <p>Introduce tus variables para ver el desglose detallado</p>
-            </div>
-        ) : (
-            <div className="space-y-6 relative z-10 flex-1">
-                <div className="text-center pb-6 border-b border-white/5">
-                    <p className="text-slate-400 text-sm mb-1 uppercase tracking-widest">Neto Estimado</p>
-                    <div className="text-5xl font-bold text-emerald-400 font-mono tracking-tight">
-                        {result?.net_salary_monthly?.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}
-                    </div>
-                    <div className="mt-2 text-xs text-slate-500">
-                        Bruto: {result?.gross_monthly_total.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}
-                    </div>
-                </div>
-
-                <div className="space-y-3 flex-1 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar print:max-h-none print:overflow-visible">
-                    <h4 className="text-xs font-semibold text-slate-500 uppercase">Desglose de Conceptos</h4>
-                    {result?.breakdown.map((item, idx) => (
-                        <div key={idx} className="flex justify-between text-sm group hover:bg-white/5 p-1 rounded transition-colors">
-                            <span className={item.type === 'deduccion' ? "text-red-400" : "text-slate-300"}>
-                                {item.name}
-                            </span>
-                            <span className={item.type === 'deduccion' ? "text-red-400 font-mono" : "text-emerald-400 font-mono"}>
-                                {item.amount.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}
-                            </span>
                         </div>
-                    ))}
-                </div>
-
-                <div className="pt-4 mt-auto border-t border-white/5">
-                    <div className="flex justify-between items-center text-xs text-slate-500 mb-4">
-                        <span>Variables Totales</span>
-                        <span className="text-white">{result?.variable_salary.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}</span>
                     </div>
 
-                    {/* Legal Disclaimer */}
-                    <div className="bg-slate-800/50 p-3 rounded-lg border border-white/5 text-[10px] text-slate-300 leading-tight text-justify print:bg-white print:text-black print:border-black/10 print:mt-8">
-                        <strong>AVISO LEGAL:</strong> Este cálculo es una estimación meramente informativa y <u>no tiene carácter vinculante</u> ni validez legal. Los importes pueden variar debido a redondeos, cambios normativos o situaciones personales específicas no contempladas. Recomendamos contrastar estos datos con su nómina oficial o consultar con el departamento de RRHH.
+                    {/* Variables Mensuales DINÁMICAS */}
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-emerald-400 text-sm font-semibold uppercase tracking-wider">
+                            <Clock size={16} /> Variables Mensuales ({concepts.filter(c =>
+                                !c.code.startsWith('PLUS_TURNOS') &&
+                                !c.code.startsWith('PLUS_TURNICIDAD') &&
+                                !c.code.startsWith('PLUS_FRACC') &&
+                                !['PLUS_FIJI', 'PLUS_FTP', 'PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR'].includes(c.code)
+                            ).length})
+                        </div>
+
+                        {/* 1. GRUPO EXCLUYENTE: Régimen de Turnos / Jornada */}
+                        {(concepts.some(c => c.code.startsWith('PLUS_TURNOS_')) || concepts.some(c => c.code.startsWith('PLUS_TURNICIDAD_')) || concepts.some(c => ['PLUS_FIJI', 'PLUS_FTP', 'PLUS_JORNADA_IRREGULAR'].includes(c.code))) && (
+                            <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5 space-y-2 mb-4">
+                                <label className="text-sm font-medium text-slate-300 block">Régimen de Turnos / Jornada (Mutuamente Excluyentes)</label>
+                                <select
+                                    className="w-full bg-slate-900/50 border border-white/10 rounded-lg py-2 px-3 text-sm text-white focus:border-emerald-500/50"
+                                    onChange={(e) => {
+                                        const selection = e.target.value;
+                                        const newValues = { ...dynamicValues };
+                                        concepts.filter(c => c.code.startsWith('PLUS_TURNOS_') || c.code.startsWith('PLUS_TURNICIDAD_')).forEach(c => newValues[c.code] = 0);
+                                        if (concepts.find(c => c.code === 'PLUS_FIJI')) newValues['PLUS_FIJI'] = 0;
+                                        if (concepts.find(c => c.code === 'PLUS_FTP')) newValues['PLUS_FTP'] = 0;
+                                        if (concepts.find(c => c.code === 'PLUS_JORNADA_IRREGULAR')) newValues['PLUS_JORNADA_IRREGULAR'] = 0;
+                                        if (selection === 'PLUS_FIJI') newValues['PLUS_FIJI'] = 1;
+                                        else if (selection === 'PLUS_FTP') newValues['PLUS_FTP'] = 1;
+                                        else if (selection === 'PLUS_JORNADA_IRREGULAR') newValues['PLUS_JORNADA_IRREGULAR'] = 1;
+                                        else if (selection.startsWith('PLUS_TURNOS_') || selection.startsWith('PLUS_TURNICIDAD_')) newValues[selection] = 1;
+                                        setDynamicValues(newValues);
+                                    }}
+                                    defaultValue=""
+                                >
+                                    <option value="">-- Sin Plus de Régimen --</option>
+                                    {concepts.filter(c => c.code.startsWith('PLUS_TURNOS_') || c.code.startsWith('PLUS_TURNICIDAD_')).sort((a, b) => a.code.localeCompare(b.code)).map(c => (
+                                        <option key={c.code} value={c.code}>
+                                            {c.name.replace('Plus Turnicidad', 'Turnicidad').replace('Turnicidad', 'Turnicidad').trim()} ({c.default_price > 0 ? c.default_price.toFixed(2) + '€' : 'Variable'})
+                                        </option>
+                                    ))}
+                                    {(concepts.find(c => c.code === 'PLUS_FIJI') || concepts.find(c => c.code === 'PLUS_JORNADA_IRREGULAR')) &&
+                                        <option value={concepts.find(c => c.code === 'PLUS_JORNADA_IRREGULAR') ? 'PLUS_JORNADA_IRREGULAR' : 'PLUS_FIJI'}>
+                                            Jornada Irregular / Fiji
+                                        </option>
+                                    }
+                                    {concepts.find(c => c.code === 'PLUS_FTP') && <option value="PLUS_FTP">Fijo Tiempo Parcial (FTP)</option>}
+                                </select>
+                                <p className="text-xs text-slate-500">Selecciona tu régimen. Fiji, FTP y Turnicidad son incompatibles entre sí.</p>
+                            </div>
+                        )}
+
+                        {/* 2. GRUPO FIJO: Pluses de Responsabilidad / Fijos */}
+                        {concepts.some(c => ['PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA'].includes(c.code)) && (
+                            <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5 space-y-2 mb-4">
+                                <label className="text-sm font-medium text-slate-300 block">Pluses Fijos / Responsabilidad</label>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    {concepts.filter(c => ['PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA'].includes(c.code)).map(c => (
+                                        <label key={c.code} className="flex items-center gap-2 p-2 rounded-lg bg-slate-900/40 border border-white/5 cursor-pointer hover:bg-slate-900/60 transition-colors">
+                                            <input
+                                                type="checkbox"
+                                                className="w-4 h-4 rounded border-slate-600 text-emerald-500 focus:ring-emerald-500/50 bg-slate-800"
+                                                checked={dynamicValues[c.code] === 1}
+                                                onChange={(e) => {
+                                                    setDynamicValues(prev => ({
+                                                        ...prev,
+                                                        [c.code]: e.target.checked ? 1 : 0
+                                                    }));
+                                                }}
+                                            />
+                                            <span className="text-sm text-slate-300 select-none">
+                                                {c.name.replace('Plus ', '').replace('de ', '')}
+                                                {c.default_price > 0 && <span className="text-emerald-500/80 text-xs ml-1">({c.default_price.toFixed(2)}€)</span>}
+                                            </span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Special Group: Plus Jornada Fraccionada */}
+                        {concepts.some(c => c.code.startsWith('PLUS_FRACC')) && (
+                            <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5 space-y-3 mb-4">
+                                <label className="text-sm font-medium text-slate-300 block">Plus Jornada Fraccionada (Desglose)</label>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    {concepts.filter(c => c.code.startsWith('PLUS_FRACC')).map(fracc => (
+                                        <div key={fracc.code} className="bg-slate-900/40 p-2 rounded-lg border border-white/5">
+                                            <label className="text-xs text-slate-400 block mb-1 min-h-[32px]">{fracc.name.replace('Plus Fraccionada', '').replace('(', '').replace(')', '').trim() || fracc.name}</label>
+                                            <div className="relative">
+                                                <input
+                                                    type="number"
+                                                    placeholder="Días"
+                                                    value={dynamicValues[fracc.code] || ''}
+                                                    onChange={(e) => setDynamicValues(prev => ({
+                                                        ...prev,
+                                                        [fracc.code]: Number(e.target.value)
+                                                    }))}
+                                                    className="w-full bg-slate-900/50 border border-white/10 rounded-lg py-2 px-3 text-sm text-white focus:border-emerald-500/50"
+                                                />
+                                                <div className="text-[10px] text-emerald-500/80 mt-1 text-right">{fracc.default_price.toFixed(2)}€/día</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <p className="text-xs text-slate-500">Introduce los días realizados en cada tramo de fraccionada.</p>
+                            </div>
+                        )}
+
+                        {concepts.length === 0 ? (
+                            <div className="text-slate-500 text-sm italic">Cargando conceptos del convenio...</div>
+                        ) : (
+                            <div className="grid grid-cols-2 gap-4">
+                                {concepts.filter(c =>
+                                    !c.code.startsWith('PLUS_TURNOS') &&
+                                    !c.code.startsWith('PLUS_TURNICIDAD') &&
+                                    !c.code.startsWith('PLUS_FRACC') &&
+                                    !['PLUS_FIJI', 'PLUS_FTP', 'PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR'].includes(c.code)
+                                ).map((concept) => (
+                                    <div key={concept.code} className="space-y-2">
+                                        <label className="text-xs text-slate-300 flex items-center gap-2 truncate" title={concept.description}>
+                                            {concept.name}
+                                        </label>
+                                        <input
+                                            type="number"
+                                            value={dynamicValues[concept.code] || ''}
+                                            onChange={(e) => setDynamicValues(prev => ({
+                                                ...prev,
+                                                [concept.code]: Number(e.target.value)
+                                            }))}
+                                            className="w-full bg-slate-800/50 border border-white/10 rounded-xl py-2 px-3 text-white focus:outline-none focus:border-emerald-500/50 text-sm"
+                                            placeholder="0"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <div className="space-y-2 pt-4 border-t border-white/5">
+                            <label className="text-sm font-medium text-slate-300">Pagas</label>
+                            <select
+                                value={payments}
+                                onChange={(e) => setPayments(Number(e.target.value))}
+                                className="w-full bg-slate-800/50 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-emerald-500/50"
+                            >
+                                <option value={14}>14 Pagas</option>
+                                <option value={12}>12 Pagas</option>
+                            </select>
+                        </div>
                     </div>
+
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full py-4 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl font-bold text-white hover:shadow-lg hover:shadow-emerald-500/25 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                        {loading ? 'Calculando...' : <>Calcular Nómina Inteligente <ArrowRight size={18} /></>}
+                    </button>
+                </form>
+
+                {/* RESULTS PANEL */}
+                <div id="results-panel" className="lg:col-span-5 bg-white/5 border border-white/5 rounded-2xl p-6 relative overflow-hidden flex flex-col">
+
+                    {/* Buttons: Reset & Print */}
+                    <div className="absolute top-4 right-4 flex gap-2 z-20 no-print">
+                        {result && (
+                            <button
+                                onClick={handleReset}
+                                className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                                title="Nueva Nómina (Limpiar)"
+                            >
+                                <RotateCcw size={20} />
+                            </button>
+                        )}
+                        <button
+                            onClick={() => window.print()}
+                            className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                            title="Imprimir / Guardar PDF"
+                        >
+                            <Printer size={20} />
+                        </button>
+                    </div>
+
+                    {error && (
+                        <div className="bg-red-500/10 border border-red-500/20 text-red-200 text-sm p-3 rounded-lg mb-4">
+                            <strong>Ha ocurrido un error:</strong> {typeof error === 'object' ? JSON.stringify(error) : error}
+                        </div>
+                    )}
+
+                    {!result ? (
+                        <div className="h-full flex flex-col items-center justify-center text-slate-500 text-center opacity-60 min-h-[300px]">
+                            <PieChart size={48} className="mb-4 text-slate-600" />
+                            <p>Introduce tus variables para ver el desglose detallado</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-6 relative z-10 flex-1">
+                            <div className="text-center pb-6 border-b border-white/5">
+                                <p className="text-slate-400 text-sm mb-1 uppercase tracking-widest">Neto Estimado</p>
+                                <div className="text-5xl font-bold text-emerald-400 font-mono tracking-tight">
+                                    {result?.net_salary_monthly?.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}
+                                </div>
+                                <div className="mt-2 text-xs text-slate-500">
+                                    Bruto: {result?.gross_monthly_total.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}
+                                </div>
+                            </div>
+
+                            <div className="space-y-3 flex-1 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar print:max-h-none print:overflow-visible">
+                                <h4 className="text-xs font-semibold text-slate-500 uppercase">Desglose de Conceptos</h4>
+                                {result?.breakdown.map((item, idx) => (
+                                    <div key={idx} className="flex justify-between text-sm group hover:bg-white/5 p-1 rounded transition-colors">
+                                        <span className={item.type === 'deduccion' ? "text-red-400" : "text-slate-300"}>
+                                            {item.name}
+                                        </span>
+                                        <span className={item.type === 'deduccion' ? "text-red-400 font-mono" : "text-emerald-400 font-mono"}>
+                                            {item.amount.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="pt-4 mt-auto border-t border-white/5">
+                                <div className="flex justify-between items-center text-xs text-slate-500 mb-4">
+                                    <span>Variables Totales</span>
+                                    <span className="text-white">{result?.variable_salary.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}</span>
+                                </div>
+
+                                {/* Legal Disclaimer */}
+                                <div className="bg-slate-800/50 p-3 rounded-lg border border-white/5 text-[10px] text-slate-300 leading-tight text-justify print:bg-white print:text-black print:border-black/10 print:mt-8">
+                                    <strong>AVISO LEGAL:</strong> Este cálculo es una estimación meramente informativa y <u>no tiene carácter vinculante</u> ni validez legal. Los importes pueden variar debido a redondeos, cambios normativos o situaciones personales específicas no contempladas. Recomendamos contrastar estos datos con su nómina oficial o consultar con el departamento de RRHH.
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Background Glow */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-emerald-500/10 rounded-full blur-[60px] -z-10 pointer-events-none"></div>
                 </div>
             </div>
-        )}
-
-        {/* Background Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-emerald-500/10 rounded-full blur-[60px] -z-10 pointer-events-none"></div>
-    </div>
-            </div >
-        </div >
+        </div>
     );
 }
