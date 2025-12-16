@@ -628,39 +628,87 @@ def _parse_level_matrix_table(table, company_id, year, title_text):
     tbody = table.find("tbody")
     if not tbody: return []
     
+    current_group = "General"
+
+    # Sort level_map keys to ensure we access data cells in correct order 
+    # (though typically they are sequential)
+    sorted_level_idxs = sorted(level_map.keys())
+    num_levels = len(sorted_level_idxs)
+    
     for row in tbody.find_all("tr"):
         cells = row.find_all("td")
         if not cells: continue
         
-        # Determine Group/Category heuristically
-        # Simple strategy: Concat text from cells BEFORE the first level data cell
+        num_cells = len(cells)
+        # Determine how many label columns exist in this specific row
+        # by checking how many cells are EXTRA compared to the expected data columns
+        # However, be careful if the row is missing some data cells.
+        # Stronger heuristic: The Last N columns are data. The rest are labels.
         
-        first_data_idx = min(level_map.keys())
-        category_parts = []
+        label_cols_count = num_cells - num_levels
+        if label_cols_count < 0: label_cols_count = 0 # Should check malformed
+
+        # Extract Group and Category
+        row_group = None
+        row_category = "Unknown"
         
-        for idx in range(0, first_data_idx):
-            if idx < len(cells):
-                txt = cells[idx].get_text(strip=True)
-                if txt and txt not in ["-", "N/A"]:
-                    category_parts.append(txt)
+        if label_cols_count >= 2:
+            # Full row: [Group, Category, Data...]
+            t0 = cells[0].get_text(strip=True)
+            t1 = cells[1].get_text(strip=True)
+            row_group = clean_group_name(t0)
+            row_category = t1
+            current_group = row_group
+        elif label_cols_count == 1:
+            # Short row or Single Label: [Category, Data...]
+            t0 = cells[0].get_text(strip=True)
+            # If we are in a mode with explicit groups (like EasyJet), inherit
+            if current_group != "General":
+                row_category = t0
+                row_group = current_group
+            else:
+                # Fallback: Treat as Category, Group=General
+                row_category = t0
+                row_group = "General"
+                # Optional: Try to detect group keywords in text? 
+                # Keeping it simple for now to avoid false positives.
+        else:
+            # No labels? Inherit everything?
+            row_group = current_group
+            row_category = "Base"
+
+        row_category = row_category.strip(".").strip()
+        
+        # Iterate Data Cells (Right-Aligned)
+        data_cells = cells[-num_levels:]
+        
+        for i, cell in enumerate(data_cells):
+            header_idx = sorted_level_idxs[i]
+            level_val = level_map[header_idx]
             
-        category_name = clean_group_name(" ".join(category_parts))
-        
-        # Iterate data cells
-        for idx, cell in enumerate(cells):
-            if idx in level_map:
-                val_text = cell.get_text(strip=True)
-                amount = parse_spanish_number(val_text)
-                
-                if amount > 0:
-                    results.append({
-                        "company_id": company_id,
-                        "year": year,
-                        "group": category_name, # Refining this later
-                        "level": level_map[idx],
-                        "concept": concept,
-                        "amount": amount
-                    })
+            val_text = cell.get_text(strip=True)
+            if val_text in ["N/A", "-"]: continue
+            
+            amount = parse_spanish_number(val_text)
+            
+            # Construct Level String if needed to disambiguate or just use raw level
+            # If concept is Level Matrix, the LEVEL is distinct from Category.
+            # E.g. Category="Jefe Area", Level="Nivel 1"
+            # So DB Level field should probably combine them?
+            # Or use "Level 1" as level and "Jefe Area" as... ? 
+            # In DB: Group="Tecnicos", Level="Jefe Area - Nivel 1" is best for selector.
+            
+            final_level_str = f"{row_category} - Nivel {level_val}"
+            
+            if amount > 0:
+                results.append({
+                    "company_id": company_id,
+                    "year": year,
+                    "group": row_group,
+                    "level": final_level_str,
+                    "concept": concept,
+                    "amount": amount
+                })
     return results
 
 def _parse_concept_columns_table(table, company_id, year):
@@ -698,28 +746,78 @@ def _parse_concept_columns_table(table, company_id, year):
     tbody = table.find("tbody")
     if not tbody: return []
     
+    current_group = "General"
+    
     for row in tbody.find_all("tr"):
         cells = row.find_all("td")
         if not cells: continue
         
         # Heuristic to align data with headers.
-        
-        # We assume the LAST N columns of data correspond to the LAST N columns of headers.
-        
         num_headers = len(cols)
         num_cells = len(cells)
         
         offset = num_cells - num_headers
-        if offset < 0: offset = 0 # Should not happen unless malformed
+        if offset < 0: offset = 0 
         
-        # Identify Category (Everything before offset)
-        category_parts = []
+        # Identify Label Columns
+        # 1. Columns strictly BEFORE the headers begin (Offset columns)
+        # 2. Columns aligned with Headers that are NOT Concept Headers (Unmapped)
+        
+        label_texts = []
+        
+        # 1. Offset Cols
         for i in range(offset):
             txt = cells[i].get_text(strip=True)
-            if txt:
-                category_parts.append(txt)
-        category_name = clean_group_name(" ".join(category_parts))
+            if txt: label_texts.append(txt)
+            
+        # 2. Unmapped Header Cols (e.g. if Header Row includes "Category")
+        # Check columns from 'offset' onwards
+        for i in range(offset, num_cells):
+            header_idx = i - offset
+            if header_idx < num_headers:
+                if header_idx not in header_map:
+                    # This column has a header but it's not a known concept. Treat as Label.
+                    txt = cells[i].get_text(strip=True)
+                    if txt: label_texts.append(txt)
+            else:
+                # cell index exceeds headers?? Should not happen if start at 0
+                pass
 
+        # Determine Group and Category from labels
+        row_group = "General" 
+        row_category = "Base"
+        
+        # Logic for EasyJet (Offset based) vs others
+        # EasyJet: Offset 2 [Group, Cat] or Offset 1 [Cat]
+        
+        if len(label_texts) >= 2:
+            # First is Group, Second is Category
+            t0 = label_texts[0]
+            t1 = label_texts[1]
+            row_group = clean_group_name(t0)
+            row_category = t1
+            current_group = row_group
+            
+        elif len(label_texts) == 1:
+            # Single Label
+            t0 = label_texts[0]
+            if current_group != "General":
+                # Inherit Group
+                row_group = current_group
+                row_category = t0
+            else:
+                # No prior group context. Treating single label as Category (and Group=General)
+                # This aligns with the "Level" logic.
+                row_group = "General"
+                row_category = t0
+                
+        else:
+             # No labels found?
+             row_group = current_group
+             
+        # Normalize
+        row_category = row_category.strip(".").strip()
+        
         for header_idx, concept in header_map.items():
             data_idx = header_idx + offset
             if data_idx < num_cells:
@@ -735,8 +833,8 @@ def _parse_concept_columns_table(table, company_id, year):
                     results.append({
                         "company_id": company_id,
                         "year": year,
-                        "group": category_name,
-                        "level": "N/A", # Applies to all levels unless specified
+                        "group": row_group,
+                        "level": row_category,
                         "concept": concept,
                         "amount": amount
                     })

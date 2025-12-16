@@ -7,6 +7,15 @@
 
 ## 📅 Sesión: 16 Diciembre 2025
 
+### [13:00] 🛠️ Fix: EasyJet Data Structure (Groups vs Levels)
+*   **Problema Detectado**: El selector "Grupo" en EasyJet mostraba categorías específicas ("Jefe de Área", "AR con función") mezcladas con grupos reales, y textos sucios.
+*   **Solución Backend**: 
+    *   Refactorizado `_parse_concept_columns_table` y `_parse_level_matrix_table` en `extract_salary_tables.py`.
+    *   **Lógica Mejorada**: Ahora detecta correctamente cuando una fila tiene columnas de "Grupo" y "Categoría" separadas (incluso con `rowspan`).
+    *   **Resultado**: Separa limpiamente el **Grupo** (ej. "Servicios Auxiliares") del **Nivel/Categoría** (ej. "Agente de Rampa").
+*   **Validación**: Script `verify_easyjet.py` confirma que los grupos ahora son genéricos y limpios, y los niveles contienen los puestos específicos.
+*   **Base de Datos**: Re-sembrada completamente con esta nueva lógica.
+
 ### [12:30] 🛠️ Fix: Selector de Compañía & Aviapartner
 *   **Selector Frontend/Backend**:
     *   **Acción**: Modificado `backend/app/modules/calculadoras/router.py`.
