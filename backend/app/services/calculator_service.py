@@ -95,13 +95,24 @@ class CalculatorService:
                     if code in active_prices:
                         unit_price = active_prices[code]
                     
+                    definitions_with_proportionality = ["checkbox", "select"] # Types that imply a fixed monthly status, not a quantity count
+                    
+                    # Logic: If it's a fixed status (Checkbox/Select), the price is usually monthly full-time -> Apply Prorata
+                    # Exception: PLUS_FTP might be specific, but standard pluses (Turnicidad, Jefatura) are proportional.
+                    # We assume Checkbox = Proportional.
+                    
+                    final_unit_price = unit_price
+                    if definition.input_type in definitions_with_proportionality:
+                        final_unit_price = unit_price * prorata_factor
+
                     # Calculate Amount based on Input Type
                     if definition.input_type == "currency" or definition.input_type == "manual":
-                        # Input IS the monetary amount (e.g. Garantia Personal = 200€)
+                        # Input IS the monetary amount (e.g. Garantia Personal = 200€) -> User already calculated it or it's fixed
+                        # If manually entered, we trust the user.
                         amount = input_val
                     else:
-                        # Input is a quantity (Hours, Days)
-                        amount = input_val * unit_price
+                        # Input is a quantity (Hours, Days) OR a Flag (1.0)
+                        amount = input_val * final_unit_price
 
                     concepts.append(SalaryConcept(
                         name=definition.name,
@@ -119,6 +130,9 @@ class CalculatorService:
         # Deductions
         # 1. Seguridad Social (Detailed)
         base_cotizacion = gross_monthly 
+        
+        # Max/Min Bases would go here (Topes de Cotización 2025: ~4720.50€ max)
+        # Simplified for MVP
         
         rate_cc = 0.047
         rate_fp = 0.001

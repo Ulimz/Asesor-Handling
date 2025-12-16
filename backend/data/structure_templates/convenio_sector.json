@@ -105,6 +105,14 @@
                 "is_monthly": true,
                 "is_proportional": true,
                 "description": "Art 28.12. Proporcional a jornada."
+            },
+            {
+                "id": "PLUS_FTP",
+                "name": "Fijo Tiempo Parcial (FTP)",
+                "base_value_2022": 44.82,
+                "is_monthly": true,
+                "is_proportional": false,
+                "description": "Art 30.6. Fijo para FTP según turnos."
             }
         ],
         "variable": [
