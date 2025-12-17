@@ -69,6 +69,12 @@
 - **Solución**: Implementado un mapeo explícito en el `search_router.py`. Ahora, si la empresa es una de las adheridas al sector, la búsqueda de RAG se redirige automáticamente al índice de `convenio-sector` sin que el usuario note nada.
 - **Impacto**: **Funcionalidad desbloqueada** para todas las empresas que no son Iberia/Groundforce.
 
+### [13:50] 🌀 Fix: Calculadora "Flickering" (Parpadeo Infinito)
+- **Problema**: La calculadora parpadeaba la selección de empresa y sobrecargaba el navegador.
+- **Causa**: **Unstable Prop Reference**. La función `onSelectionChange` se pasaba como una función anónima `(sel) => ...` en cada render de `SalaryCalculator`. Como `CascadingSelector` tiene esta función en su `useEffect` dependency array, cada render del padre provocaba un efecto en el hijo, que a su vez llamaba al padre, creando un bucle infinito a velocidad de renderizado.
+- **Solución**: Se ha envuelto la función manejadora en `useCallback` y el objeto `initialSelection` en `useMemo` para estabilizar las referencias de memoria.
+- **Resultado**: Fin del parpadeo y comportamiento estable de la UI.
+
 ---
 
 

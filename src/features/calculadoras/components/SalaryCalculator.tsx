@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Calculator, DollarSign, PieChart, ArrowRight, User, Building2, Briefcase, Moon, Sun, Clock, Printer, RotateCcw } from 'lucide-react';
 import { API_URL } from '@/config/api';
 // import { apiService } from '@/lib/api-service'; // We use context now
@@ -144,6 +144,18 @@ export default function SalaryCalculator() {
         }
     };
 
+    // Memoize initialSelection to prevent cascading re-renders
+    const initialSelectionData = useMemo(() => {
+        return hasProfile ? { company, group, level } : undefined;
+    }, [hasProfile, company, group, level]);
+
+    // Memoize handler to prevent effect loops in child
+    const handleSelectionChange = useCallback((sel: { company: string; group: string; level: string }) => {
+        setCompany(sel.company);
+        setGroup(sel.group);
+        setLevel(sel.level);
+    }, []);
+
     return (
         <div className="p-6 bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl max-w-5xl mx-auto">
             <div className="flex items-center gap-3 mb-8">
@@ -170,12 +182,8 @@ export default function SalaryCalculator() {
                         </div>
 
                         <CascadingSelector
-                            initialSelection={hasProfile ? { company, group, level } : undefined}
-                            onSelectionChange={(sel) => {
-                                setCompany(sel.company);
-                                setGroup(sel.group);
-                                setLevel(sel.level);
-                            }}
+                            initialSelection={initialSelectionData}
+                            onSelectionChange={handleSelectionChange}
                         />
                     </div>
 
