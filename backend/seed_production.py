@@ -203,6 +203,55 @@ def seed_concepts(template_path):
 
 # ... (existing functions) ...
 
+def extract_azul_xml_vars(xml_path):
+    data = []
+    # Simplified XML extraction for vars only, using generic parsing
+    try:
+        if not os.path.exists(xml_path): return []
+        tree = ET.parse(xml_path)
+        root = tree.getroot()
+        all_content = root.findall(".//{*}texto/*")
+        
+        # MAPPINGS
+        row_map = {"técnicos gestores": "Técnicos Gestores", "administrativos": "Administrativos", "serv. auxiliares": "Servicios Auxiliares"}
+        col_map = {0: "Nivel 1", 1: "Nivel 2", 2: "Nivel 3", 3: "Nivel 4", 4: "Nivel 5", 5: "Nivel 6", 6: "Nivel 7"}
+        
+        def parse(table, cname):
+            extracted = []
+            tbody = table.find(".//{*}tbody")
+            if not tbody: return []
+            for row in tbody.findall(".//{*}tr"):
+                cells = row.findall(".//{*}td")
+                if not cells: continue
+                group_text = (cells[0].text or "").strip().lower().replace(".", "")
+                group_name = None
+                for k, v in row_map.items():
+                   if k in group_text: group_name = v; break
+                if not group_name: continue
+                for i, cell in enumerate(cells[1:]):
+                     if i in col_map:
+                         try: extracted.append({"group": group_name, "level": col_map[i], "concept": cname, "amount": float((cell.text or "0").replace(".", "").replace(",", ".")), "year": 2025})
+                         except: pass
+            return extracted
+
+        def find_tbl(frag):
+            found=False
+            for e in all_content:
+                if e.tag.endswith('p') and frag.lower() in (e.text or "").lower(): found=True
+                elif found and e.tag.endswith('table'): return e
+            return None
+            
+        t_extra = find_tbl("Tabla horas extraordinarias")
+        if t_extra: data.extend(parse(t_extra, "HORA_EXTRA"))
+        t_perentoria = find_tbl("Tabla horas perentorias")
+        if t_perentoria: data.extend(parse(t_perentoria, "HORA_PERENTORIA"))
+        t_compl = find_tbl("Tabla horas complementarias especiales")
+        if t_compl: data.extend(parse(t_compl, "HORA_COMPLEMENTARIA_ESP"))
+        
+    except Exception as e:
+        logger.error(f"XML Parse Error: {e}")
+    return data
+
 def seed_values(template_path, companies_to_seed):
     with open(template_path, 'r', encoding='utf-8') as f: template = json.load(f)
     session = SessionLocal()
