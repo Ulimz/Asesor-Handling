@@ -145,9 +145,10 @@ export default function SalaryCalculator() {
     };
 
     // Memoize initialSelection to prevent cascading re-renders
+    // Always pass current state to keep selector in sync
     const initialSelectionData = useMemo(() => {
-        return hasProfile ? { company, group, level } : undefined;
-    }, [hasProfile, company, group, level]);
+        return company && group && level ? { company, group, level } : undefined;
+    }, [company, group, level]);
 
     // Memoize handler to prevent effect loops in child
     const handleSelectionChange = useCallback((sel: { company: string; group: string; level: string }) => {

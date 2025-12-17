@@ -29,7 +29,6 @@ export default function CascadingSelector({ onSelectionChange, initialSelection 
 
         async function loadCompanies() {
             try {
-                // console.log("CascadingSelector: Fetching companies...");
                 const data = await SalaryService.getCompanies();
                 if (mounted) {
                     setCompanies(data);
@@ -47,20 +46,23 @@ export default function CascadingSelector({ onSelectionChange, initialSelection 
             loadCompanies();
         }
 
-        // Sync local state with props if provided
-        if (initialSelection) {
-            if (initialSelection.company !== selectedCompany) setSelectedCompany(initialSelection.company);
-            // Groups and Levels will update via their own useEffects when selectedCompany/Group changes
-            // BUT we need to ensure the target group/level is set eventually.
-            // However, we can't set them immediately if the options (groups array) aren't loaded yet.
-            // So we rely on the effects below to check 'initialSelection' again.
-            // Actually, we should set them here, and let the validation logic below clear them if invalid.
-            if (initialSelection.group !== selectedGroup) setSelectedGroup(initialSelection.group);
-            if (initialSelection.level !== selectedLevel) setSelectedLevel(initialSelection.level);
-        }
-
         return () => { mounted = false; };
-    }, [initialSelection, companies.length]); // Added dependency on companies.length to avoid loops? No, initialSelection is key.
+    }, []); // Only run once on mount
+
+    // Sync with initialSelection prop changes
+    useEffect(() => {
+        if (initialSelection) {
+            if (initialSelection.company !== selectedCompany) {
+                setSelectedCompany(initialSelection.company);
+            }
+            if (initialSelection.group !== selectedGroup) {
+                setSelectedGroup(initialSelection.group);
+            }
+            if (initialSelection.level !== selectedLevel) {
+                setSelectedLevel(initialSelection.level);
+            }
+        }
+    }, [initialSelection]); // React to prop changes
 
     // Load Groups when Company changes
     useEffect(() => {

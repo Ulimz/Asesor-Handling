@@ -122,6 +122,21 @@
 - **Motivo**: El usuario actualizó manualmente los precios en el JSON. El sistema ahora respeta estos valores por encima de cualquier fallback.
 - **Estado**: Base de datos sincronizada con los precios corregidos por el usuario (ej. Plus Diferente Puesto 0.80€).
 
+### [15:15] 🚑 Hotfix: Seeder Regression
+- **Error**: Al actualizar el código anterior, se eliminó accidentalmente la función `extract_azul_xml_vars`, provocando que la carga de Azul Handling fallase silenciosamente y la compañía desapareciera.
+- **Solución**: Restaurada la función crítica. Datos de Azul Handling recargados correctamente (435 registros).
+- **Impacto**: La calculadora vuelve a ajustar automáticamente el perfil de Azul Handling.
+
+### [15:50] 🔧 Fix: Calculadora Dinámica
+- **Problema**: La calculadora no se sincronizaba automáticamente con el perfil activo. Los selectores (empresa/grupo/nivel) no reflejaban los cambios del perfil.
+- **Causa Raíz**: 
+  1. `SalaryCalculator` solo pasaba datos al `CascadingSelector` cuando `hasProfile` era true, bloqueando actualizaciones.
+  2. `CascadingSelector` tenía lógica de sincronización mezclada con carga inicial, impidiendo reaccionar a cambios de props.
+- **Solución**:
+  1. Modificado `initialSelectionData` para siempre pasar el estado actual (company/group/level) al selector.
+  2. Separado el `useEffect` del selector en dos: uno para carga inicial de empresas, otro dedicado a sincronizar con `initialSelection`.
+- **Resultado**: La calculadora ahora se actualiza dinámicamente cuando cambias de perfil o cuando el perfil se carga al inicio.
+
 ---
 
 
