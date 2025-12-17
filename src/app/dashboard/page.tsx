@@ -164,11 +164,11 @@ export default function DashboardPage() {
                             </div>
                             <div className="hidden md:block">
                                 <h1 className="text-xl font-semibold text-white whitespace-nowrap truncate">
-                                    {activeTab === 'chat' && 'Asistente Handling'}
+                                    {activeTab === 'chat' && 'CHAT IA'}
                                     {activeTab === 'calculator' && 'Herramientas de Nómina'}
                                     {activeTab === 'alerts' && 'Centro de Novedades'}
                                     {activeTab === 'claims' && 'Generador de Escritos'}
-                                    1</h1>
+                                </h1>
                             </div>
                         </div>
 

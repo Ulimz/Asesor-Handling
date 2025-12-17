@@ -11,15 +11,19 @@ HISTORY_CONTEXT_MESSAGES = 3  # Number of previous messages to include in contex
 MAX_CONTEXT_CHARS = 60000  # Maximum characters for Gemini context (increased to support large tables)
 
 # Valid company slugs
-VALID_COMPANIES = [
     'azul',
+    'azul-handling',
     'iberia', 
     'groundforce',
     'swissport',
     'menzies',
     'wfs',
     'aviapartner',
-    'easyjet'
+    'easyjet',
+    'convenio-sector',
+    'jet2',
+    'norwegian',
+    'south'
 ]
 
 # Semantic enrichment keywords

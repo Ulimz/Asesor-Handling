@@ -41,6 +41,16 @@
 - **Refactor**: Eliminadas dependencias legacy de edición de usuario en favor del nuevo sistema de perfiles.
 - **Type Safety**: Corregido tipo `UserContext` para aceptar `salary_level` como string.
 
+### [13:15] 💄 Branding & Stability Fixes
+- **UI Update**:
+    - **Header**: Cambiado título "Asistente Handling" por **"CHAT IA"** (Solicitud usuario).
+    - **Fix**: Eliminado carácter "1" residual en el título del Dashboard.
+- **Fix Backend Chat**:
+    - **Problema**: Error de conexión (400 Bad Request) al hablar con perfil "Azul-Handling".
+    - **Causa**: La lista de validación `VALID_COMPANIES` en el backend no incluía el slug generado por el seed (`azul-handling`).
+    - **Solución**: Añadida lista completa de slugs permitidos (`azul-handling`, `convenio-sector`, `jet2`, `norwegian`, `south`) en `backend/app/constants.py`.
+    - **Resultado**: El chat ahora acepta correctamente las consultas desde perfiles generados automáticamente.
+
 ---
 
 
