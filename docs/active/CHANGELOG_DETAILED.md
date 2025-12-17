@@ -75,6 +75,17 @@
 - **Solución**: Se ha envuelto la función manejadora en `useCallback` y el objeto `initialSelection` en `useMemo` para estabilizar las referencias de memoria.
 - **Resultado**: Fin del parpadeo y comportamiento estable de la UI.
 
+### [13:55] 🔌 Recovery: Backend Server Outage
+- **Incidente**: La aplicación frontend reportaba "Failed to fetch".
+- **Diagnóstico**: El proceso `uvicorn` del backend se había detenido silenciosamente (posiblemente debido a la sintaxis incorrecta anterior o sobrecarga de memoria por el bucle infinito).
+- **Acción**:
+    - **Reinicio Manual**: Arrancado servidor backend localmente (`host: 127.0.0.1`, `port: 8000`) utilizando la conexión a BD Producción (Railway).
+    - **Verificación**: Comprobada respuesta `200 OK` en endpoint raíz.
+- **Estado Actual**: **SISTEMA TOTALMENTE OPERATIVO**. Frontend, Backend y BD conectados y estables.
+
+---
+
+
 ---
 
 
