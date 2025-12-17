@@ -160,7 +160,16 @@ class RagEngine:
                 ((DocumentChunk.article_ref.ilike('%ANEXO%')) | (DocumentChunk.article_ref.ilike('%TABLA%')))
             ).order_by(
                 func.length(DocumentChunk.content).desc()
-            ).limit(3)
+            )
+            
+            # EXCLUSION LOGIC: Avoid PMR tables unless user asks for them
+            if "pmr" not in query.lower():
+                 priority_stmt = priority_stmt.filter(
+                     ~DocumentChunk.article_ref.ilike('%PMR%'),
+                     ~DocumentChunk.content.ilike('%PMR%')
+                 )
+
+            priority_stmt = priority_stmt.limit(3)
             
             priority_results = list(db.execute(priority_stmt).scalars().all())
             
@@ -176,7 +185,15 @@ class RagEngine:
             anexo_stmt = select(DocumentChunk).join(LegalDocument).filter(
                 (LegalDocument.company == company_slug) &
                 ((DocumentChunk.article_ref.ilike('%ANEXO%')) | (DocumentChunk.article_ref.ilike('%TABLA%')))
-            ).limit(10) 
+            )
+
+            if "pmr" not in query.lower():
+                 anexo_stmt = anexo_stmt.filter(
+                     ~DocumentChunk.article_ref.ilike('%PMR%'),
+                     ~DocumentChunk.content.ilike('%PMR%')
+                 )
+
+            anexo_stmt = anexo_stmt.limit(10) 
             
             anexo_results = db.execute(anexo_stmt).scalars().all()
             

@@ -87,6 +87,12 @@
 - **Mejora**: Eliminado botón redundante "Gestionar Perfiles" en la barra lateral del Chat.
 - **Razón**: El usuario ya dispone de un switcher global en la cabecera, y la duplicidad generaba ruido visual. Se mantiene únicamente la tarjeta informativa del "Perfil Activo".
 
+### [14:10] 🧠 Data Precision: Filtrado de Tablas PMR
+- **Problema**: Al consultar tablas salariales desde perfiles "Jet2" (Convenio Sector), el RAG devolvía tablas de PMR (Personas con Movilidad Reducida) en lugar de las generales.
+- **Causa**: Las tablas de PMR dentro del Convenio del Sector tenían un peso semántico alto o aparecían primero, desplazando a las tablas generales en el límite de resultados (Top 3/10).
+- **Solución**: Añadida lógica de **Exclusión Negativa en `rag_engine.py`**. Si la consulta del usuario NO menciona explícitamente "PMR", el sistema filtra activamente cualquier chunk que contenga "PMR" en su título o contenido antes de devolverlo.
+- **Resultado Esperado**: Las tablas salariales devueltas serán las del Convenio General (Técnicos, Administrativos, Auxiliares) por defecto.
+
 ---
 
 
