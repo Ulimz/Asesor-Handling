@@ -190,3 +190,28 @@ class CalculatorService:
             prices[row.concept] = row.amount
             
         return prices
+
+    def get_formatted_salary_table(self, company_slug: str, group: str, level: str) -> str:
+        """
+        Returns a Markdown formatted string with the exact salary table data found in DB.
+        Used for RAG context injection.
+        """
+        prices = self._get_salary_prices_from_db(company_slug, group, level)
+        
+        if not prices:
+            return f"❌ No he encontrado datos salariales estructurados para {company_slug} / {group} / {level}."
+            
+        md = f"""
+### 📊 DATOS OFICIALES DE TABLA SALARIAL (Base de Datos)
+**Perfil**: {company_slug.upper()} | {group} | {level}
+**Año**: 2025
+
+| Concepto | Valor (€) |
+| :--- | :--- |
+"""
+        # Sort keys for consistent output
+        for concept, amount in sorted(prices.items()):
+            md += f"| {concept} | {amount:,.2f} € |\n"
+            
+        md += "\n*Estos datos provienen directamente de la calculadora y TIENEN PRIORIDAD sobre cualquier documento general.*"
+        return md

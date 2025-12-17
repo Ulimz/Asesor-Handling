@@ -54,6 +54,38 @@ def chat_with_docs(
     intent = rag_engine.detect_intent(final_query)
     print(f"🧠 Detected Intent: {intent}")
 
+    # --- HYBRID RAG: TOOL CALLING (Structured Data) ---
+    # If intent is SALARY, inject SQL data from CalculatorService
+    structured_data_context = ""
+    from app.services.calculator_service import CalculatorService
+    from app.prompts import IntentType
+    
+    if intent == IntentType.SALARY and request.company_slug:
+        try:
+            # Extract profile from User user_context (provided by frontend)
+            # Default to "Serv. Auxiliares" / "Nivel 3" if missing
+            user_ctx = request.user_context or {}
+            
+            group = user_ctx.get('job_group', "Serv. Auxiliares")
+            level = user_ctx.get('salary_level', "Nivel 3")
+            
+            # Map logic for "Entry Level" variations if needed, or rely on strict string matching.
+            # ideally the frontend sends strings that match DB keys.
+
+            calc_service = CalculatorService(db)
+            
+            # Inject data for the SPECIFIC user profile
+            structured_data_context = calc_service.get_formatted_salary_table(
+                request.company_slug, 
+                group, 
+                level
+            )
+            print(f"   💰 Injecting SQL Salary Table for {request.company_slug} / {group} / {level}")
+            
+        except Exception as e:
+            print(f"Failed to inject structured data: {e}")
+    # --------------------------------------------------
+
     # --- MAPPING SECTOR COMPANIES ---
     # Companies that adhere to the Sector Agreement (convenio-sector)
     # We map them here so RAG searches the correct documents.
@@ -79,7 +111,8 @@ def chat_with_docs(
         query=request.query, 
         context_chunks=results, 
         intent=intent,
-        user_context=request.user_context
+        user_context=request.user_context,
+        structured_data=structured_data_context
     )
     
     return {

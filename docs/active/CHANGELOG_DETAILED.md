@@ -93,6 +93,16 @@
 - **Solución**: Añadida lógica de **Exclusión Negativa en `rag_engine.py`**. Si la consulta del usuario NO menciona explícitamente "PMR", el sistema filtra activamente cualquier chunk que contenga "PMR" en su título o contenido antes de devolverlo.
 - **Resultado Esperado**: Las tablas salariales devueltas serán las del Convenio General (Técnicos, Administrativos, Auxiliares) por defecto.
 
+### [14:20] 🧠 Hybrid RAG: Inyección de Datos Estructurados (SQL)
+- **Innovación**: Implementado **"Tool Calling Implícito"** para consultas salariales.
+- **Funcionamiento**:
+    1.  El sistema detecta `IntentType.SALARY` (preguntas sobre dinero/tablas).
+    2.  En lugar de confiar solo en el PDF (RAG vectorial), el backend consulta la **Base de Datos SQL de la Calculadora**.
+    3.  Extrae la tabla salarial exacta para el perfil del usuario (`company`, `job_group`, `salary_level`).
+    4.  Formatea estos datos como una tabla Markdown de alta prioridad y se la inyecta al contexto de la IA.
+- **Beneficio**: **Precisión Absoluta**. La IA ahora responde con los valores exactos (céntimo a céntimo) de la calculadora, eliminando alucinaciones al leer tablas complejas en PDFs.
+- **Detalle**: Soporte dinámico de perfiles. Si tu perfil es "Técnico Gestor", la IA verá la tabla de Técnicos, no la genérica.
+
 ---
 
 

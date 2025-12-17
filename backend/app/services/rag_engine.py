@@ -319,7 +319,7 @@ Pregunta reescrita:"""
 
         return rewritten
 
-    def generate_answer(self, query: str, context_chunks: list, intent: IntentType = IntentType.GENERAL, user_context: dict = None):
+    def generate_answer(self, query: str, context_chunks: list, intent: IntentType = IntentType.GENERAL, user_context: dict = None, structured_data: str = None):
         """
         Generate answer using Gemini based on provided context and intent
         """
@@ -339,6 +339,10 @@ Pregunta reescrita:"""
             print("👨‍👩‍👧‍👦 Family intent detected: Injecting Kinship Table into context")
             
         context_text = "\n\n---\n\n".join([f"**{c.get('article_ref', 'Documento')}**\n{c['content']}" for c in context_chunks])
+        
+        # Prepend Structured Data (Highest Priority)
+        if structured_data:
+             context_text = f"{structured_data}\n\n{context_text}"
         
         # Prepend Kinship Table if relevant
         if kinship_context:
