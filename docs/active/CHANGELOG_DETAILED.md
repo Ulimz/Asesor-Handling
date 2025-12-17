@@ -83,6 +83,10 @@
     - **Verificación**: Comprobada respuesta `200 OK` en endpoint raíz.
 - **Estado Actual**: **SISTEMA TOTALMENTE OPERATIVO**. Frontend, Backend y BD conectados y estables.
 
+### [14:00] 💄 UI Polish: Chat Sidebar
+- **Mejora**: Eliminado botón redundante "Gestionar Perfiles" en la barra lateral del Chat.
+- **Razón**: El usuario ya dispone de un switcher global en la cabecera, y la duplicidad generaba ruido visual. Se mantiene únicamente la tarjeta informativa del "Perfil Activo".
+
 ---
 
 

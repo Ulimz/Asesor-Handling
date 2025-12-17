@@ -141,13 +141,6 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
                             ) : (
                                 <div className="text-sm text-slate-500 italic">Sin perfil laboral</div>
                             )}
-
-                            <button
-                                onClick={handleProfileClick}
-                                className="w-full mt-2 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors border border-white/5"
-                            >
-                                {activeProfile ? "Gestionar Perfiles" : "Configurar Perfil"}
-                            </button>
                         </div>
                     </div>
 
