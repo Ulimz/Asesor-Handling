@@ -51,6 +51,12 @@
     - **Solución**: Añadida lista completa de slugs permitidos (`azul-handling`, `convenio-sector`, `jet2`, `norwegian`, `south`) en `backend/app/constants.py`.
     - **Resultado**: El chat ahora acepta correctamente las consultas desde perfiles generados automáticamente.
 
+### [13:20] 🔥 Hotfix: Error Sintaxis Backend
+- **Incidente**: El despliegue falló con `IndentationError` en `backend/app/constants.py`.
+- **Causa Humana/IA**: Al aplicar el parche anterior, la herramienta de reemplazo de código eliminó accidentalmente la línea `VALID_COMPANIES = [` al intentar insertar los nuevos valores, dejando la lista "huérfana" e indentada.
+- **Lección Aprendida**: Verificar siempre el contexto circundante (3-4 líneas antes y después) al realizar reemplazos de código automatizados, especialmente en definiciones de listas o bloques grandes.
+- **Acción Correctiva**: Restaurada la declaración de la variable. Push de emergencia realizado y verificado.
+
 ---
 
 
