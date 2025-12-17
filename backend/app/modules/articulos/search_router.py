@@ -54,9 +54,19 @@ def chat_with_docs(
     intent = rag_engine.detect_intent(final_query)
     print(f"🧠 Detected Intent: {intent}")
 
+    # --- MAPPING SECTOR COMPANIES ---
+    # Companies that adhere to the Sector Agreement (convenio-sector)
+    # We map them here so RAG searches the correct documents.
+    target_slug = request.company_slug
+    SECTOR_AGREEMENT_COMPANIES = ["jet2", "norwegian", "south"]
+    
+    if request.company_slug in SECTOR_AGREEMENT_COMPANIES:
+        print(f"🔀 Redirecting '{request.company_slug}' to 'convenio-sector' for document search")
+        target_slug = "convenio-sector"
+    # --------------------------------
+
     # 1. Search relevant chunks (increased limit to capture tables)
-    # 1. Search relevant chunks (increased limit to capture tables)
-    results = rag_engine.search(query=final_query, company_slug=request.company_slug, db=db, limit=12)
+    results = rag_engine.search(query=final_query, company_slug=target_slug, db=db, limit=12)
     
     if not results:
         return {

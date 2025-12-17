@@ -63,6 +63,12 @@
 - **Solución**: Limpiadas las dependencias de `CascadingSelector.tsx`. Ahora `loadGroups` solo reacciona a cambios en `Company`, y `loadLevels` a cambios en `Group`, ignorando actualizaciones del estado padre no relevantes para el fetch.
 - **Resultado**: Carga instantánea y estable del perfil en la calculadora.
 
+### [13:40] 🚑 Fix Crítico: Lógica de Negocio (Chat)
+- **Problema**: El asistente no encontraba documentos para perfiles de empresas de Convenio Sector (Jet2, Norwegian, South, etc.) y respondía vaguedades.
+- **Causa**: **Error de Enrutamiento**. El Chat buscaba documentos con la etiqueta `company='jet2'` (que no existen, porque usan el convenio sectorial), en lugar de redirigir la búsqueda a `company='convenio-sector'`.
+- **Solución**: Implementado un mapeo explícito en el `search_router.py`. Ahora, si la empresa es una de las adheridas al sector, la búsqueda de RAG se redirige automáticamente al índice de `convenio-sector` sin que el usuario note nada.
+- **Impacto**: **Funcionalidad desbloqueada** para todas las empresas que no son Iberia/Groundforce.
+
 ---
 
 
