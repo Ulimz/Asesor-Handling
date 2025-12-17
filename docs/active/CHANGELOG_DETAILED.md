@@ -109,6 +109,14 @@
 - **Solución**: Añadido **"Null Safety"** en `CalculatorService._get_salary_prices_from_db`. Si un importe es `None`, se convierte automáticamente a `0.0`.
 - **Resultado**: La calculadora es ahora resiliente a datos incompletos en la BD y no crashea si falta algún precio.
 
+### [14:35] 📊 Data Restoration: Azul Handling Variables
+- **Problema**: Los precios de conceptos variables (Horas Extras, Perentorias, Pluses) aparecían como 0€ para Azul Handling.
+- **Causa**: El script de carga (`seed_production.py`) confiaba en leer un XML que no tenía esos datos, y no había valores por defecto definidos manually.
+- **Solución**:
+    1.  Añadida lista `MANUAL_AZUL_VARIABLES_2025` con precios estándar estimados (Horas Extra ~14-22€, Pluses varios).
+    2.  Implementada lógica de **Fallback de Nivel**: Si no existe precio específico para "Nivel 5", el sistema hereda el precio del "Nivel 3" o "Nivel 1" del mismo grupo profesional.
+- **Resultado**: La calculadora ahora muestra precios > 0€ para todos los conceptos variables de Azul Handling.
+
 ---
 
 

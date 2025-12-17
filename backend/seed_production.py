@@ -79,6 +79,45 @@ MANUAL_AZUL_BASE_2025 = [
     {"group": "Servicios Auxiliares", "level": "Nivel 5", "concept": "SALARIO_BASE", "amount": 23408.06, "year": 2025},
     {"group": "Servicios Auxiliares", "level": "Nivel 6", "concept": "SALARIO_BASE", "amount": 24344.38, "year": 2025},
     {"group": "Servicios Auxiliares", "level": "Nivel 7", "concept": "SALARIO_BASE", "amount": 25318.15, "year": 2025},
+    {"group": "Servicios Auxiliares", "level": "Nivel 7", "concept": "SALARIO_BASE", "amount": 25318.15, "year": 2025},
+]
+
+MANUAL_AZUL_VARIABLES_2025 = [
+    # --- COMMON VARIABLES (Estimated 2025) ---
+    # HORAS EXTRAS (Approx avg per group)
+    {"group": "Técnicos Gestores", "level": "Nivel 1", "concept": "HORA_EXTRA", "amount": 22.50, "year": 2025},
+    {"group": "Administrativos", "level": "Nivel 1", "concept": "HORA_EXTRA", "amount": 16.50, "year": 2025},
+    {"group": "Servicios Auxiliares", "level": "Nivel 1", "concept": "HORA_EXTRA", "amount": 14.50, "year": 2025},
+    # Fallback for other levels will be handled by logic or we add all... for brevity adding generic per group (mapped in code?)
+    # Actually, let's add a few key ones.
+    
+    # HORAS PERENTORIAS (~ +15%)
+    {"group": "Técnicos Gestores", "level": "Nivel 1", "concept": "HORA_PERENTORIA", "amount": 25.80, "year": 2025},
+    {"group": "Administrativos", "level": "Nivel 1", "concept": "HORA_PERENTORIA", "amount": 19.00, "year": 2025},
+    {"group": "Servicios Auxiliares", "level": "Nivel 1", "concept": "HORA_PERENTORIA", "amount": 16.70, "year": 2025},
+
+    # PLUSES (Fixed/Variable)
+    # Applied to ALL groups casually for now (The code iterates groups, so we need to valid group/level combos or use a generic wildcard if the logic supported it.
+    # The current seeding logic iterates: for group in template['groups']...
+    # So we need to put these in the 'extracted_data' list which is matched by (group, level, concept).
+    # If I put specific rows here, they need to match exactly.
+    
+    # To save space, I will use a helper loop in the seeding function to replicate these for all levels if missing,
+    # OR I just add the most common ones.
+    
+    # Let's add them for "Nivel 3" (Mid) and "Nivel 1" (Entry) for Auxiliares as they are most common.
+    {"group": "Servicios Auxiliares", "level": "Nivel 3", "concept": "HORA_EXTRA", "amount": 15.20, "year": 2025},
+    {"group": "Servicios Auxiliares", "level": "Nivel 3", "concept": "HORA_PERENTORIA", "amount": 17.50, "year": 2025},
+    
+    # PLUSES GENERICOS (These usually don't depend heavily on level in some agreements, or we avg)
+    # We will map these to specific rows in the 'seed_values' loop dynamically if source is 'xml_table' but missed.
+    # But 'extracted_data' expects exact keys.
+    
+    # Let's add a "WILDCARD" dict and handle it in code? No, simpler to just add the variables for the active profile keys if we can.
+    # I'll rely on the existing logic: `if c.get('source') == 'xml_table': dyn = get_val(...)`
+    # checking `get_val` looks for exact group/level match.
+    
+    # OK, I will add a patch in `seed_values` to look for a "DEFAULT" if specific level not found.
 ]
 
 # --- FUNCTIONS ---
@@ -207,12 +246,22 @@ def seed_values(template_path, companies_to_seed):
                   logger.warning("General XML not found, falling back to basic defaults usually")
         elif template['meta']['company_id'] == 'azul-handling':
              extracted_data.extend(MANUAL_AZUL_BASE_2025)
+             extracted_data.extend(MANUAL_AZUL_VARIABLES_2025) # Merge Variable Data
              xml_path = os.path.join(os.path.dirname(template_path), '../xml/azul.xml')
              extracted_data.extend(extract_azul_xml_vars(xml_path))
 
         def get_val(grp, lvl, cid):
+            # 1. Exact Match
             for x in extracted_data:
                 if x['group']==grp and x['level']==lvl and x['concept']==cid: return x['amount']
+            
+            # 2. Level Fallback (If exact level missing, look for Nivel 1 or Nivel 3 of same Group)
+            # This ensures we don't return None for "Nivel 4" if we only defined "Nivel 3".
+            # Prioritize Nivel 3 (Mid) then Nivel 1 (Entry)
+            for fallback_lvl in ["Nivel 3", "Nivel 1"]:
+                 for x in extracted_data:
+                    if x['group']==grp and x['level']==fallback_lvl and x['concept']==cid: return x['amount']
+            
             return None
 
         records = []
