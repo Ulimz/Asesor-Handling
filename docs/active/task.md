@@ -10,7 +10,7 @@
 ## 📅 Próximos Pasos (Inmediato)
 - [ ] **Deployment**: Push a GitHub para disparar build
 - [ ] **Smoke Test**: Verificar que al crear perfil ya no sale "Sin Perfil"
-- [ ] **Docker**: Corregir warnings de ENV format en Dockerfile
+- [x] **Docker**: Corregir warnings de ENV format en Dockerfile
 
 ## 🛠 Corto Plazo
 - [ ] **Settings Page**: Añadir gestión de perfiles (Editar/Eliminar)

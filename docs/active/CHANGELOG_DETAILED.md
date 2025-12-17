@@ -16,6 +16,11 @@
     - Simulado fetch exitoso.
 - **Estado**: **SOLUCIONADO** (Requiere redespilegue Frontend).
 
+### [11:50] 🐋 DevOps: Dockerfile Cleanup
+- **Mejora**: Actualizado `Dockerfile.prod` para usar formato `ENV key=value` (estándar moderno) en lugar de `ENV key value`.
+- **Beneficio**: Elimina warnings ruidosos durante el build en Railway y asegura compatibilidad futura.
+- **Estado**: Patch aplicado.
+
 ---
 
 
