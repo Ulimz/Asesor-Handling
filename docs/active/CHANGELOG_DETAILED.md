@@ -57,6 +57,12 @@
 - **Lección Aprendida**: Verificar siempre el contexto circundante (3-4 líneas antes y después) al realizar reemplazos de código automatizados, especialmente en definiciones de listas o bloques grandes.
 - **Acción Correctiva**: Restaurada la declaración de la variable. Push de emergencia realizado y verificado.
 
+### [13:30] 🐛 Fix: Calculadora "Pensando" Infinitamente
+- **Problema**: Los selectores de Empresa/Grupo/Nivel se quedaban con el spinner de carga ("pensando") y no seleccionaban el perfil.
+- **Causa**: **Infinite Render Loop**. Los `useEffect` encargados de cargar datos (API) tenían en su array de dependencias las mismas variables que actualizaban (`initialSelection`, `selectedGroup`), provocando un bucle de recargas constante cada vez que el componente padre (Calculadora) se redibujaba.
+- **Solución**: Limpiadas las dependencias de `CascadingSelector.tsx`. Ahora `loadGroups` solo reacciona a cambios en `Company`, y `loadLevels` a cambios en `Group`, ignorando actualizaciones del estado padre no relevantes para el fetch.
+- **Resultado**: Carga instantánea y estable del perfil en la calculadora.
+
 ---
 
 
