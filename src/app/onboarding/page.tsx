@@ -47,10 +47,32 @@ export default function OnboardingPage() {
             const token = localStorage.getItem('auth_token');
             if (!token) return router.push('/login');
 
-            await apiService.updateProfile(token, formData);
+            // 1. Update User (Preferred Name)
+            await apiService.updateProfile(token, {
+                preferred_name: formData.preferred_name
+            });
+
+            // 2. Create First Profile
+            // Default alias to Company Name or "Principal" if unavailable
+            // We need company name, but we only have slug in formData.
+            // We can resolve it from companies list or just use "Perfil Principal".
+            const companyName = companies.find(c => c.slug === formData.company_slug)?.name || formData.company_slug;
+            const alias = `${companyName}`;
+
+            await apiService.profiles.create(token, {
+                alias: alias,
+                company_slug: formData.company_slug,
+                job_group: formData.job_group,
+                salary_level: formData.salary_level,
+                contract_percentage: 100, // Default to 100%
+                contract_type: formData.contract_type,
+                is_active: true
+            });
+
             router.push('/dashboard');
         } catch (error) {
             console.error(error);
+            // Handle error (maybe show it?)
         } finally {
             setIsLoading(false);
         }
@@ -178,8 +200,51 @@ export default function OnboardingPage() {
                                 </div>
                             </div>
 
-                            <div className="mt-8 flex justify-end">
-                                <button onClick={handleSubmit} disabled={isLoading} className="bg-gradient-to-r from-emerald-500 to-green-600 text-white px-8 py-2 rounded-lg font-bold hover:shadow-lg hover:shadow-emerald-500/20 transition-all flex items-center">
+                            <div className="mt-8 flex flex-col md:flex-row justify-end gap-3">
+                                <button
+                                    onClick={async () => {
+                                        setIsLoading(true);
+                                        try {
+                                            const token = localStorage.getItem('auth_token');
+                                            if (!token) return router.push('/login');
+
+                                            // Update User name mostly once, but safe to repeat
+                                            await apiService.updateProfile(token, { preferred_name: formData.preferred_name });
+
+                                            const companyName = companies.find(c => c.slug === formData.company_slug)?.name || formData.company_slug;
+                                            await apiService.profiles.create(token, {
+                                                alias: companyName,
+                                                company_slug: formData.company_slug,
+                                                job_group: formData.job_group,
+                                                salary_level: formData.salary_level,
+                                                contract_percentage: 100,
+                                                contract_type: formData.contract_type,
+                                                is_active: false // Secondaries are not active by default? Or let backend handle it (backend makes first active)
+                                                // Actually, if we add another, this one is created. First one is active.
+                                                // If we create multiple, the first one remains active.
+                                            });
+
+                                            // Reset for next
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                company_slug: '',
+                                                job_group: '',
+                                                salary_level: '',
+                                            }));
+                                            setStep(2); // Go back to Company
+                                            alert("Perfil guardado. Puedes añadir otro.");
+                                        } catch (e) {
+                                            console.error(e);
+                                        } finally {
+                                            setIsLoading(false);
+                                        }
+                                    }}
+                                    disabled={isLoading}
+                                    className="bg-slate-800 text-slate-300 px-6 py-2 rounded-lg font-medium hover:bg-slate-700 disabled:opacity-50"
+                                >
+                                    + Añadir Otro Perfil
+                                </button>
+                                <button onClick={handleSubmit} disabled={isLoading} className="bg-gradient-to-r from-emerald-500 to-green-600 text-white px-8 py-2 rounded-lg font-bold hover:shadow-lg hover:shadow-emerald-500/20 transition-all flex items-center justify-center">
                                     {isLoading ? 'Guardando...' : 'Finalizar'} <Check className="inline w-4 h-4 ml-2" />
                                 </button>
                             </div>

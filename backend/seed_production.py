@@ -112,8 +112,10 @@ def seed_concepts(template_path):
             if 'tiers' in c:
                 for tier_key, tier_val in c['tiers'].items():
                     tier_code = f"{code}_{tier_key}"
+                    # Clean up tier name for display
+                    display_tier = tier_key.replace("5_PLUS_TURNOS_FIJI", "5_TURNOS").replace("_", " ")
                     concepts_to_add.append(SalaryConceptDefinition(
-                       company_slug=company_id, name=f"{c['name']} ({tier_key})",
+                       company_slug=company_id, name=f"{c['name']} ({display_tier})",
                        code=tier_code, description=f"Tier: {tier_key}",
                        input_type="checkbox" if "TURNOS" in code else "number",
                        default_price=tier_val, is_active=True

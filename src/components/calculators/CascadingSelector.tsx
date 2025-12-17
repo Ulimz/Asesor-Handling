@@ -23,26 +23,44 @@ export default function CascadingSelector({ onSelectionChange, initialSelection 
     const [loadingGroups, setLoadingGroups] = useState(false);
     const [loadingLevels, setLoadingLevels] = useState(false);
 
-    // Initial Load
+    // Initial Load & Sync with Props
     useEffect(() => {
+        let mounted = true;
+
         async function loadCompanies() {
             try {
-                console.log("CascadingSelector: Fetching companies...");
+                // console.log("CascadingSelector: Fetching companies...");
                 const data = await SalaryService.getCompanies();
-                console.log("CascadingSelector: Companies loaded:", data);
-                setCompanies(data);
-                if (initialSelection?.company && data.includes(initialSelection.company)) {
-                    setSelectedCompany(initialSelection.company);
+                if (mounted) {
+                    setCompanies(data);
                 }
             } catch (err) {
                 console.error("CascadingSelector: Failed to load companies", err);
-                setCompanies([]); // Ensure empty state on error
+                if (mounted) setCompanies([]);
             } finally {
-                setLoadingCompanies(false);
+                if (mounted) setLoadingCompanies(false);
             }
         }
-        loadCompanies();
-    }, [initialSelection]);
+
+        // Only load companies if not loaded yet
+        if (companies.length === 0) {
+            loadCompanies();
+        }
+
+        // Sync local state with props if provided
+        if (initialSelection) {
+            if (initialSelection.company !== selectedCompany) setSelectedCompany(initialSelection.company);
+            // Groups and Levels will update via their own useEffects when selectedCompany/Group changes
+            // BUT we need to ensure the target group/level is set eventually.
+            // However, we can't set them immediately if the options (groups array) aren't loaded yet.
+            // So we rely on the effects below to check 'initialSelection' again.
+            // Actually, we should set them here, and let the validation logic below clear them if invalid.
+            if (initialSelection.group !== selectedGroup) setSelectedGroup(initialSelection.group);
+            if (initialSelection.level !== selectedLevel) setSelectedLevel(initialSelection.level);
+        }
+
+        return () => { mounted = false; };
+    }, [initialSelection, companies.length]); // Added dependency on companies.length to avoid loops? No, initialSelection is key.
 
     // Load Groups when Company changes
     useEffect(() => {

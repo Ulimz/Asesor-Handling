@@ -21,6 +21,26 @@
 - **Beneficio**: Elimina warnings ruidosos durante el build en Railway y asegura compatibilidad futura.
 - **Estado**: Patch aplicado.
 
+### [13:00] 🛠️ Mejoras de Sistema de Perfiles y UX (Completo)
+- **Fix Chat Interface**:
+    - **Problema**: El asistente no recibía el contexto del perfil activo (Convenio, Grupo, Nivel) porque leía de la tabla legacy `users`.
+    - **Solución**: Refactorizado `ChatInterface.tsx` para usar `useProfile()` y enviar `activeProfile` al backend.
+    - **Mejora**: Añadido redireccionamiento a "Settings" para gestionar perfiles desde el chat.
+- **Fix Calculadora Salarial**:
+    - **Problema**: La calculadora no actualizaba sus selectores cuando cambiaba el perfil activo (solo al montar).
+    - **Solución**: Actualizado `CascadingSelector.tsx` para observar cambios en `initialSelection` y sincronizar estado reactivamente.
+- **Feat: Settings Page (Rediseño Total)**:
+    - **Cambio**: Convertida la página de configuración en un **Hub de Gestión de Perfiles**.
+    - **Funcionalidad**: Lista perfiles, permite activar, editar (incluyendo alias y empresa) y eliminar perfiles.
+    - **Modals**: Actualizados `ProfileCreateModal` y `ProfileEditModal` para soportar la nueva lógica de `apiService.profiles`.
+- **Feat: Onboarding Multi-Perfil**:
+    - **Cambio**: El onboarding ahora crea un perfil REAL en `user_profiles` en lugar de solo actualizar al usuario.
+    - **UX**: Añadido botón **"Guardar y Añadir Otro"** para permitir crear múltiples perfiles en cadena durante el registro.
+
+### [13:10] ✅ Clean Code
+- **Refactor**: Eliminadas dependencias legacy de edición de usuario en favor del nuevo sistema de perfiles.
+- **Type Safety**: Corregido tipo `UserContext` para aceptar `salary_level` como string.
+
 ---
 
 

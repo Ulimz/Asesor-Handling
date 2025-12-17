@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Send, Menu, X, MessageSquare, ShieldCheck, Sparkles, BrainCircuit, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MessageBubble from './MessageBubble';
 import { askAI } from '@/lib/ai-service';
 import { type KnowledgeItem, type CompanyId, companies } from '@/data/knowledge-base';
 import ProfileEditModal from '@/components/profile/ProfileEditModal';
+import { useProfile } from '@/context/ProfileContext';
 
 interface Message {
     id: string;
@@ -20,14 +22,18 @@ interface ChatInterfaceProps {
 }
 
 export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps) {
-    // const [selectedCompanyId, setSelectedCompanyId] = useState<CompanyId | null>(null); <--- Removed internal state
+    const router = useRouter();
+    const { activeProfile } = useProfile(); // Use global profile context
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [recentQueries, setRecentQueries] = useState<string[]>([]);
-    const [user, setUser] = useState<any | null>(null);
     const [showProfileModal, setShowProfileModal] = useState(false);
+
+    const handleProfileClick = () => {
+        router.push('/dashboard/settings');
+    };
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -40,18 +46,6 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
             return () => clearTimeout(timeout);
         }
     }, [messages.length]);
-
-    // Load user profile
-    useEffect(() => {
-        const token = localStorage.getItem('auth_token');
-        if (token) {
-            import('@/lib/api-service').then(({ apiService }) => {
-                apiService.getMe(token).then(u => {
-                    setUser(u);
-                }).catch(console.error);
-            });
-        }
-    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -82,11 +76,12 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
 
         try {
             // Pass the entire conversation history (including the new user message)
-            const userContext = user ? {
-                job_group: user.job_group,
-                salary_level: user.salary_level,
-                preferred_name: user.preferred_name,
-                contract_type: user.contract_type
+            // Construct context from Active Profile
+            const userContext = activeProfile ? {
+                job_group: activeProfile.job_group,
+                salary_level: activeProfile.salary_level,
+                preferred_name: activeProfile.alias, // Use alias as preferred name
+                contract_type: activeProfile.contract_type
             } : undefined;
 
             const response = await askAI([...messages, userMessage], selectedCompanyId!, userContext);
@@ -121,7 +116,6 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
     return (
         <div className="flex h-full md:rounded-3xl overflow-hidden glass-panel border-0 shadow-none md:shadow-2xl relative">
             {/* Background Effects */}
-            {/* Background Effects */}
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--bg-primary)]/80 via-[var(--bg-primary)]/90 to-[var(--bg-primary)]/80 -z-10 transition-colors duration-300"></div>
 
             {/* SIDEBAR (Desktop) */}
@@ -134,14 +128,14 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
                             Perfil Activo
                         </label>
                         <div className="p-3 rounded-xl bg-slate-900/50 border border-slate-800 space-y-2">
-                            {user && user.company_slug ? (
+                            {activeProfile ? (
                                 <>
                                     <div className="flex items-center gap-2 text-sky-400 font-medium text-sm">
                                         <ShieldCheck size={16} />
-                                        <span className="capitalize">{user.company_slug}</span>
+                                        <span className="capitalize">{activeProfile.company_slug}</span>
                                     </div>
                                     <div className="text-xs text-slate-500 pl-6">
-                                        {user.job_group} • {user.salary_level}
+                                        {activeProfile.job_group} • {activeProfile.salary_level}
                                     </div>
                                 </>
                             ) : (
@@ -149,10 +143,10 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
                             )}
 
                             <button
-                                onClick={() => setShowProfileModal(true)}
+                                onClick={handleProfileClick}
                                 className="w-full mt-2 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors border border-white/5"
                             >
-                                {user?.company_slug ? "Cambiar Perfil / Empresa" : "Configurar Perfil"}
+                                {activeProfile ? "Gestionar Perfiles" : "Configurar Perfil"}
                             </button>
                         </div>
                     </div>
@@ -216,7 +210,7 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
                                 <MessageSquare size={32} />
                             </div>
                             <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">
-                                ¿En qué puedo ayudarte hoy{user?.preferred_name ? `, ${user.preferred_name}` : ''}?
+                                ¿En qué puedo ayudarte hoy{activeProfile ? `, ${activeProfile.alias}` : ''}?
                             </h3>
                             <p className="max-w-md mx-auto text-[var(--text-secondary)] text-sm mb-8">
                                 He cargado el convenio de <span className="text-sky-400 font-semibold uppercase">{selectedCompanyId}</span>.
@@ -306,20 +300,7 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
                     </div>
                 </div>
             </main>
-            <ProfileEditModal
-                isOpen={showProfileModal}
-                onClose={() => setShowProfileModal(false)}
-                onProfileUpdated={(updated) => {
-                    setUser(updated);
-                    // Optionally refetch messages or clear if context changed drastically?
-                    // For now just updating user state is enough for future queries.
-                }}
-                initialProfile={user ? {
-                    company: user.company_slug || '',
-                    group: user.job_group || '',
-                    level: user.salary_level || ''
-                } : undefined}
-            />
+
         </div>
     );
 }

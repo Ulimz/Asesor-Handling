@@ -9,9 +9,10 @@ import { useProfile } from '@/context/ProfileContext';
 interface ProfileCreateModalProps {
     isOpen: boolean;
     onClose: () => void;
+    onProfileCreated?: () => void;
 }
 
-export default function ProfileCreateModal({ isOpen, onClose }: ProfileCreateModalProps) {
+export default function ProfileCreateModal({ isOpen, onClose, onProfileCreated }: ProfileCreateModalProps) {
     const { createProfile } = useProfile();
     const [alias, setAlias] = useState('');
     const [selection, setSelection] = useState({ company: '', group: '', level: '' });
@@ -49,6 +50,7 @@ export default function ProfileCreateModal({ isOpen, onClose }: ProfileCreateMod
                 contract_percentage: 100,
                 contract_type: 'indefinido'
             });
+            if (onProfileCreated) onProfileCreated();
             handleClose();
         } catch (err: any) {
             console.error(err);

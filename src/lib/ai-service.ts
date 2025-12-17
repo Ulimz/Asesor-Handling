@@ -23,7 +23,7 @@ interface Message {
 
 export interface UserContext {
     job_group?: string;
-    salary_level?: number;
+    salary_level?: string | number;
     contract_type?: string;
     preferred_name?: string;
 }

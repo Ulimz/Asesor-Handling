@@ -12,10 +12,12 @@
 - [ ] **Smoke Test**: Verificar que al crear perfil ya no sale "Sin Perfil"
 - [x] **Docker**: Corregir warnings de ENV format en Dockerfile
 
-## 🛠 Corto Plazo
-- [ ] **Settings Page**: Añadir gestión de perfiles (Editar/Eliminar)
-- [ ] **Onboarding**: Crear primer perfil durante registro
-- [ ] **Data Migration**: Script para usuarios legacy (si es necesario)
+## 🛠 Corto Plazo (Completado)
+- [x] **Settings Page**: Añadir gestión de perfiles (Editar/Eliminar)
+- [x] **Onboarding**: Crear primer perfil durante registro
+- [x] **Data Migration**: Script para usuarios legacy (si es necesario)
+- [x] **FIX**: Chat funciona con perfil activo.
+- [x] **FIX**: Calculadora auto-rellena datos de perfil.
 
 ## 🔮 Medio Plazo
 - [ ] Profile Presets & Sharing
