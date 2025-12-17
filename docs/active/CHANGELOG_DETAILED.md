@@ -3,7 +3,21 @@
 **Propósito**: Rastrear "al milímetro" cada cambio realizado en el proyecto (código, documentación, estructura) para mantener una memoria exacta del estado del sistema.
 **Actualización**: OBLIGATORIA después de cada paso o comando relevante.
 
+
+## 📅 Sesión: 17 Diciembre 2025
+
+### [11:45] 🐛 Fix Crítico: "Sin Perfil" en Producción
+- **Problema**: ProfileSwitcher mostraba "Sin Perfil" a pesar de crear perfiles exitosamente.
+- **Causa Raíz**: **Next.js Caching**. El endpoint `GET /api/users/me/profiles` estaba siendo cacheado por el `fetch` del cliente (o Next.js fetch patch), retornando siempre `[]` (estado inicial) incluso después de crear un perfil.
+- **Solución**: Añadido `{ cache: 'no-store' }` a todas las llamadas `fetch` en `src/lib/api-service.ts`.
+- **Validación**:
+    - Verificado que el Backend (`intelligent-vitality...`) funciona y devuelve perfiles correctamente.
+    - Confirmada existencia de perfiles en BD Producción (Railway).
+    - Simulado fetch exitoso.
+- **Estado**: **SOLUCIONADO** (Requiere redespilegue Frontend).
+
 ---
+
 
 ## 📅 Sesión: 16 Diciembre 2025
 

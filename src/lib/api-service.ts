@@ -135,7 +135,8 @@ export const apiService = {
     profiles: {
         async getAll(token: string) {
             const res = await fetch(`${API_URL}/api/users/me/profiles`, {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { 'Authorization': `Bearer ${token}` },
+                cache: 'no-store'
             });
             if (!res.ok) throw new Error('Failed to fetch profiles');
             return res.json();
@@ -144,7 +145,8 @@ export const apiService = {
             const res = await fetch(`${API_URL}/api/users/me/profiles`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: JSON.stringify(data),
+                cache: 'no-store'
             });
             if (!res.ok) throw new Error('Failed to create profile');
             return res.json();
@@ -153,7 +155,8 @@ export const apiService = {
             const res = await fetch(`${API_URL}/api/users/me/profiles/${id}`, {
                 method: 'PUT',
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: JSON.stringify(data),
+                cache: 'no-store'
             });
             if (!res.ok) throw new Error('Failed to update profile');
             return res.json();
@@ -161,14 +164,16 @@ export const apiService = {
         async delete(token: string, id: number) {
             const res = await fetch(`${API_URL}/api/users/me/profiles/${id}`, {
                 method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { 'Authorization': `Bearer ${token}` },
+                cache: 'no-store'
             });
             if (!res.ok) throw new Error('Failed to delete profile');
         },
         async activate(token: string, id: number) {
             const res = await fetch(`${API_URL}/api/users/me/profiles/${id}/activate`, {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { 'Authorization': `Bearer ${token}` },
+                cache: 'no-store'
             });
             if (!res.ok) throw new Error('Failed to activate profile');
             return res.json();
