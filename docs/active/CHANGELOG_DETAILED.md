@@ -117,6 +117,11 @@
     2.  Implementada lógica de **Fallback de Nivel**: Si no existe precio específico para "Nivel 5", el sistema hereda el precio del "Nivel 3" o "Nivel 1" del mismo grupo profesional.
 - **Resultado**: La calculadora ahora muestra precios > 0€ para todos los conceptos variables de Azul Handling.
 
+### [14:55] 🛠️ Data Audit & JSON Sync
+- **Mejora**: Se ha actualizado el sistema de carga (`seed_production.py`) para leer y priorizar el campo `base_value_2025` en las plantillas JSON (`azul_handling.json`).
+- **Motivo**: El usuario actualizó manualmente los precios en el JSON. El sistema ahora respeta estos valores por encima de cualquier fallback.
+- **Estado**: Base de datos sincronizada con los precios corregidos por el usuario (ej. Plus Diferente Puesto 0.80€).
+
 ---
 
 

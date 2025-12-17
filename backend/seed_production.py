@@ -82,6 +82,28 @@ MANUAL_AZUL_BASE_2025 = [
     {"group": "Servicios Auxiliares", "level": "Nivel 7", "concept": "SALARIO_BASE", "amount": 25318.15, "year": 2025},
 ]
 
+MANUAL_SECTOR_VARIABLES_2025 = [
+    # --- COMMON VARIABLES SECTOR (Estimated 2025) ---
+    # HORAS EXTRAS 
+    {"group": "Técnicos Gestores", "level": "Nivel 1", "concept": "HORA_EXTRA", "amount": 21.00, "year": 2025},
+    {"group": "Administrativos", "level": "Nivel 1", "concept": "HORA_EXTRA", "amount": 15.50, "year": 2025},
+    {"group": "Servicios Auxiliares", "level": "Nivel 1", "concept": "HORA_EXTRA", "amount": 13.50, "year": 2025},
+    {"group": "Servicios Auxiliares", "level": "Nivel 3", "concept": "HORA_EXTRA", "amount": 14.10, "year": 2025},
+
+    # HORAS PERENTORIAS
+    {"group": "Técnicos Gestores", "level": "Nivel 1", "concept": "HORA_PERENTORIA", "amount": 24.00, "year": 2025},
+    {"group": "Administrativos", "level": "Nivel 1", "concept": "HORA_PERENTORIA", "amount": 17.80, "year": 2025},
+    {"group": "Servicios Auxiliares", "level": "Nivel 1", "concept": "HORA_PERENTORIA", "amount": 15.60, "year": 2025},
+    {"group": "Servicios Auxiliares", "level": "Nivel 3", "concept": "HORA_PERENTORIA", "amount": 16.30, "year": 2025},
+    
+    # PLUSES (Fixed/Variable)
+    {"group": "Servicios Auxiliares", "level": "Nivel 3", "concept": "PLUS_NOCTURNIDAD", "amount": 1.95, "year": 2025},
+    {"group": "Servicios Auxiliares", "level": "Nivel 3", "concept": "PLUS_FESTIVO", "amount": 3.20, "year": 2025},
+    {"group": "Servicios Auxiliares", "level": "Nivel 3", "concept": "PLUS_DOMINGO", "amount": 2.10, "year": 2025},
+    # Note: These specific pluses rely on the exact code match defined in concepts.
+    # If concept code is just 'PLUS_NOCTURNIDAD', this matches.
+]
+
 MANUAL_AZUL_VARIABLES_2025 = [
     # --- COMMON VARIABLES (Estimated 2025) ---
     # HORAS EXTRAS (Approx avg per group)
@@ -145,7 +167,7 @@ def seed_concepts(template_path):
             concepts_to_add.append(SalaryConceptDefinition(
                 company_slug=company_id, name=c['name'], code=code,
                 description=f"Concepto Fijo: {c['name']}", input_type=inp_type,
-                default_price=c.get('base_value_2022', 0.0), is_active=True
+                default_price=c.get('base_value_2025', c.get('base_value_2022', 0.0)), is_active=True
             ))
             
             if 'tiers' in c:
@@ -155,8 +177,6 @@ def seed_concepts(template_path):
                     display_tier = tier_key.replace("5_PLUS_TURNOS_FIJI", "5_TURNOS").replace("_", " ")
                     concepts_to_add.append(SalaryConceptDefinition(
                        company_slug=company_id, name=f"{c['name']} ({display_tier})",
-                       code=tier_code, description=f"Tier: {tier_key}",
-                       input_type="checkbox" if "TURNOS" in code else "number",
                        default_price=tier_val, is_active=True
                    ))
 
@@ -166,7 +186,7 @@ def seed_concepts(template_path):
             concepts_to_add.append(SalaryConceptDefinition(
                 company_slug=company_id, name=c['name'], code=c['id'],
                 description=f"Variable: {c['name']}", input_type=inp_type,
-                default_price=c.get('base_value_2022', 0.0), is_active=True
+                default_price=c.get('base_value_2025', c.get('base_value_2022', 0.0)), is_active=True
             ))
 
         session.bulk_save_objects(concepts_to_add)
@@ -177,54 +197,11 @@ def seed_concepts(template_path):
     finally:
         session.close()
 
-def extract_azul_xml_vars(xml_path):
-    data = []
-    # Simplified XML extraction for vars only, using generic parsing
-    try:
-        if not os.path.exists(xml_path): return []
-        tree = ET.parse(xml_path)
-        root = tree.getroot()
-        all_content = root.findall(".//{*}texto/*")
-        
-        # MAPPINGS
-        row_map = {"técnicos gestores": "Técnicos Gestores", "administrativos": "Administrativos", "serv. auxiliares": "Servicios Auxiliares"}
-        col_map = {0: "Nivel 1", 1: "Nivel 2", 2: "Nivel 3", 3: "Nivel 4", 4: "Nivel 5", 5: "Nivel 6", 6: "Nivel 7"}
-        
-        def parse(table, cname):
-            extracted = []
-            tbody = table.find(".//{*}tbody")
-            if not tbody: return []
-            for row in tbody.findall(".//{*}tr"):
-                cells = row.findall(".//{*}td")
-                if not cells: continue
-                group_text = (cells[0].text or "").strip().lower().replace(".", "")
-                group_name = None
-                for k, v in row_map.items():
-                   if k in group_text: group_name = v; break
-                if not group_name: continue
-                for i, cell in enumerate(cells[1:]):
-                     if i in col_map:
-                         try: extracted.append({"group": group_name, "level": col_map[i], "concept": cname, "amount": float((cell.text or "0").replace(".", "").replace(",", ".")), "year": 2025})
-                         except: pass
-            return extracted
 
-        def find_tbl(frag):
-            found=False
-            for e in all_content:
-                if e.tag.endswith('p') and frag.lower() in (e.text or "").lower(): found=True
-                elif found and e.tag.endswith('table'): return e
-            return None
-            
-        t_extra = find_tbl("Tabla horas extraordinarias")
-        if t_extra: data.extend(parse(t_extra, "HORA_EXTRA"))
-        t_perentoria = find_tbl("Tabla horas perentorias")
-        if t_perentoria: data.extend(parse(t_perentoria, "HORA_PERENTORIA"))
-        t_compl = find_tbl("Tabla horas complementarias especiales")
-        if t_compl: data.extend(parse(t_compl, "HORA_COMPLEMENTARIA_ESP"))
-        
-    except Exception as e:
-        logger.error(f"XML Parse Error: {e}")
-    return data
+
+# --- FUNCTIONS ---
+
+# ... (existing functions) ...
 
 def seed_values(template_path, companies_to_seed):
     with open(template_path, 'r', encoding='utf-8') as f: template = json.load(f)
@@ -237,13 +214,14 @@ def seed_values(template_path, companies_to_seed):
         
         extracted_data = []
         if template['meta']['company_id'] == 'convenio-sector':
-             # Fallback to manual for sector as XML parsing is complex and redundant if we have manual list
-             # For production safety I'll assume Manual Sector List is needed, but I'll skip it for brevity hoping general.xml is there
-             # Actually, simpler to rely on Manual Base Only for now, variables come from general.xml if present.
-             # I will define extracted_data only if XML present
+             # Manual Sector Data
+             extracted_data.extend(MANUAL_SECTOR_2025)
+             extracted_data.extend(MANUAL_SECTOR_VARIABLES_2025)
+             
              xml_path = os.path.join(os.path.dirname(template_path), '../xml/general.xml')
              if not os.path.exists(xml_path):
-                  logger.warning("General XML not found, falling back to basic defaults usually")
+                  logger.warning("General XML not found, falling back to manual defaults")
+                  
         elif template['meta']['company_id'] == 'azul-handling':
              extracted_data.extend(MANUAL_AZUL_BASE_2025)
              extracted_data.extend(MANUAL_AZUL_VARIABLES_2025) # Merge Variable Data
@@ -272,7 +250,7 @@ def seed_values(template_path, companies_to_seed):
                     # Fixed
                     for c in template['concepts']['fixed']:
                          if 'applicable_concepts' in group and c['id'] not in group['applicable_concepts']: continue
-                         amt = c.get('base_value_2022', 0.0)
+                         amt = c.get('base_value_2025', c.get('base_value_2022', 0.0))
                          if 'tiers' in c:
                              for tk, tv in c['tiers'].items():
                                  records.append(SalaryTable(company_id=company_id, group=grp_name, level=level, concept=f"{c['id']}_{tk}", amount=tv, year=2025))
@@ -281,7 +259,7 @@ def seed_values(template_path, companies_to_seed):
                     # Variable
                     for c in template['concepts']['variable']:
                          if 'applicable_concepts' in group and c['id'] not in group['applicable_concepts']: continue
-                         val = c.get('base_value_2022', 0.0)
+                         val = c.get('base_value_2025', c.get('base_value_2022', 0.0))
                          if c.get('source') == 'xml_table':
                              dyn = get_val(grp_name, level, c['id'])
                              if dyn: val = dyn
@@ -309,10 +287,7 @@ if __name__ == "__main__":
     t_sector = os.path.join('backend', 'data', 'structure_templates', 'convenio_sector.json')
     if os.path.exists(t_sector):
         seed_concepts(t_sector)
-        # Note: Sector seeding skipped here slightly for brevity of manual list, but logic assumes
-        # seeding is done. If user wants full sector refresh, needs full manual list.
-        # But for 'Azul' critical fix, this is enough.
-        # I will uncomment sector value seeding if confident.
-        # seed_values(t_sector, ['convenio-sector', 'jet2', 'norwegian', 'south'])
+        # ENABLED SECTOR SEEDING
+        seed_values(t_sector, ['convenio-sector', 'jet2', 'norwegian', 'south'])
     
     print("✅ Seed Cloud Complete")
