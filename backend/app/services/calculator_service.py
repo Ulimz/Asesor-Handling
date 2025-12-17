@@ -187,7 +187,8 @@ class CalculatorService:
              
         prices = {}
         for row in rows:
-            prices[row.concept] = row.amount
+            # Safeguard: Ensure amount is a float, defaulting to 0.0 if None
+            prices[row.concept] = row.amount if row.amount is not None else 0.0
             
         return prices
 

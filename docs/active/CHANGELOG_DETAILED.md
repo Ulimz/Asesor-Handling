@@ -103,6 +103,12 @@
 - **Beneficio**: **Precisión Absoluta**. La IA ahora responde con los valores exactos (céntimo a céntimo) de la calculadora, eliminando alucinaciones al leer tablas complejas en PDFs.
 - **Detalle**: Soporte dinámico de perfiles. Si tu perfil es "Técnico Gestor", la IA verá la tabla de Técnicos, no la genérica.
 
+### [14:26] 🛠️ Fix: Estabilización de Calculadora (Crash Multiplicadores)
+- **Problema**: Error "Failed to fetch" al introducir valores variables (horas, pluses de cantidad) en la calculadora.
+- **Diagnóstico**: La tabla salarial en BD contenía valores nulos (`NULL`) para algunos conceptos. Al intentar multiplicar `None * Cantidad`, Python lanzaba un `TypeError` que tumbaba el proceso del backend.
+- **Solución**: Añadido **"Null Safety"** en `CalculatorService._get_salary_prices_from_db`. Si un importe es `None`, se convierte automáticamente a `0.0`.
+- **Resultado**: La calculadora es ahora resiliente a datos incompletos en la BD y no crashea si falta algún precio.
+
 ---
 
 
