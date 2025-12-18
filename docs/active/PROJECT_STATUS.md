@@ -54,9 +54,16 @@ Este documento resume el propósito, arquitectura y estado actual del proyecto. 
 - ✅ **Clean Code**: Eliminación de redundancias en JSONs y inputs innecesarios.
 
 ## 🔧 Próximos Pasos (Roadmap)
-1. **Performance Tuning**: Cacheo agresivo de selectores en frontend.
-2. **Monitoring**: Dashboards de uso en Railway.
-3. **User Feedback**: Recopilación de feedback real de beta testers.
+### Corto Plazo
+1. **Empaquetado Mobile**: Capacitor JS (Android/iOS).
+2. **Performance**: Cacheo de selectores.
+3. **Monitoring**: Dashboards en Railway.
+
+### v2.0 (I+D)
+4. **Búsqueda Híbrida**: Integración de Google Search para noticias/actualidad.
+5. **Agente Calculadora**: Tool calling para que la IA "opere" nóminas.
+6. **Memoria de Usuario**: Recordar contexto histórico.
+7. **Modo Voz**: Interfaz conversacional por audio.
 
 ## 📋 Tareas Activas
 - [ ] Monitorizar estabilidad en producción tras despliegue v1.8.
