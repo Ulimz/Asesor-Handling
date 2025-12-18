@@ -474,3 +474,6 @@
 - **Zero-Shot Fallback**: Ahora, si la base de datos interna no tiene respuesta (ej: noticias, huelgas recientes), el sistema **busca automáticamente en Internet** (Google Grounding).
 - **Jerarquía Normativa**: El prompt instruye priorizar datos internos (tablas) pero permite información externa para leyes nuevas o actualidad.
 - **Transparencia**: Las respuestas externas se marcarán (idealmente) para diferenciar la fuente.
+
+### [22:00] 🐛 Fix Logo Azul Handling
+- **Normalización**: Corregido bug donde el logo de "Azul Handling" salía gris porque el ID interno era `azul-handling` y el frontend esperaba `azul`. Se ha creado un helper `getCompanyById` que unifica estos alias.

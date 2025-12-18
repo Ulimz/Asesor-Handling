@@ -24,7 +24,7 @@ const AlertsPanel = dynamic(() => import('@/components/alerts/AlertsPanel'), {
     loading: () => <div className="h-full flex items-center justify-center"><Loader2 className="w-8 h-8 text-cyan-500 animate-spin" /></div>
 });
 
-import { CompanyId, companies } from '@/data/knowledge-base';
+import { CompanyId, companies, getCompanyById } from '@/data/knowledge-base';
 import { type KnowledgeItem } from '@/data/knowledge-base';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Calculator, Settings, LogOut, User, Bell, PenTool, Loader2, Plane, Menu, X, Download } from 'lucide-react';
@@ -209,14 +209,14 @@ export default function DashboardPage() {
                                         <div className="p-3 bg-[var(--panel-bg)] rounded-xl border border-[var(--panel-border)] flex items-center gap-3">
                                             <div
                                                 className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-sm"
-                                                style={{ backgroundColor: companies.find(c => c.id === activeProfile.company_slug)?.color || '#334155' }}
+                                                style={{ backgroundColor: getCompanyById(activeProfile.company_slug)?.color || '#334155' }}
                                             >
-                                                {companies.find(c => c.id === activeProfile.company_slug)?.name.charAt(0) || 'E'}
+                                                {getCompanyById(activeProfile.company_slug)?.name.charAt(0) || 'E'}
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="text-sm font-semibold text-white truncate">{activeProfile.alias}</div>
                                                 <div className="text-xs text-[var(--text-secondary)] truncate">
-                                                    {companies.find(c => c.id === activeProfile.company_slug)?.agreementLabel || activeProfile.company_slug}
+                                                    {getCompanyById(activeProfile.company_slug)?.agreementLabel || activeProfile.company_slug}
                                                 </div>
                                                 <div className="text-[10px] text-cyan-400 mt-0.5 font-medium uppercase tracking-wide">
                                                     {activeProfile.job_group} • {activeProfile.salary_level}

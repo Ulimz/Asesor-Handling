@@ -5,7 +5,7 @@ import { useProfile } from '@/context/ProfileContext';
 import { User, ChevronDown, Check, Plus, Briefcase, Building2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProfileCreateModal from './ProfileCreateModal';
-import { companies } from '@/data/knowledge-base';
+import { companies, getCompanyById } from '@/data/knowledge-base';
 
 export default function ProfileSwitcher() {
     const { profiles, activeProfile, activateProfile, loading } = useProfile();
@@ -16,7 +16,7 @@ export default function ProfileSwitcher() {
 
     // If no profiles, show Create Button directly? Or empty state.
 
-    const activeCompany = activeProfile ? companies.find(c => c.id === activeProfile.company_slug) : null;
+    const activeCompany = activeProfile ? getCompanyById(activeProfile.company_slug) : null;
 
     return (
         <div className="relative">

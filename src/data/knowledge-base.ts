@@ -21,6 +21,16 @@ export const companies: Company[] = [
     { id: 'norwegian', name: 'Norwegian', color: '#B00000', agreementLabel: 'Convenio Sectorial' },
 ];
 
+export const getCompanyById = (id: string | null | undefined): Company | undefined => {
+    if (!id) return undefined;
+
+    // Normalization for legacy/alias slugs
+    let normalizedId = id;
+    if (id === 'azul-handling') normalizedId = 'azul';
+
+    return companies.find(c => c.id === normalizedId);
+};
+
 export interface KnowledgeItem {
     id: string;
     category: string; // e.g. 'Convenio Azul Handling', 'Estatuto Trabajadores'
