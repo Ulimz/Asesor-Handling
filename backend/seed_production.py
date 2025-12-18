@@ -181,8 +181,12 @@ def seed_concepts(template_path):
                     # Clean up tier name for display
                     display_tier = tier_key.replace("5_PLUS_TURNOS_FIJI", "5_TURNOS").replace("_", " ")
                     concepts_to_add.append(SalaryConceptDefinition(
-                       company_slug=company_id, name=f"{c['name']} ({display_tier})",
-                       default_price=tier_val, is_active=True
+                       company_slug=company_id, 
+                       name=f"{c['name']} ({display_tier})",
+                       code=tier_code,
+                       input_type=inp_type,
+                       default_price=tier_val, 
+                       is_active=True
                    ))
 
         for c in template['concepts']['variable']:
