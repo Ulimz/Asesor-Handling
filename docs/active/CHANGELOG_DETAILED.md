@@ -4,6 +4,26 @@
 **Actualización**: OBLIGATORIA después de cada paso o comando relevante.
 
 
+## 📅 Sesión: 18 Diciembre 2025
+
+### [19:00] 🏛️ Consolidación de "Single Source of Truth" (2025)
+- **Backend/DB**: Añadido campo `level_values` a `SalaryConceptDefinition` para soportar tablas de precios por nivel.
+- **API**: Actualizado endpoint de conceptos para exponer el mapa completo de niveles al frontend.
+- **Clean Data**: Eliminada redundancia de `base_value_2025` en los JSON templates (`azul_handling.json`, `convenio_sector.json`).
+- **Consistency**: Refactorizado `seed_production.py` para sincronizar perfectamente la base de datos con las nuevas tablas 2025.
+
+### [19:10] 🧮 Frontend: UX y Precisión Profesional
+- **Calculadora**: Actualizada para consumir `level_values` de la API, permitiendo cambios de precio instantáneos al alternar niveles de usuario.
+- **Estabilidad**: Corregida sincronización de perfiles en el arranque del componente.
+- **SMI Mapping**: El sistema ahora mapea correctamente "Nivel entrada" a los valores base correspondientes.
+
+### [19:20] 🧠 IA: RAG con Prioridad de Datos Estructurados
+- **"Regla de Oro"**: Modificado `rag_engine.py` para inyectar tablas salariales de la calculadora en el contexto del chat con prioridad "Absoluta".
+- **Jerarquía**: Instrucción explícita a la IA para dar prioridad a los datos estructurados sobre el texto de los artículos en consultas de dinero.
+- **Smart Profile**: El chat ahora detecta el Grupo/Nivel del perfil activo e inyecta la tabla específica del usuario, eliminando ambigüedades.
+
+---
+
 ## 📅 Sesión: 17 Diciembre 2025
 
 ### [11:45] 🐛 Fix Crítico: "Sin Perfil" en Producción
