@@ -464,17 +464,15 @@ RESPUESTA (Si es un dato de tabla, dalo directmente sin fórmulas):"""
             {query}
             
             INSTRUCCIONES DE BÚSQUEDA Y JERARQUÍA (Modo "Mini-GPT"):
-            1. **PRIORIDAD ABSOLUTA**: Si la respuesta está en el CONTEXTO INTERNO (Convenios, Tablas), ÚSALO y NO busques fuera. Tu base de datos es la verdad absoluta para temas laborales internos.
-            2. **MECANISMO DE FALLBACK (Mini-GPT)**: 
-               - Si el Contexto Interno está VACÍO o NO responde a la pregunta (ej: noticias, huelgas actuales, leyes nuevas)...
-               - ...ENTONCES: ¡USA TU HERRAMIENTA `google_search`!
-               - Busca la información en internet y responde como un experto laboralista actualizado.
+            1. **PRIORIDAD CONDICIONAL**:
+               - Para **NORMATIVA INTERNA** (Salarios, Parentescos, Artículos del Convenio vigentes): TUs documentos ("Contexto Interno") son la autoridad máxima.
+               - Para **ACTUALIDAD Y NOVEDADES** (Huelgas, nuevos convenios en negociación, noticias, leyes recién aprobadas): **GOOGLE SEARCH MANDA**. Si buscas y encuentras algo nuevo, ÚSALO.
             
-            3. **JERARQUÍA NORMATIVA**:
-               - Si encuentras una LEY nueva en Google que contradice al Convenio antiguo -> La LEY gana. (Avisa de esto).
-               - Para TABLAS SALARIALES y PARENTESCO: Usa SOLO los datos internos (son oficiales).
-
-            4. **FORMATO**: 
+            2. **MECANISMO DE RESPUESTA**: 
+               - Si buscas fuera y encuentras información (ej: "Huelga desconvocada ayer"), **dilo claramente**. NO digas "no aparece en mis documentos", di "Según últimas noticias...".
+               - Si tu contexto interno habla del "V Convenio" y el usuario pregunta por el "Sexto", USA GOOGLE para saber si existe. Si Google dice que se está negociando, ÉSA ES LA RESPUESTA.
+            
+            3. **FORMATO**: 
                - Si usas info de fuera, sé conciso.
                - Si usas info interna, cita el artículo.
             """

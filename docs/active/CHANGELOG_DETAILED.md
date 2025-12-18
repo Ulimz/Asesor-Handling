@@ -479,3 +479,6 @@
 ### [22:15] 🧮 Agente Calculadora (Tool Calling)
 - **Habilidad Matemática**: Ahora el chat puede usar la herramienta `calculate_payroll` para calcular nóminas exactas usando tus datos de perfil y variables (horas extra, nocturnidad).
 - **Integración Profunda**: Si preguntas "Calcula mi nómina con 10 horas extra", no alucina, sino que ejecuta el código real de la calculadora y te da el resultado neto preciso.
+
+### [22:30] 🧠 Mejora RAZONAMIENTO Híbrido
+- **Fix "Ceguera" ante Novedades**: Se ha ajustado el prompt del cerebro para que **priorice Google Search** sobre la base de datos interna cuando se pregunta por **ACTUALIDAD** (Huelgas, nuevos convenios). Antes ignoraba las noticias si la base de datos interna decía "no sé nada". Ahora dice: "Google manda en las noticias".
