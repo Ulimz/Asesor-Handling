@@ -242,16 +242,16 @@ class RagEngine:
                  # Apply synonyms on merged result directly here for fast path return
                  merged_lower = merged.lower()
                  
-                  # SALARY (Fast Path) - Only enhance if NOT about sick leave (baja)
-                  salary_keywords = ['precio', 'salario', 'retribución', 'retribucion', 'paga', 'sueldo', 
-                                    'complemento', 'plus', 'hora', 'horas', 'extraordinaria', 'perentoria',
-                                    'nocturna', 'festiva', 'complementaria', 'tabla', 'anexo', 'cuanto', 'cuánto']
-                  it_keywords = ['baja', 'it', 'enfermedad', 'incapacidad', 'médico']
-                  
-                  if any(k in merged_lower for k in salary_keywords) and \
-                     not any(k in merged_lower for k in it_keywords) and \
-                     'anexo' not in merged_lower:
-                      merged = f"{merged} ANEXO tabla salarial retribución"
+                 # SALARY (Fast Path) - Only enhance if NOT about sick leave (baja)
+                 salary_keywords = ['precio', 'salario', 'retribución', 'retribucion', 'paga', 'sueldo', 
+                                   'complemento', 'plus', 'hora', 'horas', 'extraordinaria', 'perentoria',
+                                   'nocturna', 'festiva', 'complementaria', 'tabla', 'anexo', 'cuanto', 'cuánto']
+                 it_keywords = ['baja', 'it', 'enfermedad', 'incapacidad', 'médico']
+                 
+                 if any(k in merged_lower for k in salary_keywords) and \
+                    not any(k in merged_lower for k in it_keywords) and \
+                    'anexo' not in merged_lower:
+                     merged = f"{merged} ANEXO tabla salarial retribución"
 
                  # FOOD (Fast Path)
                  food_keywords = ['comida', 'comer', 'almuerzo', 'bocadillo', 'merienda', 'cena']
