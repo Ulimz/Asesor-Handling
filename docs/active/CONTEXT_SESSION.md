@@ -17,6 +17,15 @@
 - ✅ **Carga de Datos**: Base de datos poblada con valores 2025 y entidad de empresa creada.
 - ✅ **Validación**: Verificados precios clave (Base, Nocturnidad, Horas) contra BOE.
 
+### 3. Mejoras UX Móvil (Iterativo)
+**Objetivo**: Optimizar la experiencia en pantallas pequeñas y limpiar la interfaz.
+
+- ✅ **Header Reorganizado**: `Logo` -> `Icono Empresa` -> `Perfil` -> `Menú`. Prioridad a la usabilidad.
+- ✅ **Componentes Responsive**: 
+    - `CompanyDropdown` ahora soporta modo `compact` (solo icono).
+    - `ProfileSwitcher` visible en móvil con alias truncado.
+- ✅ **Menú Simplificado**: Acceso directo a `Configuración` y eliminación de botón redundante de instalación.
+
 ---
 
 ## 📊 Estado Actual del Proyecto
