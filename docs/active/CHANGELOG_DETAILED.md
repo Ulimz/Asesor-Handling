@@ -464,3 +464,8 @@
 - **Fix Mobile Display**: Corregido desbordamiento del selector anterior y asegurada la visibilidad correcta del Badge en móviles.
 - **Mejora UX**: Reemplazo de `CompanyDropdown` interactivo por `CompanyBadge` estático para reforzar el uso de perfiles.
 - **Roadmap v2.0**: Documentadas mejoras futuras (Búsqueda Híbrida, Agente Calculadora, etc) en `PROJECT_STATUS.md`.
+
+### [21:40] 🎨 Refinamiento Visual y Móvil
+- **Profile Switcher Mejorado**: Ahora muestra el **Logo/Color de la empresa activa** en lugar de un icono genérico.
+- **Header Limpio**: Eliminado por completo el badge "Sin Empresa" rojo.
+- **Info Móvil**: La tarjeta de detalles del perfil (Grupo, Nivel) ahora aparece dentro del **Menú Móvil**, optimizando el espacio.

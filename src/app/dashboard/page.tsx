@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { apiService } from '@/lib/api-service';
-import CompanyBadge from '@/components/CompanyBadge';
 import ProfileSwitcher from '@/components/profile/ProfileSwitcher';
 import { useProfile } from '@/context/ProfileContext';
 import dynamic from 'next/dynamic';
@@ -163,13 +162,6 @@ export default function DashboardPage() {
 
 
 
-                            {/* Company Icon (Static Badge) */}
-                            <div className="md:hidden shrink-0">
-                                <CompanyBadge
-                                    companyId={selectedCompanyId}
-                                    showName={false}
-                                />
-                            </div>
                             {/* Desktop Title */}
                             <div className="hidden md:block">
                                 <h1 className="text-xl font-semibold text-white whitespace-nowrap truncate">
@@ -183,14 +175,6 @@ export default function DashboardPage() {
 
                         {/* RIGHT: Profile & Actions */}
                         <div className="flex items-center gap-2 md:gap-4 shrink-0">
-                            {/* Desktop Company Badge (Visible) */}
-                            <div className="hidden md:block mr-4">
-                                <CompanyBadge
-                                    companyId={selectedCompanyId}
-                                    showName={true}
-                                />
-                            </div>
-
                             <ProfileSwitcher />
 
                             <div className="hidden md:flex w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-500 p-[1px] shadow-lg shadow-cyan-500/20">
@@ -219,6 +203,28 @@ export default function DashboardPage() {
                                 className="md:hidden absolute top-16 left-0 right-0 bg-[var(--bg-primary)] border-b border-[var(--panel-border)] shadow-2xl z-20 overflow-hidden"
                             >
                                 <div className="p-4 space-y-4">
+
+                                    {/* Mobile Active Profile Card */}
+                                    {activeProfile && (
+                                        <div className="p-3 bg-[var(--panel-bg)] rounded-xl border border-[var(--panel-border)] flex items-center gap-3">
+                                            <div
+                                                className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-sm"
+                                                style={{ backgroundColor: companies.find(c => c.id === activeProfile.company_slug)?.color || '#334155' }}
+                                            >
+                                                {companies.find(c => c.id === activeProfile.company_slug)?.name.charAt(0) || 'E'}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="text-sm font-semibold text-white truncate">{activeProfile.alias}</div>
+                                                <div className="text-xs text-[var(--text-secondary)] truncate">
+                                                    {companies.find(c => c.id === activeProfile.company_slug)?.agreementLabel || activeProfile.company_slug}
+                                                </div>
+                                                <div className="text-[10px] text-cyan-400 mt-0.5 font-medium uppercase tracking-wide">
+                                                    {activeProfile.job_group} • {activeProfile.salary_level}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
                                     <div className="grid grid-cols-2 gap-3">
                                         {navItems.map(item => (
                                             <button

@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { useProfile } from '@/context/ProfileContext';
-import { User, ChevronDown, Check, Plus, Briefcase } from 'lucide-react';
+import { User, ChevronDown, Check, Plus, Briefcase, Building2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProfileCreateModal from './ProfileCreateModal';
+import { companies } from '@/data/knowledge-base';
 
 export default function ProfileSwitcher() {
     const { profiles, activeProfile, activateProfile, loading } = useProfile();
@@ -15,14 +16,19 @@ export default function ProfileSwitcher() {
 
     // If no profiles, show Create Button directly? Or empty state.
 
+    const activeCompany = activeProfile ? companies.find(c => c.id === activeProfile.company_slug) : null;
+
     return (
         <div className="relative">
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 transition-colors border border-transparent hover:border-white/10"
             >
-                <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                    <Briefcase size={16} />
+                <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-lg border border-white/10"
+                    style={{ backgroundColor: activeCompany ? activeCompany.color : '#334155' }}
+                >
+                    {activeCompany ? activeCompany.name.charAt(0) : <Briefcase size={14} />}
                 </div>
                 <div className="block text-left">
                     <div className="text-xs text-slate-400 hidden md:block">Perfil Activo</div>
