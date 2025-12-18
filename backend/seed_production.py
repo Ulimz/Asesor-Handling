@@ -361,4 +361,9 @@ if __name__ == "__main__":
         # ENABLED SECTOR SEEDING
         seed_values(t_sector, ['convenio-sector', 'jet2', 'norwegian', 'south'])
     
+    t_avia = os.path.join('backend', 'data', 'structure_templates', 'aviapartner.json')
+    if os.path.exists(t_avia):
+        seed_concepts(t_avia)
+        seed_values(t_avia, ['aviapartner'])
+
     print("✅ Seed Cloud Complete")

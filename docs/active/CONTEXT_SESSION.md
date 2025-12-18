@@ -10,6 +10,13 @@
 - ✅ **Consistency & Cleanup**: Renombrados campos obsoletos `base_value_2022` a `base_value_2025` en plantillas JSON para mayor claridad.
 - ✅ **Stress Test Exitoso**: Verificada la "Regla de Oro" en el Chat IA, garantizando respuestas precisas sobre conceptos variables (horas extras, festivos).
 
+### 2. Implementación Aviapartner 2025
+**Objetivo**: Integrar la estructura salarial específica de Aviapartner según el último convenio.
+
+- ✅ **Estructura Canónica**: Documentada y templatizada en JSON.
+- ✅ **Carga de Datos**: Base de datos poblada con valores 2025 y entidad de empresa creada.
+- ✅ **Validación**: Verificados precios clave (Base, Nocturnidad, Horas) contra BOE.
+
 ---
 
 ## 📊 Estado Actual del Proyecto
@@ -40,6 +47,7 @@
 - [x] **Auditoría de Pluses Sector**: Verificados y corregidos.
 - [x] **Stress Test Chat**: 100% de precisión en datos inyectados.
 - [x] **Limpieza de Código**: Eliminación de campos obsoletos y estandarización.
+- [x] **Aviapartner 2025**: Implementación completa (Doc + JSON + DB + Verificación).
 
 ### 🔴 Próxima Sesión
 - [ ] **Mejora UI**: Añadir un tooltip informativo en la calculadora que explique de dónde sale el precio (ej. "Precio oficial BOE 2025").

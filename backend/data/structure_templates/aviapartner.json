@@ -1,0 +1,377 @@
+{
+    "meta": {
+        "company_id": "aviapartner",
+        "name": "Aviapartner",
+        "description": "Estructura basada en Convenio Aviapartner 2025 (BOE-A-2025-3081)",
+        "version": "1.1"
+    },
+    "groups": [
+        {
+            "name": "Administrativos",
+            "levels": [
+                "Nivel entrada",
+                "Nivel 2",
+                "Nivel 3",
+                "Nivel 4",
+                "Nivel 5",
+                "Nivel 6",
+                "Nivel 7"
+            ],
+            "applicable_concepts": [
+                "SALARIO_BASE_ANUAL",
+                "PLUS_SUPERVISOR",
+                "PLUS_JEFE_SERV",
+                "PLUS_TURNOS_2",
+                "PLUS_TURNOS_3",
+                "PLUS_TURNOS_4",
+                "PLUS_TURNOS_5",
+                "PLUS_NOCT",
+                "HORA_EXTRA",
+                "HORA_PERENTORIA",
+                "HC_ESPECIAL",
+                "PLUS_FESTIVO",
+                "PLUS_DOMINGO",
+                "PLUS_FRACCIONADA",
+                "PLUS_MADRUGUE",
+                "PLUS_TRANSPORTE",
+                "AYUDA_MANUTENCION",
+                "PLUS_FTP",
+                "PLUS_FIJI"
+            ]
+        },
+        {
+            "name": "Servicios Auxiliares",
+            "levels": [
+                "Nivel entrada",
+                "Nivel 2",
+                "Nivel 3",
+                "Nivel 4",
+                "Nivel 5",
+                "Nivel 6",
+                "Nivel 7"
+            ],
+            "applicable_concepts": [
+                "SALARIO_BASE_ANUAL",
+                "PLUS_SUPERVISOR",
+                "PLUS_JEFE_SERV",
+                "PLUS_TURNOS_2",
+                "PLUS_TURNOS_3",
+                "PLUS_TURNOS_4",
+                "PLUS_TURNOS_5",
+                "PLUS_NOCT",
+                "HORA_EXTRA",
+                "HORA_PERENTORIA",
+                "HC_ESPECIAL",
+                "PLUS_FESTIVO",
+                "PLUS_DOMINGO",
+                "PLUS_FRACCIONADA",
+                "PLUS_MADRUGUE",
+                "PLUS_TRANSPORTE",
+                "AYUDA_MANUTENCION",
+                "PLUS_FTP",
+                "PLUS_FIJI"
+            ]
+        },
+        {
+            "name": "Técnicos Gestores",
+            "levels": [
+                "Nivel entrada",
+                "Nivel 2",
+                "Nivel 3",
+                "Nivel 4",
+                "Nivel 5",
+                "Nivel 6",
+                "Nivel 7"
+            ],
+            "applicable_concepts": [
+                "SALARIO_BASE_ANUAL",
+                "PLUS_TURNOS_2",
+                "PLUS_TURNOS_3",
+                "PLUS_TURNOS_4",
+                "PLUS_TURNOS_5",
+                "PLUS_NOCT",
+                "HORA_EXTRA",
+                "HORA_PERENTORIA",
+                "HC_ESPECIAL",
+                "PLUS_FESTIVO",
+                "PLUS_DOMINGO",
+                "PLUS_FRACCIONADA",
+                "PLUS_MADRUGUE",
+                "PLUS_TRANSPORTE",
+                "AYUDA_MANUTENCION",
+                "PLUS_FTP",
+                "PLUS_FIJI"
+            ]
+        }
+    ],
+    "concepts": {
+        "fixed": [
+            {
+                "id": "SALARIO_BASE_ANUAL",
+                "name": "Salario Base Anual (Oficial 2025)",
+                "is_monthly": false,
+                "is_proportional": true,
+                "level_values": {
+                    "Técnicos Gestores": {
+                        "Nivel entrada": 28741.86,
+                        "Nivel 2": 28798.05,
+                        "Nivel 3": 29657.79,
+                        "Nivel 4": 30250.95,
+                        "Nivel 5": 30844.11,
+                        "Nivel 6": 32077.87,
+                        "Nivel 7": 33360.98
+                    },
+                    "Administrativos": {
+                        "Nivel entrada": 18816.45,
+                        "Nivel 2": 22283.49,
+                        "Nivel 3": 22953.50,
+                        "Nivel 4": 23412.57,
+                        "Nivel 5": 23871.64,
+                        "Nivel 6": 24826.50,
+                        "Nivel 7": 25819.57
+                    },
+                    "Servicios Auxiliares": {
+                        "Nivel entrada": 18633.14,
+                        "Nivel 2": 22066.61,
+                        "Nivel 3": 22730.09,
+                        "Nivel 4": 23184.70,
+                        "Nivel 5": 23639.30,
+                        "Nivel 6": 24584.87,
+                        "Nivel 7": 25568.26
+                    }
+                },
+                "description": "Anexo II Aviapartner 2025."
+            },
+            {
+                "id": "PLUS_FIJI",
+                "name": "Plus Jornada Irregular (Fiji)",
+                "base_value_2025": 143.52,
+                "is_monthly": true,
+                "is_proportional": true,
+                "description": "Anexo II Aviapartner 2025."
+            },
+            {
+                "id": "PLUS_FTP",
+                "name": "Plus Fijo Tiempo Parcial (FTP)",
+                "base_value_2025": 99.37,
+                "is_monthly": true,
+                "is_proportional": true,
+                "description": "Anexo II Aviapartner 2025."
+            },
+            {
+                "id": "PLUS_TURNOS_2",
+                "name": "Plus Turnicidad 2 Turnos",
+                "base_value_2025": 82.81,
+                "is_monthly": true,
+                "is_proportional": true,
+                "description": "Anexo II Aviapartner 2025."
+            },
+            {
+                "id": "PLUS_TURNOS_3",
+                "name": "Plus Turnicidad 3 Turnos",
+                "base_value_2025": 110.40,
+                "is_monthly": true,
+                "is_proportional": true,
+                "description": "Anexo II Aviapartner 2025."
+            },
+            {
+                "id": "PLUS_TURNOS_4",
+                "name": "Plus Turnicidad 4 Turnos",
+                "base_value_2025": 126.96,
+                "is_monthly": true,
+                "is_proportional": true,
+                "description": "Anexo II Aviapartner 2025."
+            },
+            {
+                "id": "PLUS_TURNOS_5",
+                "name": "Plus Turnicidad 5+ Turnos",
+                "base_value_2025": 143.52,
+                "is_monthly": true,
+                "is_proportional": true,
+                "description": "Anexo II Aviapartner 2025."
+            },
+            {
+                "id": "PLUS_JEFE_SERV",
+                "name": "Plus Función Jefe Servicio",
+                "base_value_2025": 134.55,
+                "is_monthly": true,
+                "is_proportional": true,
+                "description": "Anexo II Aviapartner 2025."
+            },
+            {
+                "id": "PLUS_SUPERVISOR",
+                "name": "Plus Función Supervisor",
+                "base_value_2025": 103.50,
+                "is_monthly": true,
+                "is_proportional": true,
+                "description": "Anexo II Aviapartner 2025."
+            }
+        ],
+        "variable": [
+            {
+                "id": "PLUS_NOCT",
+                "name": "Plus Nocturnidad",
+                "base_value_2025": 1.62,
+                "unit": "hora",
+                "is_proportional": false,
+                "description": "Anexo II Aviapartner 2025."
+            },
+            {
+                "id": "PLUS_FESTIVO",
+                "name": "Plus Festividad",
+                "base_value_2025": 2.87,
+                "unit": "hora",
+                "is_proportional": false,
+                "description": "Anexo II Aviapartner 2025."
+            },
+            {
+                "id": "PLUS_DOMINGO",
+                "name": "Plus Domingos",
+                "base_value_2025": 2.83,
+                "unit": "hora",
+                "is_proportional": false,
+                "description": "Anexo II Aviapartner 2025."
+            },
+            {
+                "id": "PLUS_FRACCIONADA",
+                "name": "Plus Jornada Fraccionada",
+                "base_value_2025": 11.45,
+                "unit": "dia",
+                "is_proportional": false,
+                "description": "Anexo II Aviapartner 2025."
+            },
+            {
+                "id": "PLUS_MADRUGUE",
+                "name": "Plus Madrugue",
+                "base_value_2025": 6.49,
+                "unit": "dia",
+                "is_proportional": false,
+                "description": "Anexo II Aviapartner 2025."
+            },
+            {
+                "id": "PLUS_TRANSPORTE",
+                "name": "Plus Transporte",
+                "base_value_2025": 2.86,
+                "unit": "asistencia",
+                "is_proportional": false,
+                "description": "Anexo II Aviapartner 2025."
+            },
+            {
+                "id": "AYUDA_MANUTENCION",
+                "name": "Ayuda Manutención",
+                "base_value_2025": 6.49,
+                "unit": "dia",
+                "is_proportional": false,
+                "description": "Anexo II Aviapartner 2025."
+            },
+            {
+                "id": "HC_ESPECIAL",
+                "name": "Hora Complementaria Especial",
+                "unit": "hora",
+                "is_proportional": false,
+                "level_values": {
+                    "Técnicos Gestores": {
+                        "Nivel entrada": 29.38,
+                        "Nivel 2": 29.44,
+                        "Nivel 3": 30.32,
+                        "Nivel 4": 30.92,
+                        "Nivel 5": 31.53,
+                        "Nivel 6": 32.79,
+                        "Nivel 7": 34.10
+                    },
+                    "Administrativos": {
+                        "Nivel entrada": 19.23,
+                        "Nivel 2": 22.78,
+                        "Nivel 3": 23.47,
+                        "Nivel 4": 23.93,
+                        "Nivel 5": 24.40,
+                        "Nivel 6": 25.38,
+                        "Nivel 7": 26.39
+                    },
+                    "Servicios Auxiliares": {
+                        "Nivel entrada": 19.05,
+                        "Nivel 2": 22.56,
+                        "Nivel 3": 23.24,
+                        "Nivel 4": 23.70,
+                        "Nivel 5": 24.16,
+                        "Nivel 6": 25.13,
+                        "Nivel 7": 26.14
+                    }
+                },
+                "description": "Anexo II Aviapartner 2025 (Recargo 1.75)."
+            },
+            {
+                "id": "HORA_PERENTORIA",
+                "name": "Hora Perentoria",
+                "unit": "hora",
+                "is_proportional": false,
+                "level_values": {
+                    "Técnicos Gestores": {
+                        "Nivel entrada": 29.38,
+                        "Nivel 2": 29.44,
+                        "Nivel 3": 30.32,
+                        "Nivel 4": 30.92,
+                        "Nivel 5": 31.53,
+                        "Nivel 6": 32.79,
+                        "Nivel 7": 34.10
+                    },
+                    "Administrativos": {
+                        "Nivel entrada": 19.23,
+                        "Nivel 2": 22.78,
+                        "Nivel 3": 23.47,
+                        "Nivel 4": 23.93,
+                        "Nivel 5": 24.40,
+                        "Nivel 6": 25.38,
+                        "Nivel 7": 26.39
+                    },
+                    "Servicios Auxiliares": {
+                        "Nivel entrada": 19.05,
+                        "Nivel 2": 22.56,
+                        "Nivel 3": 23.24,
+                        "Nivel 4": 23.70,
+                        "Nivel 5": 24.16,
+                        "Nivel 6": 25.13,
+                        "Nivel 7": 26.14
+                    }
+                },
+                "description": "Anexo II Aviapartner 2025 (Recargo 1.75)."
+            },
+            {
+                "id": "HORA_EXTRA",
+                "name": "Hora Extraordinaria",
+                "unit": "hora",
+                "is_proportional": false,
+                "level_values": {
+                    "Técnicos Gestores": {
+                        "Nivel entrada": 25.18,
+                        "Nivel 2": 25.23,
+                        "Nivel 3": 25.99,
+                        "Nivel 4": 26.51,
+                        "Nivel 5": 27.02,
+                        "Nivel 6": 28.11,
+                        "Nivel 7": 29.23
+                    },
+                    "Administrativos": {
+                        "Nivel entrada": 16.48,
+                        "Nivel 2": 19.52,
+                        "Nivel 3": 20.12,
+                        "Nivel 4": 20.52,
+                        "Nivel 5": 20.92,
+                        "Nivel 6": 21.75,
+                        "Nivel 7": 22.62
+                    },
+                    "Servicios Auxiliares": {
+                        "Nivel entrada": 16.32,
+                        "Nivel 2": 19.33,
+                        "Nivel 3": 19.92,
+                        "Nivel 4": 20.31,
+                        "Nivel 5": 20.71,
+                        "Nivel 6": 21.54,
+                        "Nivel 7": 22.40
+                    }
+                },
+                "description": "Anexo II Aviapartner 2025 (Calculado recargo 1.5 s/ base)."
+            }
+        ]
+    }
+}

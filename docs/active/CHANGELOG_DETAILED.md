@@ -32,6 +32,15 @@
 - **UI UX**: Ocultado el input de "Salario Base Anual" en la calculadora para evitar redundancia, ya que se autoprovee según el perfil seleccionado.
 - **Verificación**: Realizado Stress Test del chat confirmando precisión del 100% en conceptos variables.
 
+### [20:15] ✈️ Implementación Estructura Canónica Aviapartner 2025
+- **New Feature**: Integración completa de la estructura salarial de Aviapartner (BOE 17/02/2025).
+    - **Canonical Data**: Creado `docs/active/ESTRUCTURA_CANONICA_AVIAPARTNER.md`.
+    - **Template**: Implementado `aviapartner.json` con todos los pluses (Fiji, FTP, Turnicidad 2-5) y precios por nivel.
+    - **Database**:
+        - **Company**: Inicializada entidad `aviapartner` en tabla `companies` (Script `init_avia_company.py`).
+        - **Salary**: Sembrados valores 2025 (Salario Base ~23k€, Nocturnidad 1.62€) via `seed_production.py`.
+    - **Verification**: Validado con scripts locales y testeado en Chat.
+
 ---
 
 ## 📅 Sesión: 17 Diciembre 2025
