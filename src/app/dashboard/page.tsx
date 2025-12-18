@@ -183,9 +183,9 @@ export default function DashboardPage() {
                             </button>
 
                             {/* Desktop User Area */}
-                            <div className="hidden md:flex items-center gap-4">
+                            <div className="flex items-center gap-2 md:gap-4">
                                 <ProfileSwitcher />
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-500 p-[1px] shadow-lg shadow-cyan-500/20">
+                                <div className="hidden md:flex w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-500 p-[1px] shadow-lg shadow-cyan-500/20">
                                     <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center">
                                         <User size={20} className="text-slate-400" />
                                     </div>
@@ -232,12 +232,12 @@ export default function DashboardPage() {
                                         </div>
                                         <button
                                             onClick={() => {
-                                                setShowInstallGuide(true);
+                                                router.push('/dashboard/settings');
                                                 setIsMobileMenuOpen(false);
                                             }}
                                             className="text-[var(--text-primary)] text-sm font-medium flex items-center gap-2 bg-[var(--panel-bg)]/50 px-3 py-1.5 rounded-lg border border-[var(--panel-border)]"
                                         >
-                                            <Download size={16} className="text-cyan-400" /> Instalar App
+                                            <Settings size={16} className="text-cyan-400" /> Configuración
                                         </button>
                                         <button onClick={handleLogout} className="text-red-400 text-sm font-medium flex items-center gap-2">
                                             <LogOut size={16} /> Salir

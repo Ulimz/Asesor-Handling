@@ -41,6 +41,11 @@
         - **Salary**: Sembrados valores 2025 (Salario Base ~23k€, Nocturnidad 1.62€) via `seed_production.py`.
     - **Verification**: Validado con scripts locales y testeado en Chat.
 
+### [20:30] 📱 Mobile UX Refinement Use-Case
+- **Header**: El selector de perfil (`ProfileSwitcher`) es ahora visible en móvil, mostrando el alias truncado.
+- **Menu**: Reemplazado botón "Instalar App" (redundante) por acceso directo a **Configuración**.
+- **Layout**: Ajustada visibilidad de elementos del header para evitar saturación en pantallas pequeñas.
+
 ---
 
 ## 📅 Sesión: 17 Diciembre 2025

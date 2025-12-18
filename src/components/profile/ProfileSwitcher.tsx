@@ -24,9 +24,9 @@ export default function ProfileSwitcher() {
                 <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
                     <Briefcase size={16} />
                 </div>
-                <div className="hidden md:block text-left">
-                    <div className="text-xs text-slate-400">Perfil Activo</div>
-                    <div className="text-sm font-medium text-white max-w-[150px] truncate">
+                <div className="block text-left">
+                    <div className="text-xs text-slate-400 hidden md:block">Perfil Activo</div>
+                    <div className="text-sm font-medium text-white max-w-[100px] md:max-w-[150px] truncate">
                         {activeProfile ? activeProfile.alias : 'Sin Perfil'}
                     </div>
                 </div>
