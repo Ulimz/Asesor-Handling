@@ -154,17 +154,10 @@ export default function DashboardPage() {
                         <div className="flex items-center gap-3 md:gap-6 flex-1 min-w-0">
                             {/* Logo */}
                             <div className="shrink-0 md:hidden">
-                                <BrandLogo iconSize={40} showText={false} />
+                                <BrandLogo iconSize={40} showText={true} textSize="sm" />
                             </div>
 
-                            {/* Company Selector */}
-                            <div className="md:hidden shrink-0">
-                                <CompanyDropdown
-                                    onSelect={handleCompanySelect}
-                                    selectedCompanyId={selectedCompanyId}
-                                    compact={true}
-                                />
-                            </div>
+
 
                             {/* Desktop Title */}
                             <div className="hidden md:block">
@@ -184,6 +177,15 @@ export default function DashboardPage() {
                                 <CompanyDropdown
                                     onSelect={handleCompanySelect}
                                     selectedCompanyId={selectedCompanyId}
+                                />
+                            </div>
+
+                            {/* Mobile Company Selector */}
+                            <div className="md:hidden shrink-0">
+                                <CompanyDropdown
+                                    onSelect={handleCompanySelect}
+                                    selectedCompanyId={selectedCompanyId}
+                                    compact={true}
                                 />
                             </div>
 

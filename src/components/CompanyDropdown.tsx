@@ -122,7 +122,7 @@ export default function CompanyDropdown({ selectedCompanyId, onSelect, compact =
                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                            className="absolute top-full left-0 right-0 mt-2 bg-slate-900/95 backdrop-blur-xl rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden z-50 max-h-64 overflow-y-auto scrollbar-thin"
+                            className={`absolute top-full mt-2 bg-slate-900/95 backdrop-blur-xl rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden z-50 max-h-64 overflow-y-auto scrollbar-thin ${compact ? 'right-0 w-72' : 'left-0 right-0'}`}
                         >
                             <div className="p-1.5 space-y-1">
                                 {companies.map((company) => (

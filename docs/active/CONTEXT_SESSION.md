@@ -25,6 +25,10 @@
     - `CompanyDropdown` ahora soporta modo `compact` (solo icono).
     - `ProfileSwitcher` visible en móvil con alias truncado.
 - ✅ **Menú Simplificado**: Acceso directo a `Configuración` y eliminación de botón redundante de instalación.
+- ✅ **Iteración 2 (Refinamiento)**:
+    - Movido `CompanyDropdown` a la derecha junto al perfil.
+    - Activado texto del logo en móvil para aprovechar espacio (antes vacío).
+    - Corregido ancho del dropdown (`w-72`) para evitar cortes en pantalla.
 
 ---
 

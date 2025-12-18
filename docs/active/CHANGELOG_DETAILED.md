@@ -46,6 +46,10 @@
 - **Componentes**: Añadido modo `compact` a `CompanyDropdown` para mostrar solo logo en móvil.
 - **Menu**: Reemplazado botón "Instalar App" (redundante) por acceso directo a **Configuración**.
 - **Layout**: Ajustada visibilidad de elementos del header para evitar saturación en pantallas pequeñas.
+- **Refinamiento UX (Iteración 2)**:
+    - **Header**: Movido `CompanyDropdown` a la derecha (junto a Perfil) para unificar controles.
+    - **Logo**: Activado texto del logo ("Asistente Handling") en móvil para llenar el espacio izquierdo vacío.
+    - **Dropdown**: Ajustado ancho del menú desplegable (`w-72`) y anclaje (`right-0`) para evitar cortes en pantalla.
 
 ---
 
