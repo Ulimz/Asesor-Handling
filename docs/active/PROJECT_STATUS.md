@@ -10,22 +10,22 @@ Este documento resume el propósito, arquitectura y estado actual del proyecto. 
 - **Framework**: Next.js 16 (App Router)
 - **UI**: React 19, Lucide React, Framer Motion
 - **Estructura**: Modular (`src/features/`) alineada con el dominio
-- **Componentes Clave**: `CascadingSelector` (Empresa -> Grupo -> Nivel)
-- **SEO**: `sitemap.ts` y `robots.ts` configurados (Auto-generados).
+- **Componentes Clave**: 
+    - `CascadingSelector`: Selección jerárquica (Empresa -> Grupo -> Nivel).
+    - `ProfileSwitcher`: Gestión multi-perfil con soporte móvil.
+    - `CompanyDropdown`: Selector optimizado con modo compacto.
+- **SEO**: `sitemap.ts` y `robots.ts` configurados.
 
 ### Backend (`/backend`)
 - **Framework**: FastAPI (Python 3.11)
-- **Database**: PostgreSQL 15 + PgVector (Dockerized)
+- **Database**: PostgreSQL 15 + PgVector (Railway Production)
 - **AI/RAG**:
     - **Embeddings**: Sentence-Transformers (`all-MiniLM-L6-v2`)
     - **LLM**: Google Gemini 2.0 Flash (via API)
-    - **Intent Detection**: Logic to classify queries (Salary, Dismissal, Leave) and swap system prompts.
+    - **Hybrid Retrieval**: "Regla de Oro" (Inyección prioritaria de tablas SQL sobre PDF).
 - **Data Foundations**:
-    - **Extraction**: `extract_salary_tables.py` (Menzies, Swissport, Iberia, Groundforce).
-    - **Seeding**: `seed_salary_tables.py` (Multi-company loop).
-- **Services**:
-    - `CalculatorService`: Supports manual concept inputs and DB-backed salary data.
-    - `RagEngine`: Injects user profile context and uses Kinship Tables (`kinship.py`) to prevent hallucinations.
+    - **Canonical Structures 2025**: Aviapartner, Azul Handling, Sector, EasyJet, etc.
+    - **Seeding**: `seed_production.py` (Sincronización total DB-Código).
 
 ### DevOps
 - **Containerización**: Docker Compose
@@ -33,30 +33,30 @@ Este documento resume el propósito, arquitectura y estado actual del proyecto. 
 - **Repositorio**: GitHub (`Ulimz/Asesor-Handling`)
 - **Documentación**: Centralizada en `docs/active/`.
 
-## 🚦 Estado Actual: PRE-ROLLOUT (Fase 6 Lista)
+## 🚦 Estado Actual: PRODUCTION READY (v1.8)
 
 | Módulo | Estado Frontend | Estado Backend | Notas |
 |--------|-----------------|----------------|-------|
-| **Usuarios** | ✅ Perfil Dinámico | ✅ Persistencia | Inyectado en Contexto Chat |
-| **Convenios** | ✅ Completo | ✅ Completo | Búsqueda semántica activa |
-| **Calculadoras** | ✅ Cascading Selector | ✅ Metadata API | Datos reales BOE (750+ registros) |
+| **Usuarios** | ✅ Multi-Perfil & Móvil | ✅ Persistencia Relacional | UX mejorada en mobile |
+| **Convenios** | ✅ Aviapartner Implantado | ✅ Estructuras 2025 | Datos BOE verídicos |
+| **Calculadoras** | ✅ UX Simplificada | ✅ Tablas Salariales SQL | Input "Salario Base" eliminado |
 | **Alertas** | ✅ Completo | ✅ Completo | Feed de novedades |
 | **Reclamaciones** | ✅ Completo | ✅ Completo | Generador de escritos |
-| **IA/RAG** | ✅ Context Aware | ✅ Kinship Logic | Rules-based Parentesco check |
+| **IA/RAG** | ✅ Alta Precisión | ✅ Structured Injection | Prioridad absoluta a datos SQL |
 
-## 📦 Fases Completadas (Plan Maestro "No Half Measures")
+## 📦 Hitos Recientes (Completados)
 
-- ✅ **Fase 1: Data Foundations**: Extracción avanzada y seeding real.
-- ✅ **Fase 2: Logic & API**: Metadatos dinámicos.
-- ✅ **Fase 3: Dynamic UX**: Selectores en cascada y persistencia.
-- ✅ **Fase 4: Advanced Features**: Kinship tables y Context Injection.
-- ✅ **Limpieza**: Documentación reorganizada y backup creado.
+- ✅ **Aviapartner 2025**: Integración total de la estructura salarial y tablas del convenio.
+- ✅ **Mobile UX Refinement**: 
+    - Header reorganizado (Logo -> Icono -> Perfil -> Menú).
+    - Menú simplificado (Acceso a Configuración).
+- ✅ **RAG "Regla de Oro"**: El chat responde preguntas de sueldo consultando la base de datos, no alucinando PDFs.
+- ✅ **Clean Code**: Eliminación de redundancias en JSONs y inputs innecesarios.
 
-## 🔧 Últimas Actualizaciones
-- **Auditoría**: Verificación de código vs tareas (Todo ok).
-- **Cleanup**: Archivos root movidos a `docs/`.
-- **Backup**: Zip generado en `backups/`.
+## 🔧 Próximos Pasos (Roadmap)
+1. **Performance Tuning**: Cacheo agresivo de selectores en frontend.
+2. **Monitoring**: Dashboards de uso en Railway.
+3. **User Feedback**: Recopilación de feedback real de beta testers.
 
-## 📋 Tareas Activas (Backlog Inmediato)
-1.  **Deploy to Production**: Push final a GitHub.
-2.  **Smoke Test**: Verificar en prod que la IA respeta la tabla de parentesco.
+## 📋 Tareas Activas
+- [ ] Monitorizar estabilidad en producción tras despliegue v1.8.
