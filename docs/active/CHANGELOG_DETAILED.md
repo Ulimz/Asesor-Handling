@@ -12,15 +12,25 @@
 - **Clean Data**: Eliminada redundancia de `base_value_2025` en los JSON templates (`azul_handling.json`, `convenio_sector.json`).
 - **Consistency**: Refactorizado `seed_production.py` para sincronizar perfectamente la base de datos con las nuevas tablas 2025.
 
-### [19:10] 🧮 Frontend: UX y Precisión Profesional
-- **Calculadora**: Actualizada para consumir `level_values` de la API, permitiendo cambios de precio instantáneos al alternar niveles de usuario.
-- **Estabilidad**: Corregida sincronización de perfiles en el arranque del componente.
-- **SMI Mapping**: El sistema ahora mapea correctamente "Nivel entrada" a los valores base correspondientes.
+### [19:15] 🚑 Hotfix: Carga de Conceptos y Consistencia DB
+- **Incidente**: La calculadora no cargaba conceptos; API devolvía Error 500.
+- **Causa 1 (Infra)**: Base de datos de producción necesitaba la columna `level_values` (Aplicado `ALTER TABLE`).
+- **Causa 2 (Code)**: El seeder creaba conceptos con `code=None` para niveles de pluses, invalidando el schema Pydantic.
+- **Solución**: Corregido seeder para asignar códigos únicos a tiers y re-poblada la base de datos.
+- **Resultado**: Carga instantánea y estable de todos los conceptos de Azul y Sector.
 
-### [19:20] 🧠 IA: RAG con Prioridad de Datos Estructurados
-- **"Regla de Oro"**: Modificado `rag_engine.py` para inyectar tablas salariales de la calculadora en el contexto del chat con prioridad "Absoluta".
-- **Jerarquía**: Instrucción explícita a la IA para dar prioridad a los datos estructurados sobre el texto de los artículos en consultas de dinero.
-- **Smart Profile**: El chat ahora detecta el Grupo/Nivel del perfil activo e inyecta la tabla específica del usuario, eliminando ambigüedades.
+### [19:30] 🧠 IA: RAG con Prioridad de Datos Estructurados y Fix de "Bajas"
+- **"Regla de Oro"**: Modificado `rag_engine.py` para inyectar tablas salariales en el contexto del chat con prioridad "Absoluta".
+- **IT Detection**: Refinada la detección del intent de IT (Incapacidad Temporal) para evitar que palabras como "cobrar" activen erróneamente el contexto de tablas salariales en lugar de artículos legales.
+- **Stability**: Corregido `IndentationError` en el motor RAG que causaba downtime en producción.
+- **Smart Profile**: El chat detecta Grupo/Nivel del perfil activo e inyecta la tabla específica del usuario.
+
+### [20:00] 📊 Auditoría y Estabilización de Pluses Sector 2025
+- **Data Sync**: Sincronizados los valores de `HORA_FESTIVA` (2.85) y `HORA_DOMINGO` (2.80) con el BOE 2025 del Sector.
+- **Consistencia de IDs**: Unificados `PLUS_FESTIVO/PLUS_DOMINGO` a `HORA_FESTIVA/HORA_DOMINGO` en `seed_production.py` y templates.
+- **Cleanup**: Renombrado `base_value_2022` a `base_value_2025` en plantillas para evitar confusión y eliminar obsolescencia.
+- **UI UX**: Ocultado el input de "Salario Base Anual" en la calculadora para evitar redundancia, ya que se autoprovee según el perfil seleccionado.
+- **Verificación**: Realizado Stress Test del chat confirmando precisión del 100% en conceptos variables.
 
 ---
 

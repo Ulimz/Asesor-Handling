@@ -461,7 +461,7 @@ export default function SalaryCalculator() {
                                     !c.code.startsWith('PLUS_TURNOS') &&
                                     !c.code.startsWith('PLUS_TURNICIDAD') &&
                                     !c.code.startsWith('PLUS_FRACC') &&
-                                    !['PLUS_FIJI', 'PLUS_FTP', 'PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR'].includes(c.code)
+                                    !['PLUS_FIJI', 'PLUS_FTP', 'PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR', 'SALARIO_BASE_ANUAL', 'SALARIO_BASE'].includes(c.code)
                                 ).map((concept) => (
                                     <div key={concept.code} className="space-y-2">
                                         <label className="text-xs text-slate-300 flex items-center gap-2 truncate" title={concept.description}>

@@ -100,9 +100,9 @@ MANUAL_SECTOR_VARIABLES_2025 = [
     {"group": "Servicios Auxiliares", "level": "Nivel 3", "concept": "HORA_PERENTORIA", "amount": 16.30, "year": 2025},
     
     # PLUSES (Fixed/Variable)
-    {"group": "Servicios Auxiliares", "level": "Nivel 3", "concept": "PLUS_NOCTURNIDAD", "amount": 1.95, "year": 2025},
-    {"group": "Servicios Auxiliares", "level": "Nivel 3", "concept": "PLUS_FESTIVO", "amount": 3.20, "year": 2025},
-    {"group": "Servicios Auxiliares", "level": "Nivel 3", "concept": "PLUS_DOMINGO", "amount": 2.10, "year": 2025},
+    {"group": "Servicios Auxiliares", "level": "Nivel 3", "concept": "PLUS_NOCTURNIDAD", "amount": 1.61, "year": 2025},
+    {"group": "Servicios Auxiliares", "level": "Nivel 3", "concept": "HORA_FESTIVA", "amount": 2.85, "year": 2025},
+    {"group": "Servicios Auxiliares", "level": "Nivel 3", "concept": "HORA_DOMINGO", "amount": 2.80, "year": 2025},
     # Note: These specific pluses rely on the exact code match defined in concepts.
     # If concept code is just 'PLUS_NOCTURNIDAD', this matches.
 ]
