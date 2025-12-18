@@ -149,19 +149,24 @@ export default function DashboardPage() {
                 <main className="flex-1 flex flex-col h-full bg-[var(--bg-primary)]/50 relative min-w-0">
                     {/* Header */}
                     <header className="relative h-16 md:h-20 px-4 md:px-6 border-b border-[var(--panel-border)] flex items-center justify-between bg-[var(--bg-primary)]/80 backdrop-blur-md z-30 transition-colors duration-300">
-                        {/* MOBILE: Left (Logo Icon) */}
-                        <div className="md:hidden shrink-0">
-                            <BrandLogo iconSize={48} showText={false} />
-                        </div>
 
-                        {/* MOBILE: Center (Dropdown) / DESKTOP: Title */}
-                        <div className="flex-1 flex justify-center items-center px-2">
-                            <div className="md:hidden w-full max-w-[200px]">
+                        {/* LEFT: Logo & Company (Mobile Optimized) */}
+                        <div className="flex items-center gap-3 md:gap-6 flex-1 min-w-0">
+                            {/* Logo */}
+                            <div className="shrink-0 md:hidden">
+                                <BrandLogo iconSize={40} showText={false} />
+                            </div>
+
+                            {/* Company Selector */}
+                            <div className="md:hidden shrink-0">
                                 <CompanyDropdown
                                     onSelect={handleCompanySelect}
                                     selectedCompanyId={selectedCompanyId}
+                                    compact={true}
                                 />
                             </div>
+
+                            {/* Desktop Title */}
                             <div className="hidden md:block">
                                 <h1 className="text-xl font-semibold text-white whitespace-nowrap truncate">
                                     {activeTab === 'chat' && 'CHAT IA'}
@@ -172,25 +177,31 @@ export default function DashboardPage() {
                             </div>
                         </div>
 
-                        {/* MOBILE: Right (Menu) / DESKTOP: User & Settings */}
-                        <div className="flex items-center gap-4 shrink-0">
-                            {/* Mobile Hamburger */}
+                        {/* RIGHT: Profile & Actions */}
+                        <div className="flex items-center gap-2 md:gap-4 shrink-0">
+                            {/* Desktop Company Dropdown (Hidden on Mobile) */}
+                            <div className="hidden md:block w-64 mr-4">
+                                <CompanyDropdown
+                                    onSelect={handleCompanySelect}
+                                    selectedCompanyId={selectedCompanyId}
+                                />
+                            </div>
+
+                            <ProfileSwitcher />
+
+                            <div className="hidden md:flex w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-500 p-[1px] shadow-lg shadow-cyan-500/20">
+                                <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center">
+                                    <User size={20} className="text-slate-400" />
+                                </div>
+                            </div>
+
+                            {/* Mobile Hamburger (Far Right) */}
                             <button
                                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                                 className="md:hidden p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-[var(--card-bg)] border border-[var(--card-border)] rounded-lg"
                             >
                                 {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
                             </button>
-
-                            {/* Desktop User Area */}
-                            <div className="flex items-center gap-2 md:gap-4">
-                                <ProfileSwitcher />
-                                <div className="hidden md:flex w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-500 p-[1px] shadow-lg shadow-cyan-500/20">
-                                    <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center">
-                                        <User size={20} className="text-slate-400" />
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </header>
 

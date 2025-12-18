@@ -18,9 +18,10 @@ interface Company {
 interface CompanyDropdownProps {
     selectedCompanyId: CompanyId | null;
     onSelect: (id: CompanyId) => void;
+    compact?: boolean;
 }
 
-export default function CompanyDropdown({ selectedCompanyId, onSelect }: CompanyDropdownProps) {
+export default function CompanyDropdown({ selectedCompanyId, onSelect, compact = false }: CompanyDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [companies, setCompanies] = useState<Company[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -79,7 +80,7 @@ export default function CompanyDropdown({ selectedCompanyId, onSelect }: Company
             {/* Trigger Button */}
             <button
                 onClick={toggleOpen}
-                className="w-full flex items-center justify-between p-3 bg-slate-800/50 backdrop-blur-md border border-white/10 rounded-xl shadow-lg hover:border-cyan-500/50 hover:bg-slate-800/80 transition-all text-left group"
+                className={`w-full flex items-center justify-between ${compact ? 'p-2 justify-center w-auto' : 'p-3'} bg-slate-800/50 backdrop-blur-md border border-white/10 rounded-xl shadow-lg hover:border-cyan-500/50 hover:bg-slate-800/80 transition-all text-left group`}
             >
                 <div className="flex items-center gap-3">
                     <div
@@ -88,19 +89,23 @@ export default function CompanyDropdown({ selectedCompanyId, onSelect }: Company
                     >
                         {selectedCompany ? selectedCompany.name.charAt(0) : <Building2 size={16} />}
                     </div>
-                    <div>
-                        <span className="hidden md:block text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
-                            {selectedCompany ? selectedCompany.name : 'Seleccionar Empresa'}
-                        </span>
-                        <span className="hidden md:block text-[10px] text-slate-400 uppercase tracking-wide">
-                            {selectedCompany ? (selectedCompany.agreementLabel || 'Convenio Activo') : 'Requerido'}
-                        </span>
-                    </div>
+                    {!compact && (
+                        <div>
+                            <span className="hidden md:block text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
+                                {selectedCompany ? selectedCompany.name : 'Seleccionar Empresa'}
+                            </span>
+                            <span className="hidden md:block text-[10px] text-slate-400 uppercase tracking-wide">
+                                {selectedCompany ? (selectedCompany.agreementLabel || 'Convenio Activo') : 'Requerido'}
+                            </span>
+                        </div>
+                    )}
                 </div>
-                <ChevronDown
-                    size={16}
-                    className={`text-slate-400 group-hover:text-cyan-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-                />
+                {!compact && (
+                    <ChevronDown
+                        size={16}
+                        className={`text-slate-400 group-hover:text-cyan-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                    />
+                )}
             </button>
 
             {/* Dropdown Menu */}

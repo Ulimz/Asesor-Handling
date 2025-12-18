@@ -42,7 +42,8 @@
     - **Verification**: Validado con scripts locales y testeado en Chat.
 
 ### [20:30] 📱 Mobile UX Refinement Use-Case
-- **Header**: El selector de perfil (`ProfileSwitcher`) es ahora visible en móvil, mostrando el alias truncado.
+- **Header**: Reorganizado layout móvil: Logo -> Icono Empresa (Compact) -> Perfil -> Menú Hamburguesa (Derecha).
+- **Componentes**: Añadido modo `compact` a `CompanyDropdown` para mostrar solo logo en móvil.
 - **Menu**: Reemplazado botón "Instalar App" (redundante) por acceso directo a **Configuración**.
 - **Layout**: Ajustada visibilidad de elementos del header para evitar saturación en pantallas pequeñas.
 
