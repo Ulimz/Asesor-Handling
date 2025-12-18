@@ -455,6 +455,12 @@
 *   **Contenido**: Limpieza de docs, SEO (`robots.ts`), Data Foundations.
 *   **Trigger**: Inicia despliegue automático en Railway/Vercel.
 
+
 ## 📋 Próximos Cambios Previstos
 1.  **Deployment**: Push a GitHub.
 2.  **Verification**: Smoke test en entorno de producción.
+
+### [21:30] 🛠️ Fix UX & Roadmap v2.0
+- **Fix Mobile Display**: Corregido desbordamiento del selector anterior y asegurada la visibilidad correcta del Badge en móviles.
+- **Mejora UX**: Reemplazo de `CompanyDropdown` interactivo por `CompanyBadge` estático para reforzar el uso de perfiles.
+- **Roadmap v2.0**: Documentadas mejoras futuras (Búsqueda Híbrida, Agente Calculadora, etc) en `PROJECT_STATUS.md`.

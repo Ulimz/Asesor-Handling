@@ -20,11 +20,11 @@
 ### 3. Mejoras UX Móvil (Iterativo)
 **Objetivo**: Optimizar la experiencia en pantallas pequeñas y limpiar la interfaz.
 
-- ✅ **Header Reorganizado**: `Logo` -> `Icono Empresa` -> `Perfil` -> `Menú`. Prioridad a la usabilidad.
-- ✅ **Componentes Responsive**: 
-    - `CompanyDropdown` ahora soporta modo `compact` (solo icono).
-    - `ProfileSwitcher` visible en móvil con alias truncado.
-- ✅ **Menú Simplificado**: Acceso directo a `Configuración` y eliminación de botón redundante de instalación.
+- ✅ **Mejoras UX Móvil**:
+    - **Eliminado**: Selector de empresas interactivo en header (redundante).
+    - **Nuevo**: `CompanyBadge` estático que muestra la empresa del perfil activo.
+    - **Header**: Reorganizado para maximizar espacio en móvil y desktop.
+    - **Navegación**: Menú Hamburguesa incluye ahora Configuración y Logout.
 - ✅ **Iteración 2 (Refinamiento)**:
     - Movido `CompanyDropdown` a la derecha junto al perfil.
     - Activado texto del logo en móvil para aprovechar espacio (antes vacío).

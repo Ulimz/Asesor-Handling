@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { apiService } from '@/lib/api-service';
-import CompanyDropdown from '@/components/CompanyDropdown';
+import CompanyBadge from '@/components/CompanyBadge';
 import ProfileSwitcher from '@/components/profile/ProfileSwitcher';
 import { useProfile } from '@/context/ProfileContext';
 import dynamic from 'next/dynamic';
@@ -80,9 +80,13 @@ export default function DashboardPage() {
         );
     }
 
-    const handleCompanySelect = (companyId: CompanyId) => {
-        setSelectedCompanyId(companyId);
-    };
+    if (!isAuthorized) {
+        return (
+            <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+                <Loader2 className="w-8 h-8 text-cyan-500 animate-spin" />
+            </div>
+        );
+    }
 
     const handleLogout = () => {
         localStorage.removeItem('auth_token');
@@ -159,6 +163,13 @@ export default function DashboardPage() {
 
 
 
+                            {/* Company Icon (Static Badge) */}
+                            <div className="md:hidden shrink-0">
+                                <CompanyBadge
+                                    companyId={selectedCompanyId}
+                                    showName={false}
+                                />
+                            </div>
                             {/* Desktop Title */}
                             <div className="hidden md:block">
                                 <h1 className="text-xl font-semibold text-white whitespace-nowrap truncate">
@@ -172,20 +183,11 @@ export default function DashboardPage() {
 
                         {/* RIGHT: Profile & Actions */}
                         <div className="flex items-center gap-2 md:gap-4 shrink-0">
-                            {/* Desktop Company Dropdown (Hidden on Mobile) */}
-                            <div className="hidden md:block w-64 mr-4">
-                                <CompanyDropdown
-                                    onSelect={handleCompanySelect}
-                                    selectedCompanyId={selectedCompanyId}
-                                />
-                            </div>
-
-                            {/* Mobile Company Selector */}
-                            <div className="md:hidden shrink-0">
-                                <CompanyDropdown
-                                    onSelect={handleCompanySelect}
-                                    selectedCompanyId={selectedCompanyId}
-                                    compact={true}
+                            {/* Desktop Company Badge (Visible) */}
+                            <div className="hidden md:block mr-4">
+                                <CompanyBadge
+                                    companyId={selectedCompanyId}
+                                    showName={true}
                                 />
                             </div>
 
