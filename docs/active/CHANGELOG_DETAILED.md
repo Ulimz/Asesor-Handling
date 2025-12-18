@@ -476,4 +476,6 @@
 - **Transparencia**: Las respuestas externas se marcarán (idealmente) para diferenciar la fuente.
 
 ### [22:00] 🐛 Fix Logo Azul Handling
-- **Normalización**: Corregido bug donde el logo de "Azul Handling" salía gris porque el ID interno era `azul-handling` y el frontend esperaba `azul`. Se ha creado un helper `getCompanyById` que unifica estos alias.
+### [22:15] 🧮 Agente Calculadora (Tool Calling)
+- **Habilidad Matemática**: Ahora el chat puede usar la herramienta `calculate_payroll` para calcular nóminas exactas usando tus datos de perfil y variables (horas extra, nocturnidad).
+- **Integración Profunda**: Si preguntas "Calcula mi nómina con 10 horas extra", no alucina, sino que ejecuta el código real de la calculadora y te da el resultado neto preciso.

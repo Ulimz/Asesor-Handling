@@ -101,13 +101,14 @@ def chat_with_docs(
     results = rag_engine.search(query=final_query, company_slug=target_slug, db=db, limit=12)
     
     # 2. Generate answer using Gemini with specific Intent
-    # (Removed early return: if no results, we still call generate_answer for Hybrid Search)
+    # (Removed early return: if no results, we still    # 2. Generate answer using Gemini with specific Intent
     answer = rag_engine.generate_answer(
         query=request.query, 
         context_chunks=results, 
         intent=intent,
         user_context=request.user_context,
-        structured_data=structured_data_context
+        structured_data=structured_data_context,
+        db=db
     )
     
     return {

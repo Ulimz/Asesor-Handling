@@ -14,6 +14,9 @@ from app.constants import (
     MAX_CONTEXT_CHARS
 )
 from app.prompts import PROMPT_TEMPLATES, IntentType
+from app.services.calculator_service import CalculatorService
+from app.schemas.salary import CalculationRequest
+from sqlalchemy.orm import Session # Typed typing
 
 class RagEngine:
     def __init__(self):
@@ -26,7 +29,49 @@ class RagEngine:
         if api_key:
             genai.configure(api_key=api_key)
             # Use 2.0-flash and direct REST call for grounding to bypass SDK tool validation issues
+            # Use 2.0-flash and direct REST call for grounding to bypass SDK tool validation issues
             self.gen_model = genai.GenerativeModel('gemini-2.0-flash')
+
+    # --- TOOL DEFINITIONS ---
+    @property
+    def calculator_tool_schema(self):
+        """
+        Defines the schema for the calculate_payroll tool for Gemini.
+        """
+        return {
+            "name": "calculate_payroll",
+            "description": "Calculates the estimated monthly net salary based on gross annual salary or specific payroll variables.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "gross_annual_salary": {
+                        "type": "number",
+                        "description": "The gross annual salary of the employee. If unknown, use 0."
+                    },
+                    "extra_hours": {
+                        "type": "number",
+                        "description": "Number of extra hours worked (optional)."
+                    },
+                    "night_hours": {
+                        "type": "number",
+                        "description": "Number of night hours worked (optional)."
+                    },
+                    "holiday_hours": {
+                        "type": "number",
+                        "description": "Number of holiday hours works (optional)."
+                    },
+                    "force_days": {
+                        "type": "number",
+                        "description": "Number of 'force majeure' hours if applicable (optional)."
+                    },
+                    "payments": {
+                        "type": "integer",
+                        "description": "Number of annual payments (12 or 14). Default to 14 if not specified."
+                    }
+                },
+                "required": ["gross_annual_salary"]
+            }
+        }
     
     @property
     def model(self):
@@ -331,7 +376,7 @@ Pregunta reescrita:"""
 
         return rewritten
 
-    def generate_answer(self, query: str, context_chunks: list, intent: IntentType = IntentType.GENERAL, user_context: dict = None, structured_data: str = None):
+    def generate_answer(self, query: str, context_chunks: list, intent: IntentType = IntentType.GENERAL, user_context: dict = None, structured_data: str = None, db: Session = None):
         """
         Generate answer using Gemini based on provided context and intent
         """
@@ -444,7 +489,10 @@ RESPUESTA (Si es un dato de tabla, dalo directmente sin fórmulas):"""
                         "contents": [{
                             "parts": [{"text": final_prompt}]
                         }],
-                        "tools": [{"google_search": {}}],
+                        "tools": [
+                            {"google_search": {}},
+                            {"function_declarations": [self.calculator_tool_schema]}
+                        ],
                         "safetySettings": [
                             {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_ONLY_HIGH"},
                             {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_ONLY_HIGH"},
@@ -468,9 +516,81 @@ RESPUESTA (Si es un dato de tabla, dalo directmente sin fórmulas):"""
                                 text_response += "\n\n(ℹ️ Información complementada con búsqueda externa)"
                             
                             return text_response
+                            
                         except (KeyError, IndexError):
-                             # Fallback if structure is unexpected
-                             return "Error interpretando respuesta de la IA."
+                             # CHECK FOR FUNCTION CALL
+                             try:
+                                 # Gemini 1.5/2.0 REST structure for function call
+                                 candidates = result.get('candidates', [])
+                                 if not candidates: return "Error: No generation candidates."
+                                 
+                                 part = candidates[0]['content']['parts'][0]
+                                 
+                                 if 'functionCall' in part:
+                                     fc = part['functionCall']
+                                     fn_name = fc['name']
+                                     args = fc['args']
+                                     
+                                     if fn_name == 'calculate_payroll':
+                                         print(f"🧮 Tool Triggered: {fn_name} with args {args}")
+                                         
+                                         # Execute Calculator Service
+                                         if not db:
+                                             return "Error: No database connection available for calculation."
+                                             
+                                         # Map arguments to CalculationRequest
+                                         # We use user_context defaults to fill gaps
+                                         req = CalculationRequest(
+                                             company_slug=user_context.get('company_slug', 'azul'), # Default fallback
+                                             user_group=user_context.get('job_group', 'Administrativos'),
+                                             user_level=user_context.get('salary_level', 'Nivel entrada'),
+                                             gross_annual_salary=args.get('gross_annual_salary', 0),
+                                             payments=int(args.get('payments', 14)),
+                                             # Map variables
+                                             dynamic_variables={
+                                                 "HORA_EXTRA": args.get('extra_hours', 0),
+                                                 "HORA_NOCTURNA": args.get('night_hours', 0),
+                                                 "HORA_FESTIVA": args.get('holiday_hours', 0),
+                                                 "HORA_PERENTORIA": args.get('force_days', 0) 
+                                             },
+                                             contract_type=user_context.get('contract_type', 'indefinido'),
+                                             contract_percentage=user_context.get('contract_percentage', 100)
+                                         )
+                                         
+                                         calc_service = CalculatorService(db)
+                                         salary_res = calc_service.calculate_smart_salary(req)
+                                         
+                                         tool_output = f"""
+                                         RESULTADO DEL CÁLCULO DE NÓMINA:
+                                         - Salario Neto Mensual: {salary_res.net_salary_monthly}€
+                                         - Salario Bruto Mensual: {salary_res.gross_monthly_total}€
+                                         - Variable Total: {salary_res.variable_salary}€
+                                         """
+                                         
+                                         # Recursive Call / 2nd Turn: Give result back to Gemini to narrate
+                                         # For simplicity (stateless), we just append the result and ask for narration
+                                         follow_up_prompt = f"""
+                                         {final_prompt}
+                                         
+                                         RESULTADO DE LA HERRAMIENTA (CÁLCULO):
+                                         {tool_output}
+                                         
+                                         INSTRUCCIÓN FINAL:
+                                         Usa el resultado anterior para responder al usuario. Explica el desglose brevemente.
+                                         """
+                                         
+                                         # Second call (without tools to avoid loops, or just standard generation)
+                                         # We use the same method recursively or just a simple generation?
+                                         # Let's do a simple generation call to finish it off.
+                                         response_2 = self.gen_model.generate_content(follow_up_prompt)
+                                         return response_2.text
+
+                             except Exception as tool_e:
+                                 print(f"⚠️ Tool Execution Error: {tool_e}")
+                                 return "Hubo un error al intentar realizar el cálculo."
+
+                             # Fallback if structure is unexpected and no function call
+                             return "Error interpretando respuesta de la IA (No text or tool)."
                     else:
                         print(f"⚠️ API Error: {response.text}")
                         # Fallback to pure SDK generation (no tools) if REST fails

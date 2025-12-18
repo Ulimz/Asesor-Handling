@@ -26,6 +26,7 @@ export interface UserContext {
     salary_level?: string | number;
     contract_type?: string;
     preferred_name?: string;
+    contract_percentage?: number;
 }
 
 export async function askAI(messages: Message[], companyId?: CompanyId, userContext?: UserContext): Promise<SearchResult> {

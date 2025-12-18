@@ -80,8 +80,9 @@ export default function ChatInterface({ selectedCompanyId }: ChatInterfaceProps)
             const userContext = activeProfile ? {
                 job_group: activeProfile.job_group,
                 salary_level: activeProfile.salary_level,
-                preferred_name: activeProfile.alias, // Use alias as preferred name
-                contract_type: activeProfile.contract_type
+                contract_type: activeProfile.contract_type || 'indefinido',
+                contract_percentage: activeProfile.contract_percentage || 100,
+                preferred_name: activeProfile.alias
             } : undefined;
 
             const response = await askAI([...messages, userMessage], selectedCompanyId!, userContext);
