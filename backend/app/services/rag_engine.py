@@ -406,34 +406,32 @@ RESPUESTA (Si es un dato de tabla, dalo directmente sin fórmulas):"""
             # Siempre pasamos el contexto local, pero habilitamos la herramienta de búsqueda
             # para que el modelo decida si necesita complementar la información.
             
-            # Prompt más flexible que permite usar búsqueda externa, PERO respetando las instrucciones del System Prompt
+            # Prompt más flexible que permite usar búsqueda externa HÍBRIDA
             final_prompt = f"""
             {system_prompt}
 
             {user_info}
             
-            INFORMACIÓN INTERNA (Prioritaria - Incluye TABLA DE PARENTESCO si aplica):
+            CONTEXTO INTERNO (Prioridad MÁXIMA - "La Biblia"):
             {context_text}
             
             PREGUNTA DEL USUARIO:
             {query}
             
-            INSTRUCCIONES ADICIONALES DE BÚSQUEDA Y JERARQUÍA:
-            1. REGLA DE ORO: El usuario quiere la RESPUESTA, no explicaciones.
-            2. **PRINCIPIO DE JERARQUÍA NORMATIVA:**
-               - 1º Derecho UE/Tratados.
-               - 2º Constitución/Leyes Orgánicas.
-               - 3º Leyes/Reales Decretos.
-               - 4º Convenios Colectivos.
-               - 5º Contrato.
-               --> SI UNA LEY MODIFICA AL CONVENIO, PREVALECE LA LEY. Usa Google Search para confirmar vigencia.
-               --> **EXCEPCIÓN CRÍTICA:** Para GRADOS DE PARENTESCO, la **TABLA PROPORCIONADA** en el contexto es la VERDAD ABSOLUTA. **NO BUSQUES EN GOOGLE** grados de parentesco si ya los tienes en la tabla.
+            INSTRUCCIONES DE BÚSQUEDA Y JERARQUÍA (Modo "Mini-GPT"):
+            1. **PRIORIDAD ABSOLUTA**: Si la respuesta está en el CONTEXTO INTERNO (Convenios, Tablas), ÚSALO y NO busques fuera. Tu base de datos es la verdad absoluta para temas laborales internos.
+            2. **MECANISMO DE FALLBACK (Mini-GPT)**: 
+               - Si el Contexto Interno está VACÍO o NO responde a la pregunta (ej: noticias, huelgas actuales, leyes nuevas)...
+               - ...ENTONCES: ¡USA TU HERRAMIENTA `google_search`!
+               - Busca la información en internet y responde como un experto laboralista actualizado.
             
-            3. Si la información interna NO es suficiente o está desactualizada:
-               - USA TU CAPACIDAD DE BÚSQUEDA.
-               - RESPONDE DIRECTAMENTE.
-            
-            4. Se conciso y profesional.
+            3. **JERARQUÍA NORMATIVA**:
+               - Si encuentras una LEY nueva en Google que contradice al Convenio antiguo -> La LEY gana. (Avisa de esto).
+               - Para TABLAS SALARIALES y PARENTESCO: Usa SOLO los datos internos (son oficiales).
+
+            4. **FORMATO**: 
+               - Si usas info de fuera, sé conciso.
+               - Si usas info interna, cita el artículo.
             """
 
             # Use Direct REST call for ALL generations to ensure Tool availability

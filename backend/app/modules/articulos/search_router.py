@@ -100,13 +100,8 @@ def chat_with_docs(
     # 1. Search relevant chunks (increased limit to capture tables)
     results = rag_engine.search(query=final_query, company_slug=target_slug, db=db, limit=12)
     
-    if not results:
-        return {
-            "answer": "No he encontrado información relevante en los documentos para responder a tu pregunta.",
-            "sources": []
-        }
-        
     # 2. Generate answer using Gemini with specific Intent
+    # (Removed early return: if no results, we still call generate_answer for Hybrid Search)
     answer = rag_engine.generate_answer(
         query=request.query, 
         context_chunks=results, 

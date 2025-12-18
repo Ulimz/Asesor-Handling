@@ -469,3 +469,8 @@
 - **Profile Switcher Mejorado**: Ahora muestra el **Logo/Color de la empresa activa** en lugar de un icono genérico.
 - **Header Limpio**: Eliminado por completo el badge "Sin Empresa" rojo.
 - **Info Móvil**: La tarjeta de detalles del perfil (Grupo, Nivel) ahora aparece dentro del **Menú Móvil**, optimizando el espacio.
+
+### [21:50] 🧠 Búsqueda Híbrida (Mini-GPT v2.0)
+- **Zero-Shot Fallback**: Ahora, si la base de datos interna no tiene respuesta (ej: noticias, huelgas recientes), el sistema **busca automáticamente en Internet** (Google Grounding).
+- **Jerarquía Normativa**: El prompt instruye priorizar datos internos (tablas) pero permite información externa para leyes nuevas o actualidad.
+- **Transparencia**: Las respuestas externas se marcarán (idealmente) para diferenciar la fuente.
