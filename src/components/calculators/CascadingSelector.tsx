@@ -78,29 +78,9 @@ export default function CascadingSelector({ onSelectionChange, initialSelection 
                 const data = await SalaryService.getGroups(selectedCompany);
                 setGroups(data);
 
-                // Only reset if current selection is invalid AND we are not trying to set the initial selection
-                // This logic needs to be careful. 
-                // If initialSelection aligns with this company, we trust the first effect to set selectedGroup.
-                // We just check validity here.
                 if (!data.includes(selectedGroup) && selectedGroup !== '') {
-                    // Wait, if selectedGroup comes from initialSelection, it might be set BEFORE groups are loaded.
-                    // The first effect sets selectedGroup. 
-                    // This effect loads groups. 
-                    // If data doesn't include it (e.g. data mismatch), clear it.
-                    // But we must NOT exclude the case where it IS valid.
-
-                    // Optimization: Check against initialSelection to avoid clearing pending sync?
-                    // Actually, if data is loaded and selectedGroup is not in it, it's invalid regardless of source.
-                    // Exception: if initially loading.
-
-                    // If data.includes(selectedGroup) is false, we clear it.
-                    if (initialSelection?.group === selectedGroup && initialSelection?.company === selectedCompany) {
-                        // It matches initial, maybe we keep it? 
-                        // But if the API says it's invalid, we probably should clear it or let it be but it won't be in dropdown.
-                        // Let's err on side of validity.
-                        const isValid = data.includes(selectedGroup);
-                        if (!isValid) setSelectedGroup('');
-                    } else {
+                    // Only reset if we are NOT in the middle of a pending initial sync
+                    if (initialSelection?.group !== selectedGroup) {
                         setSelectedGroup('');
                     }
                 }
@@ -128,11 +108,7 @@ export default function CascadingSelector({ onSelectionChange, initialSelection 
                 setLevels(data);
 
                 if (!data.includes(selectedLevel) && selectedLevel !== '') {
-                    // Same validity check logic
-                    if (initialSelection?.level === selectedLevel && initialSelection?.group === selectedGroup) {
-                        const isValid = data.includes(selectedLevel);
-                        if (!isValid) setSelectedLevel('');
-                    } else {
+                    if (initialSelection?.level !== selectedLevel) {
                         setSelectedLevel('');
                     }
                 }

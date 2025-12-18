@@ -9,7 +9,7 @@
         {
             "name": "Administrativos",
             "levels": [
-                "Nivel 1",
+                "Nivel entrada",
                 "Nivel 2",
                 "Nivel 3",
                 "Nivel 4",
@@ -33,7 +33,7 @@
         {
             "name": "Servicios Auxiliares",
             "levels": [
-                "Nivel 1",
+                "Nivel entrada",
                 "Nivel 2",
                 "Nivel 3",
                 "Nivel 4",
@@ -59,7 +59,7 @@
         {
             "name": "Técnicos Gestores",
             "levels": [
-                "Nivel 1",
+                "Nivel entrada",
                 "Nivel 2",
                 "Nivel 3",
                 "Nivel 4",
@@ -82,6 +82,42 @@
     ],
     "concepts": {
         "fixed": [
+            {
+                "id": "SALARIO_BASE_ANUAL",
+                "name": "Salario Base Anual (Oficial 2025)",
+                "is_monthly": false,
+                "is_proportional": true,
+                "level_values": {
+                    "Técnicos Gestores": {
+                        "Nivel entrada": 28460.70,
+                        "Nivel 2": 28516.35,
+                        "Nivel 3": 29367.68,
+                        "Nivel 4": 29955.04,
+                        "Nivel 5": 30542.39,
+                        "Nivel 6": 31764.09,
+                        "Nivel 7": 33034.65
+                    },
+                    "Administrativos": {
+                        "Nivel entrada": 18632.39,
+                        "Nivel 2": 22065.51,
+                        "Nivel 3": 22728.97,
+                        "Nivel 4": 23183.55,
+                        "Nivel 5": 23638.13,
+                        "Nivel 6": 24583.65,
+                        "Nivel 7": 25567.00
+                    },
+                    "Servicios Auxiliares": {
+                        "Nivel entrada": 18450.87,
+                        "Nivel 2": 21850.75,
+                        "Nivel 3": 22507.75,
+                        "Nivel 4": 22957.90,
+                        "Nivel 5": 23408.06,
+                        "Nivel 6": 24344.38,
+                        "Nivel 7": 25318.15
+                    }
+                },
+                "description": "Tabla oficial Sector 2025. Base para cálculo mensual (Anual / 14)."
+            },
             {
                 "id": "PLUS_JORNADA_IRREGULAR",
                 "name": "Plus Jornada Irregular",
@@ -142,20 +178,74 @@
             {
                 "id": "HORA_EXTRA",
                 "name": "Hora Extraordinaria",
-                "base_value_2022": null,
                 "unit": "hora",
                 "is_proportional": false,
-                "source": "xml_table",
-                "description": "Art 28.2. Valor depende de tabla anual."
+                "level_values": {
+                    "Técnicos Gestores": {
+                        "Nivel entrada": 24.94,
+                        "Nivel 2": 24.99,
+                        "Nivel 3": 25.73,
+                        "Nivel 4": 26.25,
+                        "Nivel 5": 26.76,
+                        "Nivel 6": 27.83,
+                        "Nivel 7": 28.94
+                    },
+                    "Administrativos": {
+                        "Nivel entrada": 16.33,
+                        "Nivel 2": 19.33,
+                        "Nivel 3": 19.91,
+                        "Nivel 4": 20.31,
+                        "Nivel 5": 20.71,
+                        "Nivel 6": 21.54,
+                        "Nivel 7": 22.40
+                    },
+                    "Servicios Auxiliares": {
+                        "Nivel entrada": 16.17,
+                        "Nivel 2": 19.14,
+                        "Nivel 3": 19.72,
+                        "Nivel 4": 20.11,
+                        "Nivel 5": 20.51,
+                        "Nivel 6": 21.33,
+                        "Nivel 7": 22.18
+                    }
+                },
+                "description": "Art 28.2. Valor oficial Sector 2025."
             },
             {
                 "id": "HORA_PERENTORIA",
                 "name": "Hora Perentoria",
-                "base_value_2022": null,
                 "unit": "hora",
                 "is_proportional": false,
-                "source": "xml_table",
-                "description": "Art 28.3. Valor depende de tabla anual."
+                "level_values": {
+                    "Técnicos Gestores": {
+                        "Nivel entrada": 29.09,
+                        "Nivel 2": 29.15,
+                        "Nivel 3": 30.02,
+                        "Nivel 4": 30.62,
+                        "Nivel 5": 31.22,
+                        "Nivel 6": 32.47,
+                        "Nivel 7": 33.77
+                    },
+                    "Administrativos": {
+                        "Nivel entrada": 19.05,
+                        "Nivel 2": 22.56,
+                        "Nivel 3": 23.23,
+                        "Nivel 4": 23.70,
+                        "Nivel 5": 24.16,
+                        "Nivel 6": 25.13,
+                        "Nivel 7": 26.13
+                    },
+                    "Servicios Auxiliares": {
+                        "Nivel entrada": 18.86,
+                        "Nivel 2": 22.34,
+                        "Nivel 3": 23.01,
+                        "Nivel 4": 23.47,
+                        "Nivel 5": 23.93,
+                        "Nivel 6": 24.88,
+                        "Nivel 7": 25.88
+                    }
+                },
+                "description": "Art 28.3. Valor oficial Sector 2025."
             },
             {
                 "id": "HORA_FESTIVA",

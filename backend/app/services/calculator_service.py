@@ -26,13 +26,20 @@ class CalculatorService:
              active_prices = {
                  "BASE_ANNUAL": 15876.00, # SMI approx fallback
                  "HORA_EXTRA": 12.0,
-                 "HORA_PERENT": 14.0
+                 "HORA_PERENTORIA": 14.0
              }
 
         # 2. Base Salary Calculation
-        # Annual base from table / Payments (14)
-        annual_table_salary = active_prices.get("SALARIO_BASE", active_prices.get("BASE_ANNUAL", 18450.87))
+        # Priority: Request > DB Table > Hardcoded Fallback
+        annual_table_salary = request.gross_annual_salary if request.gross_annual_salary > 0 else 0
         
+        if annual_table_salary <= 0:
+            annual_table_salary = active_prices.get("SALARIO_BASE", active_prices.get("BASE_ANNUAL", 0))
+            
+        if annual_table_salary <= 0:
+             print(f"⚠️ Warning: No salary entry for {request.company_slug}. Using absolute fallback.")
+             annual_table_salary = 18450.87 # SMI approx fallback 2024/25
+
         # LOGIC CHANGE: Base monthly is ALWAYS Annual / 14 (standard monthly payment)
         full_base_monthly = annual_table_salary / 14.0
         
@@ -176,14 +183,18 @@ class CalculatorService:
         """
         rows = self.db.query(SalaryTable).filter(
             SalaryTable.company_id == company_slug,
-            SalaryTable.year == 2025, # TODO: Dynamic Year
             SalaryTable.group == group,
             SalaryTable.level == level
-        ).all()
+        ).order_by(SalaryTable.year.desc()).all()
         
         if not rows:
-             # Retry with default group if not found (or handle partial matching here)
-             return {}
+             print(f"🔍 [DB] No exact level match for {company_slug}/{group}/{level}. Trying Nivel 3 fallback.")
+             # Fallback to Nivel 3 if specific level row is missing
+             rows = self.db.query(SalaryTable).filter(
+                 SalaryTable.company_id == company_slug,
+                 SalaryTable.group == group,
+                 SalaryTable.level == "Nivel 3"
+             ).all()
              
         prices = {}
         for row in rows:

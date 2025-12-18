@@ -3,12 +3,14 @@ import sys
 import os
 import json
 import logging
-from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, UniqueConstraint, text
+from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, UniqueConstraint, text, JSON
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import xml.etree.ElementTree as ET
+from dotenv import load_dotenv
 
 # --- CONFIGURATION ---
+load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     print("❌ Error: DATABASE_URL not found.")
@@ -32,6 +34,7 @@ class SalaryConceptDefinition(Base):
     input_type = Column(String, default="number") 
     is_active = Column(Boolean, default=True)
     default_price = Column(Float, default=0.0)
+    level_values = Column(JSON, nullable=True) # Added level_values
 
 class SalaryTable(Base):
     __tablename__ = "salary_tables"
@@ -167,7 +170,9 @@ def seed_concepts(template_path):
             concepts_to_add.append(SalaryConceptDefinition(
                 company_slug=company_id, name=c['name'], code=code,
                 description=f"Concepto Fijo: {c['name']}", input_type=inp_type,
-                default_price=c.get('base_value_2025', c.get('base_value_2022', 0.0)), is_active=True
+                default_price=c.get('base_value_2025', c.get('base_value_2022', 0.0)),
+                level_values=c.get('level_values'), # Capture level values from JSON
+                is_active=True
             ))
             
             if 'tiers' in c:
@@ -186,7 +191,9 @@ def seed_concepts(template_path):
             concepts_to_add.append(SalaryConceptDefinition(
                 company_slug=company_id, name=c['name'], code=c['id'],
                 description=f"Variable: {c['name']}", input_type=inp_type,
-                default_price=c.get('base_value_2025', c.get('base_value_2022', 0.0)), is_active=True
+                default_price=c.get('base_value_2025', c.get('base_value_2022', 0.0)),
+                level_values=c.get('level_values'), # Capture level values from JSON
+                is_active=True
             ))
 
         session.bulk_save_objects(concepts_to_add)
@@ -212,8 +219,8 @@ def extract_azul_xml_vars(xml_path):
         root = tree.getroot()
         all_content = root.findall(".//{*}texto/*")
         
-        # MAPPINGS
-        row_map = {"técnicos gestores": "Técnicos Gestores", "administrativos": "Administrativos", "serv. auxiliares": "Servicios Auxiliares"}
+        # MAPPINGS - Ensure keys match pre-processed group_text (lowercase, no dots)
+        row_map = {"técnicos gestores": "Técnicos Gestores", "administrativos": "Administrativos", "serv auxiliares": "Servicios Auxiliares"}
         col_map = {0: "Nivel 1", 1: "Nivel 2", 2: "Nivel 3", 3: "Nivel 4", 4: "Nivel 5", 5: "Nivel 6", 6: "Nivel 7"}
         
         def parse(table, cname):
@@ -237,7 +244,9 @@ def extract_azul_xml_vars(xml_path):
         def find_tbl(frag):
             found=False
             for e in all_content:
-                if e.tag.endswith('p') and frag.lower() in (e.text or "").lower(): found=True
+                # Clean text to handle newlines/extra spaces in XML
+                clean_text = " ".join((e.text or "").split()).lower()
+                if e.tag.endswith('p') and frag.lower() in clean_text: found=True
                 elif found and e.tag.endswith('table'): return e
             return None
             
@@ -275,18 +284,17 @@ def seed_values(template_path, companies_to_seed):
              extracted_data.extend(MANUAL_AZUL_BASE_2025)
              extracted_data.extend(MANUAL_AZUL_VARIABLES_2025) # Merge Variable Data
              xml_path = os.path.join(os.path.dirname(template_path), '../xml/azul.xml')
-             extracted_data.extend(extract_azul_xml_vars(xml_path))
+             xml_data = extract_azul_xml_vars(xml_path)
+             extracted_data.extend(xml_data)
 
         def get_val(grp, lvl, cid):
-            # 1. Exact Match
-            for x in extracted_data:
+            # 1. Exact Match - Search BACKWARDS to prioritize XML matches over manual fallbacks
+            for x in reversed(extracted_data):
                 if x['group']==grp and x['level']==lvl and x['concept']==cid: return x['amount']
             
-            # 2. Level Fallback (If exact level missing, look for Nivel 1 or Nivel 3 of same Group)
-            # This ensures we don't return None for "Nivel 4" if we only defined "Nivel 3".
-            # Prioritize Nivel 3 (Mid) then Nivel 1 (Entry)
+            # 2. Level Fallback - Also search BACKWARDS
             for fallback_lvl in ["Nivel 3", "Nivel 1"]:
-                 for x in extracted_data:
+                 for x in reversed(extracted_data):
                     if x['group']==grp and x['level']==fallback_lvl and x['concept']==cid: return x['amount']
             
             return None
@@ -299,7 +307,12 @@ def seed_values(template_path, companies_to_seed):
                     # Fixed
                     for c in template['concepts']['fixed']:
                          if 'applicable_concepts' in group and c['id'] not in group['applicable_concepts']: continue
+                         
                          amt = c.get('base_value_2025', c.get('base_value_2022', 0.0))
+                         # Logic: If level_values exists, it overrides/provides the base_value
+                         if 'level_values' in c and grp_name in c['level_values'] and level in c['level_values'][grp_name]:
+                             amt = c['level_values'][grp_name][level]
+                             
                          if 'tiers' in c:
                              for tk, tv in c['tiers'].items():
                                  records.append(SalaryTable(company_id=company_id, group=grp_name, level=level, concept=f"{c['id']}_{tk}", amount=tv, year=2025))
@@ -308,7 +321,12 @@ def seed_values(template_path, companies_to_seed):
                     # Variable
                     for c in template['concepts']['variable']:
                          if 'applicable_concepts' in group and c['id'] not in group['applicable_concepts']: continue
+                         
                          val = c.get('base_value_2025', c.get('base_value_2022', 0.0))
+                         # Logic: If level_values exists, it provides the base_value
+                         if 'level_values' in c and grp_name in c['level_values'] and level in c['level_values'][grp_name]:
+                             val = c['level_values'][grp_name][level]
+                             
                          if c.get('source') == 'xml_table':
                              dyn = get_val(grp_name, level, c['id'])
                              if dyn: val = dyn

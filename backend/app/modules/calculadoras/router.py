@@ -28,6 +28,7 @@ class ConceptSchema(BaseModel):
     description: str | None
     input_type: str
     default_price: float
+    level_values: dict | None = None
 
 @router.get("/metadata/companies", response_model=List[str])
 def get_companies(db: Session = Depends(get_db)):
@@ -73,7 +74,8 @@ def get_company_concepts(company_slug: str, db: Session = Depends(get_db)):
             code=c.code,
             description=c.description,
             input_type=c.input_type,
-            default_price=c.default_price or 0.0
+            default_price=c.default_price or 0.0,
+            level_values=c.level_values
         ) for c in concepts
     ]
 

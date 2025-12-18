@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean, Float
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean, Float, JSON
 from sqlalchemy.orm import relationship, declarative_base
 from pgvector.sqlalchemy import Vector
 from datetime import datetime
@@ -66,4 +66,5 @@ class SalaryConceptDefinition(Base):
     description = Column(Text, nullable=True) # "Se cobra entre 22h y 6h..."
     input_type = Column(String, default="number") # "number" (horas), "bool" (si/no), "days"
     default_price = Column(Float, default=0.0) # Precio unitario por defecto (si aplica)
+    level_values = Column(JSON, nullable=True) # Mapa de precios por nivel/grupo
     is_active = Column(Boolean, default=True)

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Calculator, DollarSign, PieChart, ArrowRight, User, Building2, Briefcase, Moon, Sun, Clock, Printer, RotateCcw } from 'lucide-react';
 import { API_URL } from '@/config/api';
 // import { apiService } from '@/lib/api-service'; // We use context now
@@ -75,28 +75,59 @@ export default function SalaryCalculator() {
         }
     };
 
-    // Sync with Active Profile
+    const initialSyncRef = useRef(false);
+
+    // Sync state with activeProfile once on load or when profile changes
     useEffect(() => {
-        if (activeProfile) {
+        if (activeProfile && !initialSyncRef.current) {
             setCompany(activeProfile.company_slug);
             setGroup(activeProfile.job_group);
             setLevel(activeProfile.salary_level);
             setContractPct(activeProfile.contract_percentage || 100);
             setContractType(activeProfile.contract_type || 'indefinido');
             setHasProfile(true);
-            // loadConcepts triggered by company change effect below
-        } else if (!profileLoading) {
-            // Only set default if not loading
+            initialSyncRef.current = true;
+        } else if (!profileLoading && !initialSyncRef.current) {
             loadConcepts('iberia');
+            initialSyncRef.current = true;
         }
     }, [activeProfile, profileLoading]);
 
-    // Reload concepts when company changes
+    // Reset sync ref when the profile ID explicitly changes to allow switching profiles
+    useEffect(() => {
+        initialSyncRef.current = false;
+    }, [activeProfile?.id]);
+
+    // Load concepts whenever company changes (manual or profile-driven)
     useEffect(() => {
         if (company) {
             loadConcepts(company);
         }
     }, [company]);
+
+    // Update prices dynamically when group or level changes
+    useEffect(() => {
+        if (concepts.length > 0 && group && level) {
+            const updatedConcepts = concepts.map(c => {
+                if (c.level_values && c.level_values[group] && c.level_values[group][level]) {
+                    return { ...c, default_price: c.level_values[group][level] };
+                }
+                return c;
+            });
+
+            // If they actually changed, update state
+            const hasChanged = JSON.stringify(updatedConcepts) !== JSON.stringify(concepts);
+            if (hasChanged) {
+                setConcepts(updatedConcepts);
+
+                // Also update the base annual salary if SALARIO_BASE_ANUAL is present
+                const baseConcept = updatedConcepts.find(c => c.code === 'SALARIO_BASE_ANUAL');
+                if (baseConcept && baseConcept.default_price) {
+                    setGrossSalary(baseConcept.default_price);
+                }
+            }
+        }
+    }, [group, level, concepts.length]); // concepts.length ensures we react when they initially load
 
     const handleCalculate = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -147,8 +178,13 @@ export default function SalaryCalculator() {
     // Memoize initialSelection to prevent cascading re-renders
     // Always pass current state to keep selector in sync
     const initialSelectionData = useMemo(() => {
-        return company && group && level ? { company, group, level } : undefined;
-    }, [company, group, level]);
+        if (!activeProfile) return undefined;
+        return {
+            company: activeProfile.company_slug,
+            group: activeProfile.job_group,
+            level: activeProfile.salary_level
+        };
+    }, [activeProfile?.id]); // Only change when the profile ID changes
 
     // Memoize handler to prevent effect loops in child
     const handleSelectionChange = useCallback((sel: { company: string; group: string; level: string }) => {

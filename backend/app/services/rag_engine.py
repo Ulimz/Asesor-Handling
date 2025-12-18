@@ -367,8 +367,10 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
 - Nivel Salarial: {user_context.get('salary_level', 'No especificado')}
 - Tipo Contrato: {user_context.get('contract_type', 'No especificado')}
 
-                IMPORTANTE: Si la respuesta depende del nivel salarial o grupo, USA EXCLUSIVAMENTE los datos de arriba. Si el usuario es Nivel 3, busca en las tablas el valor para Nivel 3.
-                PRIORIDAD: Si el valor exacto (ej: precio hora) aparece en una Tabla o Anexo, UŚALO DIRECTAMENTE. NO realices cálculos manuales si el dato ya está facilitado en la tabla. Solo calcula si NO aparece el valor final.
+                REGLA DE ORO DE DINERO (PRIORIDAD MÁXIMA): 
+                Los datos bajo el título 'DATOS OFICIALES DE TABLA SALARIAL' son 100% CORRECTOS y provienen de la calculadora oficial.
+                SÍ hay cualquier contradicción entre el texto de los artículos (Convenio) y los valores de la tabla oficial, PREVALECE SIEMPRE LA TABLA.
+                Usa el valor exacto de la tabla para el Nivel {user_context.get('salary_level')} y Grupo {user_context.get('job_group')} del usuario.
                 """
         
         final_prompt = f"""{system_prompt}
