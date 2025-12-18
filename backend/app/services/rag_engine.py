@@ -45,17 +45,18 @@ class RagEngine:
         """
         q = query.lower()
         
-        # Salary Keywords
-        if any(k in q for k in ['precio', 'salario', 'cobrar', 'retribución', 'paga', 'sueldo', 'plus', 'hora', 'festiva', 'nocturnidad', 'tabla', 'anexo', 'euros', '€']):
-            return IntentType.SALARY
-            
-        # Dismissal Keywords
+        # 1. Dismissal / Resignation (baja voluntaria)
         if any(k in q for k in ['despido', 'despedi', 'extinción', 'finiquito', 'indemnización', 'disciplinario', 'improcedente', 'baja voluntaria']):
             return IntentType.DISMISSAL
             
-        # Leave/Time Keywords
-        if any(k in q for k in ['vacaciones', 'permiso', 'día libre', 'boda', 'nacimiento', 'hospitalización', 'excedencia', 'reducción']):
+        # 2. Leave / Tine / Sickness (Incapacidad Temporal)
+        if any(k in q for k in ['vacaciones', 'permiso', 'día libre', 'boda', 'nacimiento', 'hospitalización', 'excedencia', 'reducción', 'baja', 'enfermedad', 'accidente', 'médico', 'it', 'incapacidad']):
+            # Exception: if it's explicitly "baja voluntaria", it was already caught by DISMISSAL
             return IntentType.LEAVE
+            
+        # 3. Salary / Money (Only if not already categorized above)
+        if any(k in q for k in ['precio', 'salario', 'cobrar', 'retribución', 'paga', 'sueldo', 'plus', 'hora', 'festiva', 'nocturnidad', 'tabla', 'anexo', 'euros', '€']):
+            return IntentType.SALARY
             
         return IntentType.GENERAL
 
@@ -241,12 +242,16 @@ class RagEngine:
                  # Apply synonyms on merged result directly here for fast path return
                  merged_lower = merged.lower()
                  
-                 # SALARY (Fast Path)
-                 salary_keywords = ['precio', 'salario', 'retribución', 'retribucion', 'paga', 'sueldo', 
-                                   'complemento', 'plus', 'hora', 'horas', 'extraordinaria', 'perentoria',
-                                   'nocturna', 'festiva', 'complementaria', 'tabla', 'anexo', 'cuanto', 'cuánto']
-                 if any(k in merged_lower for k in salary_keywords) and 'anexo' not in merged_lower:
-                     merged = f"{merged} ANEXO tabla salarial retribución"
+                  # SALARY (Fast Path) - Only enhance if NOT about sick leave (baja)
+                  salary_keywords = ['precio', 'salario', 'retribución', 'retribucion', 'paga', 'sueldo', 
+                                    'complemento', 'plus', 'hora', 'horas', 'extraordinaria', 'perentoria',
+                                    'nocturna', 'festiva', 'complementaria', 'tabla', 'anexo', 'cuanto', 'cuánto']
+                  it_keywords = ['baja', 'it', 'enfermedad', 'incapacidad', 'médico']
+                  
+                  if any(k in merged_lower for k in salary_keywords) and \
+                     not any(k in merged_lower for k in it_keywords) and \
+                     'anexo' not in merged_lower:
+                      merged = f"{merged} ANEXO tabla salarial retribución"
 
                  # FOOD (Fast Path)
                  food_keywords = ['comida', 'comer', 'almuerzo', 'bocadillo', 'merienda', 'cena']
@@ -292,16 +297,23 @@ Pregunta reescrita:"""
         # Apply these on the FINAL rewritten query (or original if no rewrite)
         rewritten_lower = rewritten.lower()
 
-        # SALARY DETECTION
+        # SALARY DETECTION - Only enhance if NOT about sick leave (baja)
         salary_keywords = ['precio', 'salario', 'retribución', 'retribucion', 'paga', 'sueldo', 
                           'complemento', 'plus', 'extraordinaria', 'perentoria',
                           'nocturna', 'festiva', 'complementaria', 'tabla', 'anexo']
+        it_keywords = ['baja', 'it', 'enfermedad', 'incapacidad', 'médico']
         
         is_salary_query = any(keyword in rewritten_lower for keyword in salary_keywords)
-        if is_salary_query and 'anexo' not in rewritten_lower:
+        is_it_query = any(keyword in rewritten_lower for keyword in it_keywords)
+        
+        if is_salary_query and not is_it_query and 'anexo' not in rewritten_lower:
             rewritten = f"{rewritten} ANEXO tabla salarial retribución"
             print(f"💰 Salary query detected (post-merge), enhanced to search in ANEXOS")
             rewritten_lower = rewritten.lower() # Update for next check
+        elif is_it_query:
+            rewritten = f"{rewritten} incapacidad temporal IT complemento baja"
+            print(f"🏥 Sickness query detected, enhanced with synonyms: IT, incapacidad, complemento")
+            rewritten_lower = rewritten.lower()
 
         # FOOD/BREAK SYNONYMS
         food_keywords = ['comida', 'comer', 'almuerzo', 'bocadillo', 'merienda', 'cena']
