@@ -1,0 +1,458 @@
+{
+    "meta": {
+        "company_id": "easyjet",
+        "company_name": "EasyJet Handling Spain",
+        "convenio_year": 2025,
+        "source": "V Convenio Colectivo - Tablas 2025"
+    },
+    "structure": {
+        "groups": [
+            {
+                "name": "Servicios Auxiliares",
+                "description": "Personal de rampa y pista",
+                "categories": [
+                    {
+                        "name": "Auxiliar de Rampa",
+                        "base_salary_2025": 1345.00,
+                        "ad_personam": 0.00,
+                        "levels": [
+                            {
+                                "level": "Auxiliar de Rampa",
+                                "progression_plus": 0.00,
+                                "perentoria": 16.15
+                            }
+                        ],
+                        "variable_concepts": {
+                            "PLUS_NOCTURNIDAD": null,
+                            "PLUS_MADRUGUE": null,
+                            "PLUS_TRANSPORTE": 4.50,
+                            "PLUS_HORA_EXTRA": 16.15,
+                            "PLUS_JOR_FRACCIONADA_1_12": null,
+                            "PLUS_JOR_FRACCIONADA_13": null,
+                            "PLUS_FESTIVO_DOMINGO": null
+                        }
+                    },
+                    {
+                        "name": "Agente de Rampa",
+                        "base_salary_2025": 1538.00,
+                        "ad_personam": 30.11,
+                        "levels": [
+                            {
+                                "level": "Nivel 1",
+                                "progression_plus": 0.00,
+                                "perentoria": 18.86
+                            },
+                            {
+                                "level": "Nivel 2",
+                                "progression_plus": 38.19,
+                                "perentoria": 22.34
+                            },
+                            {
+                                "level": "Nivel 3",
+                                "progression_plus": 71.03,
+                                "perentoria": 23.01
+                            },
+                            {
+                                "level": "Nivel 4",
+                                "progression_plus": 102.61,
+                                "perentoria": 23.47
+                            },
+                            {
+                                "level": "Nivel 5",
+                                "progression_plus": 134.18,
+                                "perentoria": 23.93
+                            },
+                            {
+                                "level": "Nivel 6",
+                                "progression_plus": 204.18,
+                                "perentoria": 24.88
+                            },
+                            {
+                                "level": "Nivel 7",
+                                "progression_plus": 284.92,
+                                "perentoria": 25.88
+                            }
+                        ],
+                        "variable_concepts": {
+                            "PLUS_NOCTURNIDAD": null,
+                            "PLUS_MADRUGUE": null,
+                            "PLUS_TRANSPORTE": null,
+                            "PLUS_HORA_EXTRA": null,
+                            "PLUS_JOR_FRACCIONADA_1_12": null,
+                            "PLUS_JOR_FRACCIONADA_13": null,
+                            "PLUS_FESTIVO_DOMINGO": null,
+                            "PLUS_FUNCION_COORD_HEADSET": null,
+                            "PLUS_FUNCION_CONDUCTOR": null,
+                            "PLUS_FUNCION_SUPERVISOR": null,
+                            "PLUS_FUNCION_DOS_FUNCIONES": null
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Administrativos",
+                "categories": [
+                    {
+                        "name": "Auxiliar Administrativo",
+                        "base_salary_2025": 1345.00,
+                        "ad_personam": 0.00,
+                        "levels": [
+                            {
+                                "level": "Auxiliar Administrativo",
+                                "progression_plus": 0.00,
+                                "perentoria": 19.05
+                            }
+                        ],
+                        "variable_concepts": {
+                            "PLUS_NOCTURNIDAD": null,
+                            "PLUS_MADRUGUE": null,
+                            "PLUS_TRANSPORTE": null,
+                            "PLUS_HORA_EXTRA": 16.15,
+                            "PLUS_JOR_FRACCIONADA_1_12": null,
+                            "PLUS_JOR_FRACCIONADA_13": null,
+                            "PLUS_FESTIVO_DOMINGO": null
+                        }
+                    },
+                    {
+                        "name": "Agente Administrativo",
+                        "base_salary_2025": 1538.00,
+                        "ad_personam": 30.11,
+                        "levels": [
+                            {
+                                "level": "Nivel 1",
+                                "progression_plus": 0.00,
+                                "perentoria": 19.05
+                            },
+                            {
+                                "level": "Nivel 2",
+                                "progression_plus": 38.19,
+                                "perentoria": 22.56
+                            },
+                            {
+                                "level": "Nivel 3",
+                                "progression_plus": 71.03,
+                                "perentoria": 23.23
+                            },
+                            {
+                                "level": "Nivel 4",
+                                "progression_plus": 107.17,
+                                "perentoria": 23.70
+                            },
+                            {
+                                "level": "Nivel 5",
+                                "progression_plus": 145.04,
+                                "perentoria": 24.16
+                            },
+                            {
+                                "level": "Nivel 6",
+                                "progression_plus": 225.00,
+                                "perentoria": 25.13
+                            },
+                            {
+                                "level": "Nivel 7",
+                                "progression_plus": 306.78,
+                                "perentoria": 26.13
+                            }
+                        ],
+                        "variable_concepts": {
+                            "PLUS_NOCTURNIDAD": null,
+                            "PLUS_MADRUGUE": null,
+                            "PLUS_TRANSPORTE": null,
+                            "PLUS_HORA_EXTRA": null,
+                            "PLUS_JOR_FRACCIONADA_1_12": null,
+                            "PLUS_JOR_FRACCIONADA_13": null,
+                            "PLUS_FESTIVO_DOMINGO": null,
+                            "PLUS_FUNCION_SUPERVISOR": null
+                        }
+                    },
+                    {
+                        "name": "Agente Coordinador",
+                        "base_salary_2025": 1538.00,
+                        "ad_personam": 30.11,
+                        "levels": [
+                            {
+                                "level": "Nivel 1",
+                                "progression_plus": 0.00,
+                                "perentoria": 19.05
+                            },
+                            {
+                                "level": "Nivel 2",
+                                "progression_plus": 38.19,
+                                "perentoria": 22.56
+                            },
+                            {
+                                "level": "Nivel 3",
+                                "progression_plus": 71.03,
+                                "perentoria": 23.23
+                            },
+                            {
+                                "level": "Nivel 4",
+                                "progression_plus": 107.17,
+                                "perentoria": 23.70
+                            },
+                            {
+                                "level": "Nivel 5",
+                                "progression_plus": 145.04,
+                                "perentoria": 24.16
+                            },
+                            {
+                                "level": "Nivel 6",
+                                "progression_plus": 225.00,
+                                "perentoria": 25.13
+                            },
+                            {
+                                "level": "Nivel 7",
+                                "progression_plus": 306.78,
+                                "perentoria": 26.13
+                            }
+                        ],
+                        "variable_concepts": {
+                            "PLUS_NOCTURNIDAD": null,
+                            "PLUS_MADRUGUE": null,
+                            "PLUS_TRANSPORTE": null,
+                            "PLUS_HORA_EXTRA": null,
+                            "PLUS_JOR_FRACCIONADA_1_12": null,
+                            "PLUS_JOR_FRACCIONADA_13": null,
+                            "PLUS_FESTIVO_DOMINGO": null,
+                            "PLUS_FUNCION_SUPERVISOR": null
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Técnicos Gestores",
+                "description": "Jefes de Área y Gestión",
+                "categories": [
+                    {
+                        "name": "Jefe de Área Tipo A",
+                        "base_salary_2025": 2104.00,
+                        "ad_personam": 0.00,
+                        "plus_funcion_fixed": 523.98,
+                        "levels": [
+                            {
+                                "level": "Nivel 1",
+                                "progression_plus": 0.00,
+                                "perentoria": 29.09
+                            },
+                            {
+                                "level": "Nivel 2",
+                                "progression_plus": 38.19,
+                                "perentoria": 29.15
+                            },
+                            {
+                                "level": "Nivel 3",
+                                "progression_plus": 71.03,
+                                "perentoria": 30.02
+                            },
+                            {
+                                "level": "Nivel 4",
+                                "progression_plus": 102.61,
+                                "perentoria": 30.62
+                            },
+                            {
+                                "level": "Nivel 5",
+                                "progression_plus": 134.18,
+                                "perentoria": 31.22
+                            },
+                            {
+                                "level": "Nivel 6",
+                                "progression_plus": 204.18,
+                                "perentoria": 32.47
+                            },
+                            {
+                                "level": "Nivel 7",
+                                "progression_plus": 285.47,
+                                "perentoria": 33.77
+                            }
+                        ],
+                        "variable_concepts": {
+                            "PLUS_NOCTURNIDAD": null,
+                            "PLUS_MADRUGUE": null,
+                            "PLUS_TRANSPORTE": null,
+                            "PLUS_HORA_EXTRA": null,
+                            "PLUS_JOR_FRACCIONADA_1_12": null,
+                            "PLUS_JOR_FRACCIONADA_13": null,
+                            "PLUS_FESTIVO_DOMINGO": null
+                        }
+                    },
+                    {
+                        "name": "Jefe de Área Tipo B",
+                        "base_salary_2025": 1803.00,
+                        "ad_personam": 0.00,
+                        "plus_funcion_fixed": 448.48,
+                        "levels": [
+                            {
+                                "level": "Nivel 1",
+                                "progression_plus": 0.00,
+                                "perentoria": 29.09
+                            },
+                            {
+                                "level": "Nivel 2",
+                                "progression_plus": 38.19,
+                                "perentoria": 29.15
+                            },
+                            {
+                                "level": "Nivel 3",
+                                "progression_plus": 71.03,
+                                "perentoria": 30.02
+                            },
+                            {
+                                "level": "Nivel 4",
+                                "progression_plus": 102.61,
+                                "perentoria": 30.62
+                            },
+                            {
+                                "level": "Nivel 5",
+                                "progression_plus": 134.18,
+                                "perentoria": 31.22
+                            },
+                            {
+                                "level": "Nivel 6",
+                                "progression_plus": 204.18,
+                                "perentoria": 32.47
+                            },
+                            {
+                                "level": "Nivel 7",
+                                "progression_plus": 285.47,
+                                "perentoria": 33.77
+                            }
+                        ],
+                        "variable_concepts": {
+                            "PLUS_NOCTURNIDAD": null,
+                            "PLUS_MADRUGUE": null,
+                            "PLUS_TRANSPORTE": null,
+                            "PLUS_HORA_EXTRA": null,
+                            "PLUS_JOR_FRACCIONADA_1_12": null,
+                            "PLUS_JOR_FRACCIONADA_13": null,
+                            "PLUS_FESTIVO_DOMINGO": null
+                        }
+                    },
+                    {
+                        "name": "Jefe de Área Tipo C",
+                        "base_salary_2025": 1538.00,
+                        "ad_personam": 0.00,
+                        "plus_funcion_fixed": 374.46,
+                        "levels": [
+                            {
+                                "level": "Nivel 1",
+                                "progression_plus": 0.00,
+                                "perentoria": 29.09
+                            },
+                            {
+                                "level": "Nivel 2",
+                                "progression_plus": 38.19,
+                                "perentoria": 29.15
+                            },
+                            {
+                                "level": "Nivel 3",
+                                "progression_plus": 71.03,
+                                "perentoria": 30.02
+                            },
+                            {
+                                "level": "Nivel 4",
+                                "progression_plus": 102.61,
+                                "perentoria": 30.62
+                            },
+                            {
+                                "level": "Nivel 5",
+                                "progression_plus": 134.18,
+                                "perentoria": 31.22
+                            },
+                            {
+                                "level": "Nivel 6",
+                                "progression_plus": 204.18,
+                                "perentoria": 32.47
+                            },
+                            {
+                                "level": "Nivel 7",
+                                "progression_plus": 285.47,
+                                "perentoria": 33.77
+                            }
+                        ],
+                        "variable_concepts": {
+                            "PLUS_NOCTURNIDAD": null,
+                            "PLUS_MADRUGUE": null,
+                            "PLUS_TRANSPORTE": null,
+                            "PLUS_HORA_EXTRA": null,
+                            "PLUS_JOR_FRACCIONADA_1_12": null,
+                            "PLUS_JOR_FRACCIONADA_13": null,
+                            "PLUS_FESTIVO_DOMINGO": null
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "concepts": {
+        "PLUS_NOCTURNIDAD": {
+            "description": "Hora Nocturna",
+            "unit": "hora",
+            "value_2025": 1.89
+        },
+        "PLUS_MADRUGUE": {
+            "description": "Plus Madrugue (Diario)",
+            "unit": "dia",
+            "value_2025": 8.10
+        },
+        "PLUS_JOR_FRACCIONADA_1_12": {
+            "description": "Jornada Fraccionada (1-12 días)",
+            "unit": "dia",
+            "value_2025": 11.91
+        },
+        "PLUS_JOR_FRACCIONADA_13": {
+            "description": "Jornada Fraccionada (13+ días)",
+            "unit": "dia",
+            "value_2025": 18.25
+        },
+        "PLUS_HORA_EXTRA": {
+            "description": "Hora Extraordinaria",
+            "unit": "hora",
+            "value_2025": 17.14
+        },
+        "PLUS_FESTIVO_DOMINGO": {
+            "description": "Hora Festiva/Domingo",
+            "unit": "hora",
+            "value_2025": 2.85
+        },
+        "PLUS_TRANSPORTE": {
+            "description": "Plus Transporte (Diario)",
+            "unit": "dia",
+            "value_2025": 4.95
+        },
+        "PLUS_HORA_PERENTORIA": {
+            "description": "Hora Perentoria (Nivel)",
+            "unit": "hora",
+            "value_2025": 0.00
+        },
+        "PLUS_FUNCION_COORD_HEADSET": {
+            "description": "Plus Función Coordinador/Headset",
+            "unit": "mes",
+            "value_2025": 128.15
+        },
+        "PLUS_FUNCION_CONDUCTOR": {
+            "description": "Plus Función Conductor",
+            "unit": "mes",
+            "value_2025": 128.15
+        },
+        "PLUS_FUNCION_SUPERVISOR": {
+            "description": "Plus Función Supervisor",
+            "unit": "mes",
+            "value_2025": 128.15
+        },
+        "PLUS_FUNCION_DOS_FUNCIONES": {
+            "description": "Plus Dos Funciones",
+            "unit": "mes",
+            "value_2025": 237.56
+        },
+        "PLUS_COMP_FESTIVO": {
+            "description": "Plus Compensación Festivo",
+            "unit": "dia",
+            "value_2025": 102.64
+        },
+        "PLUS_JORNADA_IRREGULAR": {
+            "description": "Plus Jornada Irregular",
+            "unit": "mes",
+            "value_2025": 175.94
+        }
+    }
+}

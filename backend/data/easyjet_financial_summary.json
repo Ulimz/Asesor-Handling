@@ -1,0 +1,15 @@
+{
+    "title": "Resumen Financiero EasyJet 2025 (Estructura Canónica)",
+    "company_slug": "easyjet",
+    "url": "internal:easyjet_canonical_2025",
+    "articles": [
+        {
+            "article": "Resumen Ejecutivo Salarios 2025",
+            "content": "Este documento resume la estructura salarial canónica de EasyJet Handling Spain para 2025, basada en el V Convenio Colectivo y Tablas Salariales Anexo I.\n\n### 1. Salarios Base 2025 (Mensual x14)\n- Jefe de Área Tipo A: 2.104,00 EUR\n- Jefe de Área Tipo B: 1.803,00 EUR\n- Jefe de Área Tipo C / Agentes: 1.538,00 EUR\n- Auxiliares (Rampa/Admin): 1.345,00 EUR\n\n### 2. Plus Progresión (Mensual x14)\nVinculado al Nivel (1-7). Ejemplo Técnicos/Auxiliares:\n- Nivel 1: 0,00 EUR\n- Nivel 2: 38,19 EUR\n- Nivel 3: 71,03 EUR\n- Nivel 4: 102,61 EUR\n- Nivel 7: 285,47 EUR (Tec) / 284,92 EUR (Aux)\nNota: Administrativos tienen progresión superior (Nivel 4: 107,17 EUR -> Nivel 7: 306,78 EUR).\n\n### 3. Conceptos Variables Clave\n- Hora Extraordinaria: 17,14 EUR (Estándar) / 16,15 EUR (Auxiliares).\n- Hora Nocturna (22-06h): 1,89 EUR.\n- Jornada Fraccionada: 11,91 EUR (Días 1-12) / 18,25 EUR (Días 13+).\n- Plus Transporte (Diario): 4,95 EUR / 4,50 EUR (Auxiliares).\n- Plus Madrugue (Diario): 8,10 EUR.\n\n### 4. Pluses Función (Mensual x12)\n- Jefe Área A: 523,98 EUR\n- Jefe Área B: 448,48 EUR\n- Jefe Área C: 374,46 EUR\n- Coordinador / Supervisor / Conductor: 128,15 EUR\n- Dos Funciones: 237,56 EUR\n"
+        },
+        {
+            "article": "Tabla Perentorias 2025",
+            "content": "El precio de la hora perentoria varía según Nivel y Grupo.\nEjemplos:\n- Auxiliar Rampa/Admin: 16,15 EUR (Nivel Único).\n- Agente Rampa Nivel 1: 18,86 EUR -> Nivel 7: 25,88 EUR.\n- Jefe Área A Nivel 1: 29,09 EUR -> Nivel 7: 33,77 EUR."
+        }
+    ]
+}
