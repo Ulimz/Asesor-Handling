@@ -379,7 +379,7 @@ export default function SalaryCalculator() {
                                 !c.code.startsWith('PLUS_TURNOS') &&
                                 !c.code.startsWith('PLUS_TURNICIDAD') &&
                                 !c.code.startsWith('PLUS_FRACC') &&
-                                !['PLUS_FIJI', 'PLUS_FTP', 'PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR'].includes(c.code)
+                                !['PLUS_FIJI', 'PLUS_FTP', 'PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR', 'PLUS_FUNCION_COORD_HEADSET', 'PLUS_FUNCION_CONDUCTOR', 'PLUS_FUNCION_SUPERVISOR', 'PLUS_FUNCION_DOS_FUNCIONES'].includes(c.code)
                             ).length})
                         </div>
 
@@ -422,11 +422,11 @@ export default function SalaryCalculator() {
                         )}
 
                         {/* 2. GRUPO FIJO: Pluses de Responsabilidad / Fijos */}
-                        {concepts.some(c => ['PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA'].includes(c.code)) && (
+                        {concepts.some(c => ['PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_FUNCION_COORD_HEADSET', 'PLUS_FUNCION_CONDUCTOR', 'PLUS_FUNCION_SUPERVISOR', 'PLUS_FUNCION_DOS_FUNCIONES'].includes(c.code)) && (
                             <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5 space-y-2 mb-4">
                                 <label className="text-sm font-medium text-slate-300 block">Pluses Fijos / Responsabilidad</label>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    {concepts.filter(c => ['PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA'].includes(c.code)).map(c => (
+                                    {concepts.filter(c => ['PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_FUNCION_COORD_HEADSET', 'PLUS_FUNCION_CONDUCTOR', 'PLUS_FUNCION_SUPERVISOR', 'PLUS_FUNCION_DOS_FUNCIONES'].includes(c.code)).map(c => (
                                         <label key={c.code} className="flex items-center gap-2 p-2 rounded-lg bg-slate-900/40 border border-white/5 cursor-pointer hover:bg-slate-900/60 transition-colors">
                                             <input
                                                 type="checkbox"
@@ -485,7 +485,7 @@ export default function SalaryCalculator() {
                                     !c.code.startsWith('PLUS_TURNOS') &&
                                     !c.code.startsWith('PLUS_TURNICIDAD') &&
                                     !c.code.startsWith('PLUS_FRACC') &&
-                                    !['PLUS_FIJI', 'PLUS_FTP', 'PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR', 'SALARIO_BASE_ANUAL', 'SALARIO_BASE'].includes(c.code)
+                                    !['PLUS_FIJI', 'PLUS_FTP', 'PLUS_SUPERV', 'PLUS_JEFE_SERV', 'PLUS_PRODUCT', 'PLUS_MULTITASK', 'PLUS_RCO', 'PLUS_ARCO', 'PLUS_SUPERVISION', 'PLUS_JEFATURA', 'PLUS_JORNADA_IRREGULAR', 'SALARIO_BASE_ANUAL', 'SALARIO_BASE', 'PLUS_FUNCION_COORD_HEADSET', 'PLUS_FUNCION_CONDUCTOR', 'PLUS_FUNCION_SUPERVISOR', 'PLUS_FUNCION_DOS_FUNCIONES'].includes(c.code)
                                 ).map((concept) => (
                                     <div key={concept.code} className="space-y-2">
                                         <label className="text-xs text-slate-300 flex items-center gap-2 truncate" title={concept.description}>
