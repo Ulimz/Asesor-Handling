@@ -98,7 +98,16 @@ class CalculatorService:
                     # Default to DB metadata definition
                     unit_price = definition.default_price or 0.0 
                     
-                    # Priority 1: Salary Table (Specific for Group/Level)
+                    # Priority 1: level_values (JSON field in SalaryConceptDefinition)
+                    # For concepts like HORA_EXTRA, HORA_PERENTORIA that have different prices per level
+                    if definition.level_values and isinstance(definition.level_values, dict):
+                        if user_group in definition.level_values:
+                            group_levels = definition.level_values[user_group]
+                            if isinstance(group_levels, dict) and user_level in group_levels:
+                                unit_price = group_levels[user_level]
+                                print(f"   💰 Using level-specific price for {code}: {unit_price}€ ({user_group}/{user_level})")
+                    
+                    # Priority 2: Salary Table (Specific for Group/Level)
                     # If this concept matches a column in our extracted tables (e.g. HORA_EXTRA), use legitimate price
                     if code in active_prices:
                         unit_price = active_prices[code]

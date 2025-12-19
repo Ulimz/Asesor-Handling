@@ -85,12 +85,20 @@ def seed_sector():
                     concepts_added += 1
             else:
                 # Regular concept
+                # Determine input_type based on unit
+                if concept.get("unit") == "euro":
+                    input_type = "currency"  # Input IS the amount (e.g., Garantía Personal)
+                elif concept.get("unit"):
+                    input_type = "number"  # Input is a quantity (hours, days)
+                else:
+                    input_type = "checkbox"  # Boolean flag
+                
                 definition = SalaryConceptDefinition(
                     company_slug=COMPANY_SLUG,
                     code=code,
                     name=concept["name"],
                     description=concept.get("description", ""),
-                    input_type="number" if concept.get("unit") else "checkbox",
+                    input_type=input_type,
                     default_price=concept.get("base_value_2025", 0.0),
                     level_values=concept.get("level_values")
                 )
