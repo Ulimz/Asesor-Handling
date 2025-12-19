@@ -34,6 +34,18 @@
     3.  Fallback Sector: Si todo falla.
 - **Estado**: Desplegado y verificado. Aplica a todas las compañías como red de seguridad.
 
+### [11:00] 🚨 INCIDENCIA Y APRENDIZAJE: Estrategia de Aislamiento de Datos (Data Isolation)
+- **Incidente**: Pérdida temporal de definiciones de conceptos para todas las empresas excepto EasyJet tras un despliegue parcial.
+- **Causa Raíz**: Ejecución de un comando destructivo global (`DROP TABLE salary_concept_definitions`) dentro de un script específico (`seed_easyjet_root.py`). Esto borró la "verdad" de otras compañías (Azul, Sector) para asegurar la limpieza de EasyJet, rompiendo la integridad del sistema compartido.
+- **Impacto**: La calculadora de Azul/Jet2 dejó de cargar conceptos (vacía) al perder sus definiciones en DB.
+- **Solución**: 
+    1.  **Restauración**: Ejecutado `seed_concepts.py` para recuperar las definiciones perdidas.
+    2.  **Reconexión**: Script `migrate_fix_slugs.py` para reparar enlaces rotos (`azul` vs `azul-handling`).
+- **LECCIÓN APRENDIDA (CRÍTICA)**: **Prohibido el uso de comandos nucleares (`DROP/TRUNCATE`) en scripts de mantenimiento parcial.**
+    - **Nueva Política**: Cada script de carga debe operar bajo **Aislamiento Estricto**: `DELETE FROM table WHERE company_slug = 'MI_EMPRESA'`. Nunca tocar datos ajenos.
+    - **Filosofía**: "Operar como cirujano (local), no como demoledor (global)".
+
+
 ## 📅 Sesión: 18 Diciembre 2025
 
 ### [19:00] 🏛️ Consolidación de "Single Source of Truth" (2025)
