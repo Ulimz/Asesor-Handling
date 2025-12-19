@@ -387,71 +387,85 @@
         "PLUS_NOCTURNIDAD": {
             "description": "Hora Nocturna",
             "unit": "hora",
+            "input_type": "number",
             "value_2025": 1.89
         },
         "PLUS_MADRUGUE": {
             "description": "Plus Madrugue (Diario)",
             "unit": "dia",
+            "input_type": "number",
             "value_2025": 8.10
         },
         "PLUS_JOR_FRACCIONADA_1_12": {
             "description": "Jornada Fraccionada (1-12 días)",
             "unit": "dia",
+            "input_type": "number",
             "value_2025": 11.91
         },
         "PLUS_JOR_FRACCIONADA_13": {
             "description": "Jornada Fraccionada (13+ días)",
             "unit": "dia",
+            "input_type": "number",
             "value_2025": 18.25
         },
         "PLUS_HORA_EXTRA": {
             "description": "Hora Extraordinaria",
             "unit": "hora",
+            "input_type": "number",
             "value_2025": 17.14
         },
         "PLUS_FESTIVO_DOMINGO": {
             "description": "Hora Festiva/Domingo",
             "unit": "hora",
+            "input_type": "number",
             "value_2025": 2.85
         },
         "PLUS_TRANSPORTE": {
             "description": "Plus Transporte (Diario)",
             "unit": "dia",
+            "input_type": "number",
             "value_2025": 4.95
         },
         "PLUS_HORA_PERENTORIA": {
             "description": "Hora Perentoria (Nivel)",
             "unit": "hora",
+            "input_type": "number",
             "value_2025": 0.00
         },
         "PLUS_FUNCION_COORD_HEADSET": {
             "description": "Plus Función Coordinador/Headset",
             "unit": "mes",
+            "input_type": "checkbox",
             "value_2025": 128.15
         },
         "PLUS_FUNCION_CONDUCTOR": {
             "description": "Plus Función Conductor",
             "unit": "mes",
+            "input_type": "checkbox",
             "value_2025": 128.15
         },
         "PLUS_FUNCION_SUPERVISOR": {
             "description": "Plus Función Supervisor",
             "unit": "mes",
+            "input_type": "checkbox",
             "value_2025": 128.15
         },
         "PLUS_FUNCION_DOS_FUNCIONES": {
             "description": "Plus Dos Funciones",
             "unit": "mes",
+            "input_type": "checkbox",
             "value_2025": 237.56
         },
         "PLUS_COMP_FESTIVO": {
             "description": "Plus Compensación Festivo",
             "unit": "dia",
+            "input_type": "number",
             "value_2025": 102.64
         },
         "PLUS_JORNADA_IRREGULAR": {
             "description": "Plus Jornada Irregular",
             "unit": "mes",
+            "input_type": "checkbox",
             "value_2025": 175.94
         }
     }

@@ -29,6 +29,17 @@ class SalaryTable(Base):
     variable_type = Column(String, nullable=True) # 'hour', 'day', 'month', etc.
     year = Column(Integer, default=2025)
 
+class SalaryConceptDefinition(Base):
+    __tablename__ = "salary_concept_definitions"
+    id = Column(Integer, primary_key=True, index=True)
+    company_slug = Column(String, index=True)
+    code = Column(String, index=True)
+    name = Column(String)
+    description = Column(String, nullable=True)
+    input_type = Column(String, default="number") # number, checkbox, select
+    default_price = Column(Float, default=0.0)
+    is_active = Column(Integer, default=1) # Boolean 1/0
+
 # --- SEEDING LOGIC ---
 def seed_easyjet():
     if not os.path.exists(TEMPLATE_PATH):
@@ -37,6 +48,13 @@ def seed_easyjet():
 
     logger.info(f"🔌 Connecting to DB: {DATABASE_URL}")
     engine = create_engine(DATABASE_URL)
+    
+    # Force Drop Concept Definitions to align schema (Dev/Fix mode)
+    with engine.connect() as conn:
+        conn.execute(text("DROP TABLE IF EXISTS salary_concept_definitions CASCADE"))
+        conn.commit()
+    
+    Base.metadata.create_all(bind=engine)
     SessionLocal = sessionmaker(bind=engine)
     session = SessionLocal()
 
@@ -53,6 +71,12 @@ def seed_easyjet():
             SalaryTable.company_id == company_slug,
             SalaryTable.year == target_year
         ).delete()
+        
+        # 1.1 Clear Concept Definitions (Optional, but cleaner for full reset)
+        session.query(SalaryConceptDefinition).filter(
+            SalaryConceptDefinition.company_slug == company_slug
+        ).delete()
+
         session.commit()
 
         # 2. Process Template
@@ -60,6 +84,24 @@ def seed_easyjet():
         
         row_count = 0
         concepts_def = data["concepts"]
+
+        # 2.0 Seed Definitions
+        logger.info("📘 Seeding Concept Definitions...")
+        for code, c_data in concepts_def.items():
+            # Use explicit input_type from JSON if available, else derive from unit
+            inp_type = c_data.get("input_type", "number")
+            
+            definition = SalaryConceptDefinition(
+                company_slug=company_slug,
+                code=code,
+                name=c_data["description"], # Using description as Name for UI
+                description=c_data["description"],
+                input_type=inp_type,
+                default_price=c_data["value_2025"],
+                is_active=1
+            )
+            session.add(definition)
+        session.commit() # Commit definitions first
 
         for group in data["structure"]["groups"]:
             group_name = group["name"]
