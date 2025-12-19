@@ -142,6 +142,9 @@ class CalculatorService:
                 import traceback
                 traceback.print_exc()
         
+        # Calculate total from auto-assigned concepts (EasyJet)
+        auto_assigned_total = sum(c.amount for c in concepts if c.type == "devengo")
+        
         total_variable = 0
         
         # --- DYNAMIC CONCEPT LOGIC ---
@@ -220,7 +223,8 @@ class CalculatorService:
         # Not computing legacy night hours if not in dynamic vars, assuming DB definitions handle it.
 
         # Totales
-        gross_monthly = base_salary_for_gross + total_variable
+        # Totales
+        gross_monthly = base_salary_for_gross + total_variable + auto_assigned_total
         
         # Deductions
         # 1. Seguridad Social (Detailed)
