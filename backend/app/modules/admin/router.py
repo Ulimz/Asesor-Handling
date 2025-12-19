@@ -103,12 +103,15 @@ def update_user_role(
             detail="Usuario no encontrado"
         )
     
-    # SUPER ADMIN PROTECTION: User ID 1 is untouchable
-    if user.id == 1:
+    
+    # SUPER ADMIN PROTECTION: ulises_sevi@hotmail.com is untouchable
+    SUPER_ADMIN_EMAIL = "ulises_sevi@hotmail.com"
+    if user.email.lower() == SUPER_ADMIN_EMAIL.lower():
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Este usuario tiene privilegios de Super Administrador y no puede ser modificado"
         )
+
     
     # Prevent admin from removing their own admin privileges
     if user.id == current_user.id and request.role != "admin":
