@@ -224,7 +224,7 @@ class CalculatorService:
 
         # Totales
         # Totales
-        gross_monthly = base_salary_for_gross + total_variable + auto_assigned_total
+        gross_monthly = base_salary_for_gross + total_variable + easyjet_auto_amount
         
         # Deductions
         # 1. Seguridad Social (Detailed)
