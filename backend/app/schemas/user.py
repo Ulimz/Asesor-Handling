@@ -29,6 +29,7 @@ class User(UserBase):
     salary_level: str | None = None
     contract_type: str | None = None
     seniority_date: str | None = None
+    is_superuser: bool = False
     
     class Config:
-        orm_mode = True
+        from_attributes = True
