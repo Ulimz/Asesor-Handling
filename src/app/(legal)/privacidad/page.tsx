@@ -90,11 +90,21 @@ export default function PrivacyPage() {
                 </section>
 
                 <section className="space-y-4">
-                    <h2 className="text-xl font-bold text-white">7. Derechos del Usuario</h2>
+                    <h2 className="text-xl font-bold text-white">8. Acceso de Administración y Soporte</h2>
+                    <p>
+                        Para garantizar la seguridad del servicio, la resolución de incidencias técnicas y la gestión de usuarios, el personal autorizado con privilegios de administración (Superusuarios) podrá acceder a información básica de registro (Email, Nombre, Fecha de alta).
+                    </p>
+                    <p>
+                        Este acceso está estrictamente controlado, registrado y limitado a finalidades de mantenimiento y soporte. No se accederá a datos sensibles (contraseñas) ni a perfiles financieros privados salvo solicitud expresa de soporte del usuario.
+                    </p>
+                </section>
+
+                <section className="space-y-4">
+                    <h2 className="text-xl font-bold text-white">9. Derechos del Usuario</h2>
                     <p>
                         Puedes ejercer tus derechos de acceso, rectificación, supresión y oposición enviando un email a soporte_asistentehandling@outlook.es.
                     </p>
-                </section >
+                </section>
             </div >
         </div >
     );

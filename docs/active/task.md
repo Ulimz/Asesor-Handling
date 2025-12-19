@@ -19,6 +19,14 @@
 - [ ] **Smoke Test**: Verificar que al crear perfil ya no sale "Sin Perfil"
 - [x] **Docker**: Corregir warnings de ENV format en Dockerfile
 
+## 👑 Panel de Administración (Superusuario)
+- [x] Actualizar Política de Privacidad (GDPR Admin Access).
+- [x] Backend: `admin_router.py` (Users/Stats endpoints).
+- [x] Backend: Registrar router en `main.py`.
+- [x] Frontend: `src/app/admin/page.tsx` (Dashboard UI).
+- [x] Frontend: `Sidebar.tsx` (Link condicional).
+- [x] Frontend: `UserContext` (Types update).
+
 ## 🛠 Corto Plazo (Completado)
 - [x] **Settings Page**: Añadir gestión de perfiles (Editar/Eliminar)
 - [x] **Onboarding**: Crear primer perfil durante registro

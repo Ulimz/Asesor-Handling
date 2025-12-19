@@ -10,6 +10,7 @@ from app.modules.calculadoras.router import router as calculadoras_router
 from app.modules.alertas.router import router as alertas_router
 from app.modules.ia.router import router as ia_router
 from app.modules.articulos.search_router import router as articulos_search_router
+from app.modules.admin.router import router as admin_router
 
 
 from app.db.database import engine
@@ -52,6 +53,7 @@ app.include_router(calculadoras_router, prefix="/api")
 app.include_router(alertas_router, prefix="/api")
 app.include_router(ia_router, prefix="/api")
 app.include_router(articulos_search_router, prefix="/api")
+app.include_router(admin_router, prefix="/api")
 
 @app.get("/")
 def read_root():

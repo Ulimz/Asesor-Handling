@@ -5,6 +5,8 @@ export interface User {
     email: string;
     full_name: string;
     preferred_name?: string;
+    // Admin flag
+    is_superuser?: boolean;
     company_slug?: string;
     job_group?: string;
     salary_level?: string;

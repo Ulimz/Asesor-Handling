@@ -27,7 +27,7 @@ const AlertsPanel = dynamic(() => import('@/components/alerts/AlertsPanel'), {
 import { CompanyId, companies, getCompanyById } from '@/data/knowledge-base';
 import { type KnowledgeItem } from '@/data/knowledge-base';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Calculator, Settings, LogOut, User, Bell, PenTool, Loader2, Plane, Menu, X, Download } from 'lucide-react';
+import { MessageSquare, Calculator, Settings, LogOut, User, Bell, PenTool, Loader2, Plane, Menu, X, Download, Shield } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import NeonLogo from '@/components/NeonLogo';
 import Image from 'next/image';
@@ -44,6 +44,7 @@ export default function DashboardPage() {
 
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [showInstallGuide, setShowInstallGuide] = useState(false);
+    const [currentUser, setCurrentUser] = useState<any>(null); // TODO: Use User type
 
     useEffect(() => {
         const token = localStorage.getItem('auth_token');
@@ -55,10 +56,11 @@ export default function DashboardPage() {
         // Verify profile completeness
         apiService.getMe(token)
             .then(user => {
+                setCurrentUser(user);
                 // With multi-profile, we check if they have at least one profile or require onboarding?
                 // For now, allow access if token is valid.
                 setIsAuthorized(true);
-                // Fallback to user's legacy company if no profile active yet
+                // Fallback to user's legacy公司 if no profile active yet
                 if (user.company_slug && !selectedCompanyId) setSelectedCompanyId(user.company_slug as any);
             })
             .catch(() => router.push('/login'));
@@ -131,6 +133,15 @@ export default function DashboardPage() {
                     </nav>
 
                     <div className="p-4 border-t border-white/5 space-y-2">
+                        {currentUser?.is_superuser && (
+                            <button
+                                onClick={() => router.push('/admin')}
+                                className="flex items-center gap-3 w-full px-4 py-3 text-amber-400 hover:text-amber-300 transition-colors bg-amber-500/10 rounded-lg mb-2"
+                            >
+                                <Shield size={20} />
+                                <span className="hidden lg:block">Panel Admin</span>
+                            </button>
+                        )}
                         <button
                             onClick={() => router.push('/dashboard/settings')}
                             className="flex items-center gap-3 w-full px-4 py-3 text-slate-400 hover:text-white transition-colors"
@@ -251,6 +262,14 @@ export default function DashboardPage() {
                                             <span className="text-sm font-medium text-[var(--text-secondary)]">Modo Oscuro</span>
                                             <ThemeToggle />
                                         </div>
+                                        {currentUser?.is_superuser && (
+                                            <button
+                                                onClick={() => router.push('/admin')}
+                                                className="text-amber-400 text-sm font-medium flex items-center gap-2 bg-amber-500/10 px-3 py-1.5 rounded-lg border border-amber-500/20"
+                                            >
+                                                <Shield size={16} /> Admin
+                                            </button>
+                                        )}
                                         <button
                                             onClick={() => {
                                                 router.push('/dashboard/settings');
