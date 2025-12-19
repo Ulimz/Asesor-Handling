@@ -32,11 +32,17 @@ def check_easyjet_salary():
                 for row in rows:
                     logger.info(f"✅ Level: {row[0]} | Amount: {row[1]}")
             
-            # Check Definitions
-            logger.info("🔍 Checking Definitions input_type...")
-            res_def = conn.execute(text("SELECT code, input_type, default_price FROM salary_concept_definitions WHERE company_slug = 'easyjet' AND code LIKE 'PLUS_FUNCION%'"))
-            for r in res_def:
-                logger.info(f"🛠 Code: {r[0]} | Type: {r[1]} | Price: {r[2]}")
+            # Check Definitions Stats
+            logger.info("🔍 Checking Concept Counts per Company...")
+            res_stats = conn.execute(text("SELECT company_slug, COUNT(*) FROM salary_concept_definitions GROUP BY company_slug"))
+            for r in res_stats:
+                logger.info(f"📊 Company: {r[0]} | Count: {r[1]}")
+            
+            # Check Salary Tables Stats
+            logger.info("💰 Checking SalaryTable Counts per Company...")
+            res_sal = conn.execute(text("SELECT company_id, COUNT(*) FROM salary_tables GROUP BY company_id"))
+            for r in res_sal:
+                logger.info(f"💶 Company: {r[0]} | Rows: {r[1]}")
             
     except Exception as e:
         logger.error(f"💥 Query failed: {e}")

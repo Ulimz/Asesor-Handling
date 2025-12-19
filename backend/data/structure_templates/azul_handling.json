@@ -384,7 +384,7 @@
             {
                 "id": "PLUS_AD_PERSONAM",
                 "name": "Garantía Personal (Ad Personam)",
-                "base_value_2025": 0.0,
+                "base_value_2025": 1.0,
                 "unit": "euro",
                 "description": "Cantidad fija personal (Manual)."
             }

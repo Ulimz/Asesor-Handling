@@ -19,6 +19,11 @@
 - [ ] **Smoke Test**: Verificar que al crear perfil ya no sale "Sin Perfil"
 - [x] **Docker**: Corregir warnings de ENV format en Dockerfile
 
+## 🚑 Gestión de Incidencias (Restauración)
+- [x] **Restore Concepts**: Recuperados conceptos de TODAS las compañías (Template Source).
+- [x] **Correct Slugs**: Migrados slugs (`azul`->`azul-handling`) y propagación a Sector.
+- [x] **EasyJet**: Corregida carga de conceptos (Dict vs List).
+
 ## 👑 Panel de Administración (Superusuario)
 - [x] Actualizar Política de Privacidad (GDPR Admin Access).
 - [x] Backend: `admin_router.py` (Users/Stats endpoints).

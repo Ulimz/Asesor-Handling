@@ -419,7 +419,7 @@ export default function SalaryCalculator() {
                                             />
                                             <span className="text-sm text-slate-300 select-none">
                                                 {c.name.replace('Plus ', '').replace('de ', '')}
-                                                {c.default_price > 0 && <span className="text-emerald-500/80 text-xs ml-1">({c.default_price.toFixed(2)}€)</span>}
+                                                {c.default_price > 0 && dynamicValues[c.code] === 1 && <span className="text-emerald-500/80 text-xs ml-1">({c.default_price.toFixed(2)}€)</span>}
                                             </span>
                                         </label>
                                     ))}

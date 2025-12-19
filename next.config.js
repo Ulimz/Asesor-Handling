@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+// Force Rebuild Trigger
 const nextConfig = {
     output: 'standalone', // Necesario para Dockerfile.prod
     // trailingSlash: true, // No necesario en SSR

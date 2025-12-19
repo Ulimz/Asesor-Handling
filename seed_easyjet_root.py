@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import logging
-from sqlalchemy import create_engine, Column, Integer, String, Float, text
+from sqlalchemy import create_engine, Column, Integer, String, Float, text, Boolean, JSON, Text
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 # --- CONFIG ---
@@ -35,10 +35,11 @@ class SalaryConceptDefinition(Base):
     company_slug = Column(String, index=True)
     code = Column(String, index=True)
     name = Column(String)
-    description = Column(String, nullable=True)
+    description = Column(Text, nullable=True) # Text in model, maybe String here is fine but model uses Text
     input_type = Column(String, default="number") # number, checkbox, select
     default_price = Column(Float, default=0.0)
-    is_active = Column(Integer, default=1) # Boolean 1/0
+    level_values = Column(JSON, nullable=True)
+    is_active = Column(Boolean, default=True)
 
 # --- SEEDING LOGIC ---
 def seed_easyjet():
@@ -98,7 +99,7 @@ def seed_easyjet():
                 description=c_data["description"],
                 input_type=inp_type,
                 default_price=c_data["value_2025"],
-                is_active=1
+                is_active=True
             )
             session.add(definition)
         session.commit() # Commit definitions first
