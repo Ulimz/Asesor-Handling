@@ -24,7 +24,7 @@ export default function SalaryCalculator() {
     const { activeProfile, updateProfile: updateActiveProfile, createProfile, loading: profileLoading } = useProfile();
 
     // Basic Inputs
-    const [grossSalary, setGrossSalary] = useState<number>(25000);
+    const [grossSalary, setGrossSalary] = useState<number>(0);
     const [payments, setPayments] = useState<number>(14);
     const [age, setAge] = useState<number>(30);
     const [contractPct, setContractPct] = useState<number>(100);
@@ -144,7 +144,9 @@ export default function SalaryCalculator() {
             dynamic_variables: dynamicValues, // Send only dynamic map
             payments: payments,
             age: age,
-            gross_annual_salary: grossSalary
+            // If we have a company selected (Smart Mode), send 0 to force DB lookup.
+            // Only send grossSalary if Manual Mode (no company or explicit manual override logic)
+            gross_annual_salary: (company && company !== 'manual') ? 0 : grossSalary
         };
 
         console.log("Calculadora Payload:", payload);

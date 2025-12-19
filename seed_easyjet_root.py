@@ -82,8 +82,8 @@ def seed_easyjet():
                         full_level_name = raw_level # e.g. "Auxiliar de Rampa"
 
                     # 2.1 Fixed Concepts
-                    # SALARIO_BASE
-                    add_row(session, company_slug, group_name, full_level_name, "SALARIO_BASE", base_salary, None, target_year)
+                    # SALARIO_BASE - ALWAYS ANNUALIZED (x14) for CalculatorService compatibility
+                    add_row(session, company_slug, group_name, full_level_name, "SALARIO_BASE", base_salary * 14.0, None, target_year)
                     row_count += 1
                     
                     # AD_PERSONAM
