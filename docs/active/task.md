@@ -7,6 +7,13 @@
   - [x] Implementar fix: `cache: 'no-store'` en `api-service.ts`
   - [/] Verificar en producción (Requiere redespilegue)
 
+## 🦅 Estructura Canónica EasyJet (2025)
+- [x] **Análisis Profundo**: Identificar Jefes A/B/C y Variables en XML/Tablas.
+- [x] **Documentación**: Crear `ESTRUCTURA_CANONICA_EASYJET.md`.
+- [x] **JSON Template**: `backend/data/structure_templates/easyjet.json` (Flat Structure).
+- [x] **Seeding**: Script `seed_easyjet_root.py` ejecutado y verificado en PROD.
+- [ ] **Validación UI**: Verificar visualización en Calculadora (Pendiente User).
+
 ## 📅 Próximos Pasos (Inmediato)
 - [ ] **Deployment**: Push a GitHub para disparar build
 - [ ] **Smoke Test**: Verificar que al crear perfil ya no sale "Sin Perfil"

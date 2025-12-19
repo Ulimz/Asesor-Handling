@@ -33,7 +33,7 @@ Este documento resume el propósito, arquitectura y estado actual del proyecto. 
 - **Repositorio**: GitHub (`Ulimz/Asesor-Handling`)
 - **Documentación**: Centralizada en `docs/active/`.
 
-## 🚦 Estado Actual: PRODUCTION READY (v1.8)
+## 🚦 Estado Actual: PRODUCTION READY (v1.9 - "Brain Upgrade")
 
 | Módulo | Estado Frontend | Estado Backend | Notas |
 |--------|-----------------|----------------|-------|
@@ -46,6 +46,9 @@ Este documento resume el propósito, arquitectura y estado actual del proyecto. 
 
 ## 📦 Hitos Recientes (Completados)
 
+
+
+- ✅ **EasyJet 2025**: Implementación meticulosa (Jefes A/B/C, Perentorias variables) en DB y Chat.
 - ✅ **Aviapartner 2025**: Integración total de la estructura salarial y tablas del convenio.
 - ✅ **Mobile UX Refinement**: 
     - Header reorganizado (Logo -> Icono -> Perfil -> Menú).
@@ -60,10 +63,11 @@ Este documento resume el propósito, arquitectura y estado actual del proyecto. 
 3. **Monitoring**: Dashboards en Railway.
 
 ### v2.0 (I+D)
-4. **Búsqueda Híbrida**: Integración de Google Search para noticias/actualidad.
-5. **Agente Calculadora**: Tool calling para que la IA "opere" nóminas.
+4. **Búsqueda Híbrida**: ✅ Integración de Google Search para noticias/actualidad.
+5. **Agente Calculadora**: ✅ Tool calling para que la IA "opere" nóminas.
 6. **Memoria de Usuario**: Recordar contexto histórico.
 7. **Modo Voz**: Interfaz conversacional por audio.
 
 ## 📋 Tareas Activas
 - [ ] Monitorizar estabilidad en producción tras despliegue v1.8.
+- [ ] Refactorizar imports fantasmas detectados durante la incidencia de hoy.

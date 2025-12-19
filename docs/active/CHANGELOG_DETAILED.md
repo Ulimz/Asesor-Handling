@@ -4,6 +4,26 @@
 **Actualización**: OBLIGATORIA después de cada paso o comando relevante.
 
 
+## 📅 Sesión: 19 Diciembre 2025
+
+### [09:00] 🦅 EasyJet 2025: Estructura Canónica y Precisión Financiera
+- **Hito**: Implementación completa de la estructura salarial de EasyJet (V Convenio, Tablas 2025).
+- **Análisis**: 
+    - Desglose de "Jefes de Área" en Tipos A, B y C (salarios base distintos).
+    - Mapeo de Niveles 1-7 con progresión económica específica.
+    - Identificación de variables críticas (Perentorias por nivel, Jornada Fraccionada en tramos).
+- **Backend/DB**:
+    - **Template**: Creado `backend/data/structure_templates/easyjet.json` siguiendo el esquema canónico "flat".
+    - **Seeding**: Desarrollado `seed_easyjet_root.py` para inyectar 516 registros de precios exactos.
+    - **Migración**: Creado `migrate_add_variable_type.py` para parchear la tabla `salary_tables` en producción (faltaba columna `variable_type`).
+- **IA/RAG**:
+    - **Generación de Conocimiento**: Creado `easyjet_financial_summary.json` sintetizando artículos 84-87.
+    - **Ingestión**: Ejecutado `seed_vectors.py` para entrenar al Chat con estos datos.
+- **Producción**:
+    - Despliegue en Railway (Git Push).
+    - Ejecución remota de scripts de carga (`railway run`).
+    - Verificación de integridad de datos en la nube.
+
 ## 📅 Sesión: 18 Diciembre 2025
 
 ### [19:00] 🏛️ Consolidación de "Single Source of Truth" (2025)
@@ -482,3 +502,16 @@
 
 ### [22:30] 🧠 Mejora RAZONAMIENTO Híbrido
 - **Fix "Ceguera" ante Novedades**: Se ha ajustado el prompt del cerebro para que **priorice Google Search** sobre la base de datos interna cuando se pregunta por **ACTUALIDAD** (Huelgas, nuevos convenios). Antes ignoraba las noticias si la base de datos interna decía "no sé nada". Ahora dice: "Google manda en las noticias".
+
+### [22:10] 🚨 INCIDENCIA Y APRENDIZAJE: "El Fantasma de Build"
+*   **Problema**: El servidor de build en la nube fallaba aleatoriamente buscando `MobileMenu` o `CompanyDropdown`.
+*   **Diagnóstico Erróneo**: Localmente el código "funcionaba" (o eso parecía), pero había archivos cacheados o imports fantasmas que no se veían en disco pero sí en el árbol de dependencias de Next.js.
+*   **Error Humano**: Al intentar "limpiar" el archivo `page.tsx` para arreglar el build, sobrescribí el diseño visual (Logo, Header) con una versión por defecto, rompiendo la UI que le gustaba al usuario.
+*   **Solución**:
+    1.  **Restauración Quirúrgica**: Usar `git checkout <commit_hash> src/app/dashboard/page.tsx` para recuperar EXACTAMENTE el diseño visual perdido.
+    2.  **Fix Real del Build**: Crear el componente `MobileMenu.tsx` que realmente faltaba, en lugar de borrar la línea que lo importaba.
+*   **Lección**: Nunca reescribas un archivo entero de UI (`page.tsx`) "desde cero" para arreglar un error de importación. Arregla el import, no borres la página. Y desconfía de los errores de build locales si contradicen el disco -> `git status` y `dir` son tus amigos.
+
+### [22:27] 💾 Copia de Seguridad
+*   **Snapshot**: Creada copia completa en `backups/backup_20251218_222700`.
+*   **Estado**: Sistema estable, UI restaurada, Funciones Backend (IA/Calc) activas.

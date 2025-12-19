@@ -1,8 +1,21 @@
-# 📝 Contexto de Sesión - 18 Diciembre 2025
+# 📝 Contexto de Sesión - 19 Diciembre 2025
 
 ## 🎯 Qué se hizo hoy
 
-### 1. Consolidación de "Single Source of Truth" (2025)
+### 1. EasyJet 2025 (Feature Complete)
+**Objetivo**: Implementar estructura salarial meticulosa para Calculadora y Chat.
+
+- ✅ **Estructura Canónica**: Definida en `ESTRUCTURA_CANONICA_EASYJET.md` y `easyjet.json`.
+- ✅ **Datos Financieros**: 
+    - Jefes de Área A/B/C diferenciados.
+    - Precios de Horas Perentorias por Nivel (1-7) y Grupo.
+    - Variables complejas (Fraccionada en tramos, Pluses Función).
+- ✅ **Producción**:
+    - Migración de esquema (`add variable_type`) ejecutada en Railway.
+    - Seeding de datos completado (516 filas).
+- ✅ **IA/RAG**: Chat actualizado con resumen financiero (`seed_vectors.py`).
+
+### 2. Consolidación de "Single Source of Truth" (2025)
 **Objetivo**: Garantizar que tanto la calculadora como el chat usen los datos oficiales de 2025 extraídos de imágenes (Sector) y BOE (Azul).
 
 - ✅ **Unificación de IDs**: Corregida discrepancia entre seeder (`PLUS_FESTIVO`) y templates (`HORA_FESTIVA`).
@@ -29,6 +42,13 @@
     - Movido `CompanyDropdown` a la derecha junto al perfil.
     - Activado texto del logo en móvil para aprovechar espacio (antes vacío).
     - Corregido ancho del dropdown (`w-72`) para evitar cortes en pantalla.
+
+### 4. 🚨 Incidencia de Despliegue & Aprendizaje
+**Incidente**: Al intentar arreglar un error de compilación (`Module not found: MobileMenu`), se sobrescribió accidentalmente el diseño del Dashboard, perdiendo el logo y la disposición de elementos.
+**Resolución**: 
+- Se restauró el archivo `dashboard/page.tsx` desde el commit `0c0c0ae` (estable).
+- Se creó el componente faltante `MobileMenu.tsx` para satisfacer al compilador sin romper la UI.
+**Lección**: Verificar siempre la existencia del componente antes de modificar la página que lo importa. No sobrescribir archivos UI complejos para arreglar errores de importación simples.
 
 ---
 
@@ -61,9 +81,14 @@
 - [x] **Stress Test Chat**: 100% de precisión en datos inyectados.
 - [x] **Limpieza de Código**: Eliminación de campos obsoletos y estandarización.
 - [x] **Aviapartner 2025**: Implementación completa (Doc + JSON + DB + Verificación).
+- [x] **Agente Calculadora (Backend)**: Tool calling implementado y verificado.
+- [x] **Búsqueda Híbrida v2**: Prompt ajustado para priorizar Google en actualidad.
+- [x] **Restauración UI**: Dashboard recuperado tras incidente.
 
 ### 🔴 Próxima Sesión
-- [ ] **Mejora UI**: Añadir un tooltip informativo en la calculadora que explique de dónde sale el precio (ej. "Precio oficial BOE 2025").
+- [ ] **Estructuras Canónicas Faltantes**: Completar JSONs y BBDD para las empresas restantes (Iberia, Groundforce, etc) -> Actualizar Calc y Cerebro.
+- [ ] **Roadmap v2.0**: Finalizar los items pendientes del roadmap de I+D.
+- [ ] **Mejora UI**: Añadir un tooltip informativo en la calculadora.
 - [ ] **Smoke Test en Prod**: Verificar que el seeder actualizado se ejecute correctamente en Railway.
 
 ---
