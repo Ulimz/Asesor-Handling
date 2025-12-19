@@ -5,7 +5,7 @@ from typing import List
 
 from app.db.database import get_db
 from app.modules.usuarios.models import User, UserProfile
-from app.modules.auth.utils import get_current_user
+from app.modules.usuarios.router import get_current_user
 from pydantic import BaseModel
 from datetime import datetime
 
