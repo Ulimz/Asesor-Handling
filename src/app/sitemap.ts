@@ -1,5 +1,7 @@
 import { MetadataRoute } from 'next';
 
+export const dynamic = 'force-static';
+
 export default function sitemap(): MetadataRoute.Sitemap {
     // TODO: Cambia esto por tu dominio real cuando lo tengas (ej: https://asistente-handling.vercel.app)
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://asistentehandling.es';
