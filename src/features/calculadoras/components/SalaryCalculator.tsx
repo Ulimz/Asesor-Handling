@@ -149,6 +149,28 @@ export default function SalaryCalculator() {
             gross_annual_salary: (company && company !== 'manual') ? 0 : grossSalary
         };
 
+        // EASYJET SPECIAL HANDLING
+        // The frontend dropdowns return:
+        // group: "Servicios Auxiliares" (or similar)
+        // level: "Agente de Rampa - Nivel 3" (Full string)
+        //
+        // But the BACKEND expects for EasyJet:
+        // user_level: "Agente de Rampa" (Category)
+        // user_group: "Nivel 3" (Level)
+        if (company === 'easyjet' && level.includes(' - ')) {
+            const parts = level.split(' - ');
+            if (parts.length >= 2) {
+                // Last part is level (e.g. "Nivel 3"), everything before is Category
+                const derivedLevel = parts[parts.length - 1];
+                const derivedCategory = parts.slice(0, parts.length - 1).join(' - ');
+
+                console.log(`EasyJet Custom Mapping: user_level=${derivedCategory}, user_group=${derivedLevel}`);
+
+                payload.user_level = derivedCategory.trim();
+                payload.user_group = derivedLevel.trim();
+            }
+        }
+
         console.log("Calculadora Payload:", payload);
 
         try {
