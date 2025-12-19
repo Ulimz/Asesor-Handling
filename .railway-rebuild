@@ -1,0 +1,4 @@
+# Railway Force Rebuild Trigger
+# This file forces Railway to do a complete rebuild
+# Created: 2025-12-19 16:35
+REBUILD_TRIGGER=true
