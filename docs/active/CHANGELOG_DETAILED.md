@@ -53,6 +53,23 @@
     - `7d6185d`: Fix level_values extraction and currency-type detection.
 - **Lección Aprendida**: **Validar todos los tipos de conceptos** (fijos, variables con `level_values`, variables con `unit="euro"`) durante el desarrollo de nuevos convenios para evitar regresiones.
 
+### [13:50] ✅ Verificación y Blindaje de Aviapartner
+- **Objetivo**: Verificar que Aviapartner funcione correctamente y aplicar medidas de seguridad similares a Azul y Sector.
+- **Verificación Realizada**:
+    - ✅ Datos cargados: 385 tablas salariales, 19 conceptos.
+    - ✅ Salario Base: 1344.03€/mes (Administrativos/Nivel entrada).
+    - ✅ Plus Nocturnidad: 16.20€ (10h × 1.62€).
+    - ✅ Conceptos Variables con `level_values`:
+        - Horas Extra (10h × 16.48€): 164.80€
+        - Horas Perentorias (5h × 19.23€): 96.15€
+        - HC Especial (8h × 19.23€): 153.84€
+- **Blindaje Implementado**:
+    - Creado `check_aviapartner_health.py` con 3 tests comprehensivos.
+    - Creado `backup_aviapartner.py` para backups automáticos.
+    - Backup inicial: `aviapartner_backup_20251219_135155.json` (19 concepts, 385 tables, 1 document).
+- **Beneficio**: Los fixes de Convenio Sector (extracción de `level_values` y detección de `unit="euro"`) benefician automáticamente a Aviapartner.
+- **Estado Final**: 3 empresas blindadas (Azul Handling, Convenio Sector, Aviapartner) con health checks y backups.
+
 
 
 ### [09:00] 🦅 EasyJet 2025: Estructura Canónica y Precisión Financiera
