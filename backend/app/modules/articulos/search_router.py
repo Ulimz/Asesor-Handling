@@ -2,7 +2,7 @@ from fastapi import APIRouter, Query, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.db.database import SessionLocal
 from app.services.rag_engine import rag_engine
-from app.constants import VALID_COMPANIES
+from app.constants import VALID_COMPANIES, SECTOR_COMPANIES
 from pydantic import BaseModel
 from typing import List, Optional, Any
 
@@ -90,9 +90,8 @@ def chat_with_docs(
     # Companies that adhere to the Sector Agreement (convenio-sector)
     # We map them here so RAG searches the correct documents.
     target_slug = request.company_slug
-    SECTOR_AGREEMENT_COMPANIES = ["jet2", "norwegian", "south"]
     
-    if request.company_slug in SECTOR_AGREEMENT_COMPANIES:
+    if request.company_slug in SECTOR_COMPANIES:
         print(f"🔀 Redirecting '{request.company_slug}' to 'convenio-sector' for document search")
         target_slug = "convenio-sector"
     # --------------------------------

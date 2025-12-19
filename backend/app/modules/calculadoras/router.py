@@ -6,6 +6,7 @@ from app.db.database import get_db
 from app.db.models import SalaryConceptDefinition, SalaryTable
 from app.schemas.salary import CalculationRequest, SalaryResponse
 from app.services.calculator_service import CalculatorService
+from app.constants import SECTOR_COMPANIES
 
 router = APIRouter(prefix="/calculadoras", tags=["calculadoras"])
 
@@ -60,7 +61,7 @@ def get_company_concepts(company_slug: str, db: Session = Depends(get_db)):
     
     # Mapping for Sector Agreement companies
     target_slug = company_slug
-    if company_slug in ["jet2", "norwegian", "south"]:
+    if company_slug in SECTOR_COMPANIES:
         target_slug = "convenio-sector"
         
     concepts = db.query(SalaryConceptDefinition).filter(

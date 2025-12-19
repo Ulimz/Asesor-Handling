@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from app.db.models import SalaryTable, SalaryConceptDefinition
 from app.schemas.salary import CalculationRequest, SalaryResponse, SalaryConcept
+from app.constants import SECTOR_COMPANIES
 
 class CalculatorService:
     def __init__(self, db: Session):
@@ -76,7 +77,7 @@ class CalculatorService:
         # --- DYNAMIC CONCEPT LOGIC ---
         # MAPPING FIX: Sector Companies use 'convenio-sector' definitions
         target_slug_for_definitions = request.company_slug
-        if request.company_slug in ["jet2", "norwegian", "south"]:
+        if request.company_slug in SECTOR_COMPANIES:
             target_slug_for_definitions = "convenio-sector"
 
         # Fetch definitions from DB for this company
@@ -181,8 +182,13 @@ class CalculatorService:
         Fetches salary concepts from the database and returns a flattened dictionary
         like {"BASE_ANNUAL": 20000, "HORA_EXTRA": 15.5}
         """
+        # MAPPING FIX: Sector Companies use 'convenio-sector' tables
+        target_slug = company_slug
+        if company_slug in SECTOR_COMPANIES:
+            target_slug = "convenio-sector"
+        
         rows = self.db.query(SalaryTable).filter(
-            SalaryTable.company_id == company_slug,
+            SalaryTable.company_id == target_slug,
             SalaryTable.group == group,
             SalaryTable.level == level
         ).order_by(SalaryTable.year.desc()).all()

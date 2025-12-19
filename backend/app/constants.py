@@ -27,5 +27,9 @@ VALID_COMPANIES = [
     'south'
 ]
 
+# Companies that adhere to the Convenio Sector (General Agreement)
+# These companies don't have their own specific agreements and use the sector-wide terms
+SECTOR_COMPANIES = ['jet2', 'norwegian', 'south']
+
 # Semantic enrichment keywords
 SALARY_KEYWORDS = "salario, sueldo, nómina, cobro, retribución, tablas salariales"
