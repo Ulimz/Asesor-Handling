@@ -76,6 +76,7 @@ class CalculatorService:
         
         # --- EASYJET AUTOMATIC CONCEPTS ---
         # For EasyJet, automatically assign Plus Función, Plus Progresión, and Ad Personam
+        easyjet_auto_amount = 0.0
         if request.company_slug == "easyjet":
             # Load EasyJet structure to get category-specific data
             easyjet_json_path = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'structure_templates', 'easyjet.json')
