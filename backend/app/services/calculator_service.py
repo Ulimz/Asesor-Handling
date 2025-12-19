@@ -34,7 +34,7 @@ class CalculatorService:
         annual_table_salary = request.gross_annual_salary if request.gross_annual_salary > 0 else 0
         
         if annual_table_salary <= 0:
-            annual_table_salary = active_prices.get("SALARIO_BASE", active_prices.get("BASE_ANNUAL", 0))
+            annual_table_salary = active_prices.get("SALARIO_BASE_ANUAL", active_prices.get("SALARIO_BASE", active_prices.get("BASE_ANNUAL", 0)))
             
         if annual_table_salary <= 0:
              print(f"⚠️ Warning: No salary entry for {request.company_slug}. Using absolute fallback.")
