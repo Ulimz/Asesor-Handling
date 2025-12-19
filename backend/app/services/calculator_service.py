@@ -1,3 +1,5 @@
+import os
+import json
 from sqlalchemy.orm import Session
 from app.db.models import SalaryTable, SalaryConceptDefinition
 from app.schemas.salary import CalculationRequest, SalaryResponse, SalaryConcept
@@ -71,6 +73,86 @@ class CalculatorService:
             base_salary_for_gross = base_salary + prorata_monthly_concept
         else:
             base_salary_for_gross = base_salary
+        
+        # --- EASYJET AUTOMATIC CONCEPTS ---
+        # For EasyJet, automatically assign Plus Función, Plus Progresión, and Ad Personam
+        if request.company_slug == "easyjet":
+            # Load EasyJet structure to get category-specific data
+            easyjet_json_path = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'structure_templates', 'easyjet.json')
+            
+            try:
+                with open(easyjet_json_path, 'r', encoding='utf-8') as f:
+                    easyjet_data = json.load(f)
+                
+                # IMPORTANT: EasyJet has inverted structure
+                # user_level = Category name (e.g., "Jefe de Área Tipo A")
+                # user_group = Level name (e.g., "Nivel 3")
+                
+                category_data = None
+                level_data = None
+                
+                # Search for category by name
+                for group in easyjet_data['structure']['groups']:
+                    for category in group['categories']:
+                        if category['name'] == request.user_level:
+                            category_data = category
+                            # Find specific level within category
+                            for level in category.get('levels', []):
+                                if level['level'] == request.user_group:
+                                    level_data = level
+                                    break
+                            break
+                    if category_data:
+                        break
+                
+                if category_data:
+                    print(f"   🔍 Found EasyJet category: {category_data['name']}")
+                    if level_data:
+                        print(f"   🔍 Found level: {level_data['level']}")
+                    
+                    # 1. Plus Función (only for Jefes de Área)
+                    if 'plus_funcion_fixed' in category_data and category_data['plus_funcion_fixed'] > 0:
+                        # Plus Función is annual (×12), convert to monthly
+                        plus_funcion_annual = category_data['plus_funcion_fixed']
+                        plus_funcion_monthly = plus_funcion_annual / 12.0
+                        # NOT proportional to jornada
+                        concepts.append(SalaryConcept(
+                            name="Plus Función (Categoría)",
+                            amount=plus_funcion_monthly,
+                            type="devengo"
+                        ))
+                        print(f"   ✅ Auto-assigned Plus Función: {plus_funcion_monthly:.2f}€")
+                    
+                    # 2. Ad Personam (by category)
+                    if 'ad_personam' in category_data and category_data['ad_personam'] > 0:
+                        # Ad Personam is annual (×14), convert to monthly and apply prorata
+                        ad_personam_annual = category_data['ad_personam']
+                        ad_personam_monthly = (ad_personam_annual / 14.0) * prorata_factor
+                        concepts.append(SalaryConcept(
+                            name="Ad Personam Convenio",
+                            amount=ad_personam_monthly,
+                            type="devengo"
+                        ))
+                        print(f"   ✅ Auto-assigned Ad Personam: {ad_personam_monthly:.2f}€")
+                    
+                    # 3. Plus Progresión (by level)
+                    if level_data and 'progression_plus' in level_data and level_data['progression_plus'] > 0:
+                        # Progression is annual (×14), convert to monthly and apply prorata
+                        progression_annual = level_data['progression_plus']
+                        progression_monthly = (progression_annual / 14.0) * prorata_factor
+                        concepts.append(SalaryConcept(
+                            name=f"Plus Progresión ({level_data['level']})",
+                            amount=progression_monthly,
+                            type="devengo"
+                        ))
+                        print(f"   ✅ Auto-assigned Plus Progresión: {progression_monthly:.2f}€")
+                else:
+                    print(f"   ⚠️ Warning: Could not find EasyJet category '{request.user_level}'")
+                        
+            except Exception as e:
+                print(f"   ⚠️ Warning: Could not load EasyJet automatic concepts: {e}")
+                import traceback
+                traceback.print_exc()
         
         total_variable = 0
         
@@ -196,6 +278,47 @@ class CalculatorService:
         if company_slug in SECTOR_COMPANIES:
             target_slug = "convenio-sector"
         
+        # EASYJET SPECIFIC LOOKUP
+        # EasyJet has inverted structure: user_level=category, user_group=level
+        # We need to find the correct group and construct the full level name
+        if company_slug == "easyjet":
+            # Load EasyJet structure to find the group for this category
+            easyjet_json_path = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'structure_templates', 'easyjet.json')
+            try:
+                with open(easyjet_json_path, 'r', encoding='utf-8') as f:
+                    easyjet_data = json.load(f)
+                
+                # Find which group this category belongs to
+                category_name = level  # user_level contains category name
+                level_name = group    # user_group contains level name
+                
+                for grp in easyjet_data['structure']['groups']:
+                    for cat in grp['categories']:
+                        if cat['name'] == category_name:
+                            # Found the category, now construct the full level name
+                            actual_group = grp['name']
+                            actual_level = f"{category_name} - {level_name}"
+                            
+                            print(f"   🔍 EasyJet lookup: group='{actual_group}', level='{actual_level}'")
+                            
+                            # Query with correct group and level
+                            rows = self.db.query(SalaryTable).filter(
+                                SalaryTable.company_id == target_slug,
+                                SalaryTable.group == actual_group,
+                                SalaryTable.level == actual_level
+                            ).order_by(SalaryTable.year.desc()).all()
+                            
+                            if rows:
+                                prices = {}
+                                for row in rows:
+                                    prices[row.concept] = row.amount if row.amount is not None else 0.0
+                                print(f"   ✅ Found {len(prices)} concepts for EasyJet")
+                                return prices
+                            break
+            except Exception as e:
+                print(f"   ⚠️ EasyJet lookup failed: {e}")
+        
+        # NORMAL LOOKUP (for other companies)
         rows = self.db.query(SalaryTable).filter(
             SalaryTable.company_id == target_slug,
             SalaryTable.group == group,

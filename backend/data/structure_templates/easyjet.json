@@ -13,19 +13,19 @@
                 "categories": [
                     {
                         "name": "Auxiliar de Rampa",
-                        "base_salary_2025": 1345.00,
-                        "ad_personam": 0.00,
+                        "base_salary_2025": 18830.0,
+                        "ad_personam": 0.0,
                         "levels": [
                             {
                                 "level": "Auxiliar de Rampa",
-                                "progression_plus": 0.00,
+                                "progression_plus": 0.0,
                                 "perentoria": 16.15
                             }
                         ],
                         "variable_concepts": {
                             "PLUS_NOCTURNIDAD": null,
                             "PLUS_MADRUGUE": null,
-                            "PLUS_TRANSPORTE": 4.50,
+                            "PLUS_TRANSPORTE": 4.5,
                             "PLUS_HORA_EXTRA": 16.15,
                             "PLUS_JOR_FRACCIONADA_1_12": null,
                             "PLUS_JOR_FRACCIONADA_13": null,
@@ -34,42 +34,42 @@
                     },
                     {
                         "name": "Agente de Rampa",
-                        "base_salary_2025": 1538.00,
-                        "ad_personam": 30.11,
+                        "base_salary_2025": 21532.0,
+                        "ad_personam": 421.54,
                         "levels": [
                             {
                                 "level": "Nivel 1",
-                                "progression_plus": 0.00,
+                                "progression_plus": 0.0,
                                 "perentoria": 18.86
                             },
                             {
                                 "level": "Nivel 2",
-                                "progression_plus": 38.19,
+                                "progression_plus": 534.66,
                                 "perentoria": 22.34
                             },
                             {
                                 "level": "Nivel 3",
-                                "progression_plus": 71.03,
+                                "progression_plus": 994.42,
                                 "perentoria": 23.01
                             },
                             {
                                 "level": "Nivel 4",
-                                "progression_plus": 102.61,
+                                "progression_plus": 1436.54,
                                 "perentoria": 23.47
                             },
                             {
                                 "level": "Nivel 5",
-                                "progression_plus": 134.18,
+                                "progression_plus": 1878.52,
                                 "perentoria": 23.93
                             },
                             {
                                 "level": "Nivel 6",
-                                "progression_plus": 204.18,
+                                "progression_plus": 2858.52,
                                 "perentoria": 24.88
                             },
                             {
                                 "level": "Nivel 7",
-                                "progression_plus": 284.92,
+                                "progression_plus": 3988.88,
                                 "perentoria": 25.88
                             }
                         ],
@@ -94,12 +94,12 @@
                 "categories": [
                     {
                         "name": "Auxiliar Administrativo",
-                        "base_salary_2025": 1345.00,
-                        "ad_personam": 0.00,
+                        "base_salary_2025": 18830.0,
+                        "ad_personam": 0.0,
                         "levels": [
                             {
                                 "level": "Auxiliar Administrativo",
-                                "progression_plus": 0.00,
+                                "progression_plus": 0.0,
                                 "perentoria": 19.05
                             }
                         ],
@@ -115,42 +115,42 @@
                     },
                     {
                         "name": "Agente Administrativo",
-                        "base_salary_2025": 1538.00,
-                        "ad_personam": 30.11,
+                        "base_salary_2025": 21532.0,
+                        "ad_personam": 421.54,
                         "levels": [
                             {
                                 "level": "Nivel 1",
-                                "progression_plus": 0.00,
+                                "progression_plus": 0.0,
                                 "perentoria": 19.05
                             },
                             {
                                 "level": "Nivel 2",
-                                "progression_plus": 38.19,
+                                "progression_plus": 534.66,
                                 "perentoria": 22.56
                             },
                             {
                                 "level": "Nivel 3",
-                                "progression_plus": 71.03,
+                                "progression_plus": 994.42,
                                 "perentoria": 23.23
                             },
                             {
                                 "level": "Nivel 4",
-                                "progression_plus": 107.17,
-                                "perentoria": 23.70
+                                "progression_plus": 1500.38,
+                                "perentoria": 23.7
                             },
                             {
                                 "level": "Nivel 5",
-                                "progression_plus": 145.04,
+                                "progression_plus": 2030.56,
                                 "perentoria": 24.16
                             },
                             {
                                 "level": "Nivel 6",
-                                "progression_plus": 225.00,
+                                "progression_plus": 3150.0,
                                 "perentoria": 25.13
                             },
                             {
                                 "level": "Nivel 7",
-                                "progression_plus": 306.78,
+                                "progression_plus": 4294.92,
                                 "perentoria": 26.13
                             }
                         ],
@@ -167,42 +167,42 @@
                     },
                     {
                         "name": "Agente Coordinador",
-                        "base_salary_2025": 1538.00,
-                        "ad_personam": 30.11,
+                        "base_salary_2025": 21532.0,
+                        "ad_personam": 421.54,
                         "levels": [
                             {
                                 "level": "Nivel 1",
-                                "progression_plus": 0.00,
+                                "progression_plus": 0.0,
                                 "perentoria": 19.05
                             },
                             {
                                 "level": "Nivel 2",
-                                "progression_plus": 38.19,
+                                "progression_plus": 534.66,
                                 "perentoria": 22.56
                             },
                             {
                                 "level": "Nivel 3",
-                                "progression_plus": 71.03,
+                                "progression_plus": 994.42,
                                 "perentoria": 23.23
                             },
                             {
                                 "level": "Nivel 4",
-                                "progression_plus": 107.17,
-                                "perentoria": 23.70
+                                "progression_plus": 1500.38,
+                                "perentoria": 23.7
                             },
                             {
                                 "level": "Nivel 5",
-                                "progression_plus": 145.04,
+                                "progression_plus": 2030.56,
                                 "perentoria": 24.16
                             },
                             {
                                 "level": "Nivel 6",
-                                "progression_plus": 225.00,
+                                "progression_plus": 3150.0,
                                 "perentoria": 25.13
                             },
                             {
                                 "level": "Nivel 7",
-                                "progression_plus": 306.78,
+                                "progression_plus": 4294.92,
                                 "perentoria": 26.13
                             }
                         ],
@@ -225,43 +225,43 @@
                 "categories": [
                     {
                         "name": "Jefe de Área Tipo A",
-                        "base_salary_2025": 2104.00,
-                        "ad_personam": 0.00,
-                        "plus_funcion_fixed": 523.98,
+                        "base_salary_2025": 29456.0,
+                        "ad_personam": 0.0,
+                        "plus_funcion_fixed": 6287.76,
                         "levels": [
                             {
                                 "level": "Nivel 1",
-                                "progression_plus": 0.00,
+                                "progression_plus": 0.0,
                                 "perentoria": 29.09
                             },
                             {
                                 "level": "Nivel 2",
-                                "progression_plus": 38.19,
+                                "progression_plus": 534.66,
                                 "perentoria": 29.15
                             },
                             {
                                 "level": "Nivel 3",
-                                "progression_plus": 71.03,
+                                "progression_plus": 994.42,
                                 "perentoria": 30.02
                             },
                             {
                                 "level": "Nivel 4",
-                                "progression_plus": 102.61,
+                                "progression_plus": 1436.54,
                                 "perentoria": 30.62
                             },
                             {
                                 "level": "Nivel 5",
-                                "progression_plus": 134.18,
+                                "progression_plus": 1878.52,
                                 "perentoria": 31.22
                             },
                             {
                                 "level": "Nivel 6",
-                                "progression_plus": 204.18,
+                                "progression_plus": 2858.52,
                                 "perentoria": 32.47
                             },
                             {
                                 "level": "Nivel 7",
-                                "progression_plus": 285.47,
+                                "progression_plus": 3996.58,
                                 "perentoria": 33.77
                             }
                         ],
@@ -277,43 +277,43 @@
                     },
                     {
                         "name": "Jefe de Área Tipo B",
-                        "base_salary_2025": 1803.00,
-                        "ad_personam": 0.00,
-                        "plus_funcion_fixed": 448.48,
+                        "base_salary_2025": 25242.0,
+                        "ad_personam": 0.0,
+                        "plus_funcion_fixed": 5381.76,
                         "levels": [
                             {
                                 "level": "Nivel 1",
-                                "progression_plus": 0.00,
+                                "progression_plus": 0.0,
                                 "perentoria": 29.09
                             },
                             {
                                 "level": "Nivel 2",
-                                "progression_plus": 38.19,
+                                "progression_plus": 534.66,
                                 "perentoria": 29.15
                             },
                             {
                                 "level": "Nivel 3",
-                                "progression_plus": 71.03,
+                                "progression_plus": 994.42,
                                 "perentoria": 30.02
                             },
                             {
                                 "level": "Nivel 4",
-                                "progression_plus": 102.61,
+                                "progression_plus": 1436.54,
                                 "perentoria": 30.62
                             },
                             {
                                 "level": "Nivel 5",
-                                "progression_plus": 134.18,
+                                "progression_plus": 1878.52,
                                 "perentoria": 31.22
                             },
                             {
                                 "level": "Nivel 6",
-                                "progression_plus": 204.18,
+                                "progression_plus": 2858.52,
                                 "perentoria": 32.47
                             },
                             {
                                 "level": "Nivel 7",
-                                "progression_plus": 285.47,
+                                "progression_plus": 3996.58,
                                 "perentoria": 33.77
                             }
                         ],
@@ -329,43 +329,43 @@
                     },
                     {
                         "name": "Jefe de Área Tipo C",
-                        "base_salary_2025": 1538.00,
-                        "ad_personam": 0.00,
-                        "plus_funcion_fixed": 374.46,
+                        "base_salary_2025": 21532.0,
+                        "ad_personam": 0.0,
+                        "plus_funcion_fixed": 4493.52,
                         "levels": [
                             {
                                 "level": "Nivel 1",
-                                "progression_plus": 0.00,
+                                "progression_plus": 0.0,
                                 "perentoria": 29.09
                             },
                             {
                                 "level": "Nivel 2",
-                                "progression_plus": 38.19,
+                                "progression_plus": 534.66,
                                 "perentoria": 29.15
                             },
                             {
                                 "level": "Nivel 3",
-                                "progression_plus": 71.03,
+                                "progression_plus": 994.42,
                                 "perentoria": 30.02
                             },
                             {
                                 "level": "Nivel 4",
-                                "progression_plus": 102.61,
+                                "progression_plus": 1436.54,
                                 "perentoria": 30.62
                             },
                             {
                                 "level": "Nivel 5",
-                                "progression_plus": 134.18,
+                                "progression_plus": 1878.52,
                                 "perentoria": 31.22
                             },
                             {
                                 "level": "Nivel 6",
-                                "progression_plus": 204.18,
+                                "progression_plus": 2858.52,
                                 "perentoria": 32.47
                             },
                             {
                                 "level": "Nivel 7",
-                                "progression_plus": 285.47,
+                                "progression_plus": 3996.58,
                                 "perentoria": 33.77
                             }
                         ],
@@ -394,7 +394,7 @@
             "description": "Plus Madrugue (Diario)",
             "unit": "dia",
             "input_type": "number",
-            "value_2025": 8.10
+            "value_2025": 8.1
         },
         "PLUS_JOR_FRACCIONADA_1_12": {
             "description": "Jornada Fraccionada (1-12 días)",
@@ -430,7 +430,7 @@
             "description": "Hora Perentoria (Nivel)",
             "unit": "hora",
             "input_type": "number",
-            "value_2025": 0.00
+            "value_2025": 0.0
         },
         "PLUS_FUNCION_COORD_HEADSET": {
             "description": "Plus Función Coordinador/Headset",
