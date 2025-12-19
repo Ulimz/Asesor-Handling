@@ -8,9 +8,10 @@
   - [/] Verificar en producción (Requiere redespilegue)
 
 ## 🦅 Estructura Canónica EasyJet (2025)
-- [x] **Análisis Profundo**: Identificar Jefes A/B/C y Variables en XML/Tablas.
-- [x] **Documentación**: Crear `ESTRUCTURA_CANONICA_EASYJET.md`.
-- [x] **JSON Template**: `backend/data/structure_templates/easyjet.json` (Flat Structure).
+- [x] **Restaurar Conceptos**: Volver a ejecutar seeders para Azul con datos limpios.
+- [x] **Corregir UI**: Ocultar precios no seleccionados (Responsabilidad).
+- [x] **Corregir Buscador (RAG)**: Re-ingestar Convenio Azul (Art. 38 perdido).
+- [x] **Blindaje (Seguridad)**: Scripts de Health Check y Backup creados.t Structure).
 - [x] **Seeding**: Script `seed_easyjet_root.py` ejecutado y verificado en PROD.
 - [ ] **Validación UI**: Verificar visualización en Calculadora (Pendiente User).
 

@@ -111,8 +111,9 @@ class RagEngine:
         """
         if not db:
             # Fallback to old Elasticsearch if no DB session provided
-            from app.services.elasticsearch_service import es_service
-            results = es_service.search_documents(query, company_slug)
+            # Fallback to old Elasticsearch if no DB session provided
+            from app.services.elasticsearch_service import search_documents
+            results = search_documents("salary-index", query, {"company_slug": company_slug} if company_slug else None)
             formatted_results = []
             for hit in results:
                 source = hit["_source"]

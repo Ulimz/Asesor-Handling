@@ -51,3 +51,5 @@ debug_*.txt
 # Backups & Private Reports
 /backups
 /auditoria_resultados
+
+backend/backups/
