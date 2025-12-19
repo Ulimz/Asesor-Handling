@@ -188,13 +188,28 @@ class CalculatorService:
         ).order_by(SalaryTable.year.desc()).all()
         
         if not rows:
-             print(f"🔍 [DB] No exact level match for {company_slug}/{group}/{level}. Trying Nivel 3 fallback.")
-             # Fallback to Nivel 3 if specific level row is missing
-             rows = self.db.query(SalaryTable).filter(
-                 SalaryTable.company_id == company_slug,
-                 SalaryTable.group == group,
-                 SalaryTable.level == "Nivel 3"
-             ).all()
+             print(f"🔍 [DB] No exact level match for {company_slug}/{group}/{level}.")
+             
+             # Fallback Strategy 1: Try adding/removing " - " prefix (Common in EasyJet)
+             # If user sends "Nivel 1" but DB has "Agente de Rampa - Nivel 1"
+             if " - " not in level:
+                 # Try wildcards? No, distinct search.
+                 # Partial match fallback
+                 rows = self.db.query(SalaryTable).filter(
+                     SalaryTable.company_id == company_slug,
+                     SalaryTable.group == group,
+                     SalaryTable.level.contains(level) # Try to match "Nivel 1" inside "Agente... - Nivel 1"
+                 ).all()
+                 if rows:
+                     print(f"✅ Found partial match for {level}: {[r.level for r in rows][0]}")
+
+             if not rows:
+                 print("⚠️ Fallback to Nivel 3 default.")
+                 rows = self.db.query(SalaryTable).filter(
+                     SalaryTable.company_id == company_slug,
+                     SalaryTable.group == group,
+                     SalaryTable.level.like("%Nivel 3%") # Relaxed fallback
+                 ).all()
              
         prices = {}
         for row in rows:
