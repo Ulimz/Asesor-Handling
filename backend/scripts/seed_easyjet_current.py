@@ -109,11 +109,12 @@ def seed_easyjet():
         db.commit()
         print(f"   ✅ Seeded {tables_added} salary table entries")
         
-        # Seed Concept Definitions (Tabla 2 - Variable concepts)
+        
+        # Seed Concept Definitions
         print("🔧 Seeding Concept Definitions...")
         concepts_added = 0
         
-        # Ad Personam (manual input - only for subrogated workers)
+        # 1. Ad Personam (manual input - only for subrogated workers)
         ad_personam_def = SalaryConceptDefinition(
             company_slug=COMPANY_SLUG,
             code="AD_PERSONAM",
@@ -126,14 +127,45 @@ def seed_easyjet():
         db.add(ad_personam_def)
         concepts_added += 1
         
-        # Load concepts from JSON (Tabla 2)
+        # 2. Hora Perentoria (with level_values - varies by category/level)
+        # Build level_values from JSON structure
+        perentoria_level_values = {}
+        for group in data['structure']['groups']:
+            for category in group['categories']:
+                category_name = category['name']
+                if category_name not in perentoria_level_values:
+                    perentoria_level_values[category_name] = {}
+                
+                for level in category.get('levels', []):
+                    if 'perentoria' in level:
+                        perentoria_level_values[category_name][level['level']] = level['perentoria']
+        
+        perentoria_def = SalaryConceptDefinition(
+            company_slug=COMPANY_SLUG,
+            code="PLUS_HORA_PERENTORIA",
+            name="Hora Perentoria (Nivel)",
+            description="Hora perentoria según nivel del trabajador",
+            input_type="number",  # User inputs number of hours
+            default_price=0.0,
+            level_values=perentoria_level_values  # Prices vary by category/level
+        )
+        db.add(perentoria_def)
+        concepts_added += 1
+        
+        # 3. Load concepts from JSON (Tabla 2)
         if 'concepts' in data:
             for code, info in data['concepts'].items():
+                # Skip PLUS_HORA_PERENTORIA (already created above)
+                if code == "PLUS_HORA_PERENTORIA":
+                    continue
+                
                 # Determine input_type based on unit
                 if info.get('unit') == 'mes':
-                    input_type = "checkbox"  # Monthly fixed amount
+                    # Monthly fixed amounts (Tabla 2 pluses) - checkbox, proportional
+                    input_type = "checkbox"
                 elif info.get('unit') in ['hora', 'dia', 'asistencia']:
-                    input_type = "number"  # Quantity-based
+                    # Quantity-based - number input
+                    input_type = "number"
                 else:
                     input_type = "checkbox"
                 
@@ -144,7 +176,7 @@ def seed_easyjet():
                     description=info.get('description', ''),
                     input_type=input_type,
                     default_price=info.get('value_2025', 0.0),
-                    level_values=None  # EasyJet doesn't use level_values for Tabla 2
+                    level_values=None
                 )
                 db.add(definition)
                 concepts_added += 1

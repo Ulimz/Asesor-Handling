@@ -171,11 +171,19 @@ class CalculatorService:
                     # Priority 1: level_values (JSON field in SalaryConceptDefinition)
                     # For concepts like HORA_EXTRA, HORA_PERENTORIA that have different prices per level
                     if definition.level_values and isinstance(definition.level_values, dict):
-                        if user_group in definition.level_values:
-                            group_levels = definition.level_values[user_group]
-                            if isinstance(group_levels, dict) and user_level in group_levels:
-                                unit_price = group_levels[user_level]
-                                print(f"   💰 Using level-specific price for {code}: {unit_price}€ ({user_group}/{user_level})")
+                        # EasyJet has inverted structure: user_level=category, user_group=level
+                        if request.company_slug == "easyjet":
+                            lookup_category = user_level  # user_level contains category
+                            lookup_level = user_group      # user_group contains level
+                        else:
+                            lookup_category = user_group
+                            lookup_level = user_level
+                        
+                        if lookup_category in definition.level_values:
+                            group_levels = definition.level_values[lookup_category]
+                            if isinstance(group_levels, dict) and lookup_level in group_levels:
+                                unit_price = group_levels[lookup_level]
+                                print(f"   💰 Using level-specific price for {code}: {unit_price}€ ({lookup_category}/{lookup_level})")
                     
                     # Priority 2: Salary Table (Specific for Group/Level)
                     # If this concept matches a column in our extracted tables (e.g. HORA_EXTRA), use legitimate price
