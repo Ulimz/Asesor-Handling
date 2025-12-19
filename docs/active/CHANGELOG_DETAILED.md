@@ -6,6 +6,36 @@
 
 ## 📅 Sesión: 19 Diciembre 2025
 
+### [13:00] 🛡️ Convenio Sector: Implementación y Blindaje de Seguridad
+- **Hito**: Implementación completa del Convenio Sector General y sistema de mapeo para empresas adheridas.
+- **Contexto**: Empresas como Jet2, Norwegian y South no tienen convenios propios y se adhieren al Convenio Colectivo General del Sector.
+- **Problema Detectado**: 
+    - Jet2 devolvía salario base incorrecto (1317.92€ en vez de 1330.88€).
+    - El sistema buscaba datos con `company_id = "jet2"` pero los datos estaban en `company_id = "convenio-sector"`.
+    - El mapeo de empresas del sector estaba **hardcodeado en 3 lugares diferentes** (`calculator_service.py`, `search_router.py`, `calculadoras/router.py`).
+- **Solución Implementada**:
+    1. **Constante Centralizada**: Creado `SECTOR_COMPANIES = ['jet2', 'norwegian', 'south']` en `backend/app/constants.py`.
+    2. **Mapeo Unificado**: Actualizado `CalculatorService._get_salary_prices_from_db()` para aplicar el mapeo también a las **tablas salariales** (antes solo se aplicaba a conceptos).
+    3. **Lookup Key Fix**: Agregado `"SALARIO_BASE_ANUAL"` como primera clave de búsqueda en `calculate_smart_salary()` para coincidir con la estructura canónica de los templates JSON.
+    4. **Actualización Global**: Reemplazadas todas las listas hardcodeadas por la constante centralizada en 4 archivos.
+- **Scripts Creados**:
+    - `backend/scripts/seed_sector_2025.py`: Carga datos del Convenio Sector desde `structure_templates/convenio_sector.json`.
+    - `backend/scripts/tests/check_sector_health.py`: Verificación automática de Calculator y RAG para Convenio Sector.
+    - `backend/scripts/maintenance/backup_sector.py`: Backup de seguridad de datos del Convenio Sector.
+- **Datos Cargados**:
+    - 21 tablas salariales (3 grupos: Técnicos Gestores, Administrativos, Servicios Auxiliares × 7 niveles).
+    - 19 conceptos (SALARIO_BASE_ANUAL, PLUS_NOCTURNIDAD, PLUS_TURNICIDAD con tiers, etc.).
+- **Verificación**:
+    - ✅ Test local: Jet2 calcula correctamente 1330.88€ (18632.39€ anual / 14 pagas).
+    - ✅ RAG: Encuentra "Artículo 28" sobre pluses.
+    - ✅ Health Check: Todos los tests pasan.
+- **Commits**: 
+    - `99be061`: Initial sector seeding and SALARIO_BASE_ANUAL lookup fix.
+    - `7448a9f`: Centralized SECTOR_COMPANIES constant and unified mapping.
+- **Lección Aprendida**: **Centralizar configuraciones críticas** (como listas de empresas) en `constants.py` evita inconsistencias y facilita el mantenimiento cuando se agregan nuevas empresas al sector.
+
+
+
 ### [09:00] 🦅 EasyJet 2025: Estructura Canónica y Precisión Financiera
 - **Hito**: Implementación completa de la estructura salarial de EasyJet (V Convenio, Tablas 2025).
 - **Análisis**: 
