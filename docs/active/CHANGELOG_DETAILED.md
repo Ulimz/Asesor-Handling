@@ -34,6 +34,25 @@
     - `7448a9f`: Centralized SECTOR_COMPANIES constant and unified mapping.
 - **Lección Aprendida**: **Centralizar configuraciones críticas** (como listas de empresas) en `constants.py` evita inconsistencias y facilita el mantenimiento cuando se agregan nuevas empresas al sector.
 
+### [13:30] 🔧 Fix Crítico: Conceptos Variables del Convenio Sector
+- **Problema Detectado**: Los conceptos variables (Horas Extra, Horas Perentorias, Garantía Personal) mostraban 0€ o no sumaban correctamente.
+- **Causas Identificadas**:
+    1. **Horas Extra/Perentorias**: Tenían precios en `level_values` (JSON) pero el `CalculatorService` solo buscaba en `default_price` (0.0€).
+    2. **Garantía Personal**: Tenía `unit: "euro"` pero el script de seeding lo configuraba como `input_type: "number"`, multiplicando por precio 0€.
+- **Soluciones Implementadas**:
+    1. **Extracción de `level_values`**: Agregada lógica en `CalculatorService.calculate_smart_salary()` (líneas 101-107) para extraer precios de `definition.level_values[user_group][user_level]` cuando existen.
+    2. **Detección de `unit="euro"`**: Actualizado `seed_sector_2025.py` (líneas 88-93) para detectar `unit="euro"` y configurar `input_type="currency"` en vez de `"number"`.
+- **Verificación**:
+    - ✅ Horas Extra (10h × 16.33€): 163.30€
+    - ✅ Horas Perentorias (5h × 19.05€): 95.25€
+    - ✅ Garantía Personal: 150.00€
+- **Blindaje de Seguridad**:
+    - Actualizado `check_sector_health.py` con 4 tests (base salary, nocturnidad, variable concepts, RAG).
+    - Creado backup actualizado: `sector_backup_20251219_133917.json` (19 concepts, 21 tables).
+- **Commits**: 
+    - `7d6185d`: Fix level_values extraction and currency-type detection.
+- **Lección Aprendida**: **Validar todos los tipos de conceptos** (fijos, variables con `level_values`, variables con `unit="euro"`) durante el desarrollo de nuevos convenios para evitar regresiones.
+
 
 
 ### [09:00] 🦅 EasyJet 2025: Estructura Canónica y Precisión Financiera
