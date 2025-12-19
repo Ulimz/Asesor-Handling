@@ -123,19 +123,7 @@ class CalculatorService:
                         ))
                         print(f"   ✅ Auto-assigned Plus Función: {plus_funcion_monthly:.2f}€")
                     
-                    # 2. Ad Personam (by category)
-                    if 'ad_personam' in category_data and category_data['ad_personam'] > 0:
-                        # Ad Personam is annual (×14), convert to monthly and apply prorata
-                        ad_personam_annual = category_data['ad_personam']
-                        ad_personam_monthly = (ad_personam_annual / 14.0) * prorata_factor
-                        concepts.append(SalaryConcept(
-                            name="Ad Personam Convenio",
-                            amount=ad_personam_monthly,
-                            type="devengo"
-                        ))
-                        print(f"   ✅ Auto-assigned Ad Personam: {ad_personam_monthly:.2f}€")
-                    
-                    # 3. Plus Progresión (by level)
+                    # 2. Plus Progresión (by level)
                     if level_data and 'progression_plus' in level_data and level_data['progression_plus'] > 0:
                         # Progression is annual (×14), convert to monthly and apply prorata
                         progression_annual = level_data['progression_plus']

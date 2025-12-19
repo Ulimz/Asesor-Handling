@@ -113,7 +113,20 @@ def seed_easyjet():
         print("🔧 Seeding Concept Definitions...")
         concepts_added = 0
         
-        # Load concepts from JSON
+        # Ad Personam (manual input - only for subrogated workers)
+        ad_personam_def = SalaryConceptDefinition(
+            company_slug=COMPANY_SLUG,
+            code="AD_PERSONAM",
+            name="Ad Personam Convenio (Subrogados)",
+            description="Plus Ad Personam para trabajadores subrogados. Cantidad según categoría.",
+            input_type="currency",  # User inputs the amount directly
+            default_price=30.11,  # Default monthly value (421.54 annual / 14)
+            level_values=None
+        )
+        db.add(ad_personam_def)
+        concepts_added += 1
+        
+        # Load concepts from JSON (Tabla 2)
         if 'concepts' in data:
             for code, info in data['concepts'].items():
                 # Determine input_type based on unit
