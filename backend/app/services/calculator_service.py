@@ -122,6 +122,7 @@ class CalculatorService:
                             amount=plus_funcion_monthly,
                             type="devengo"
                         ))
+                        easyjet_auto_amount += plus_funcion_monthly
                         print(f"   ✅ Auto-assigned Plus Función: {plus_funcion_monthly:.2f}€")
                     
                     # 2. Plus Progresión (by level)
@@ -134,6 +135,7 @@ class CalculatorService:
                             amount=progression_monthly,
                             type="devengo"
                         ))
+                        easyjet_auto_amount += progression_monthly
                         print(f"   ✅ Auto-assigned Plus Progresión: {progression_monthly:.2f}€")
                 else:
                     print(f"   ⚠️ Warning: Could not find EasyJet category '{request.user_level}'")
