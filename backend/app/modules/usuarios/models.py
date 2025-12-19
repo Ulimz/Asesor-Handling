@@ -11,6 +11,7 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
     is_superuser = Column(Boolean, default=False)
+    role = Column(String, default="user")  # "user" | "vip" | "admin"
     
     # Deprecated fields (kept for backward compatibility during migration)
     preferred_name = Column(String, nullable=True)

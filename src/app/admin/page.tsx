@@ -17,6 +17,7 @@ interface AdminUser {
     full_name: string;
     is_active: boolean;
     is_superuser: boolean;
+    role: string;  // "user" | "vip" | "admin"
     created_at_approx: string | null;
 }
 
@@ -72,6 +73,63 @@ export default function AdminPage() {
         u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         u.full_name.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const handleRoleChange = async (userId: number, newRole: string) => {
+        if (!confirm(`¿Cambiar rol a "${newRole}"?`)) return;
+
+        try {
+            const token = localStorage.getItem('auth_token');
+            const res = await fetch(`${API_URL}/api/admin/users/${userId}/role`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ role: newRole })
+            });
+
+            if (res.ok) {
+                // Update local state
+                setUsers(users.map(u => u.id === userId ? { ...u, role: newRole, is_superuser: newRole === 'admin' } : u));
+                alert(`Rol actualizado a "${newRole}"`);
+            } else {
+                const data = await res.json();
+                alert(`Error: ${data.detail || 'No se pudo actualizar el rol'}`);
+            }
+        } catch (err) {
+            console.error('Role update error:', err);
+            alert('Error de conexión');
+        }
+    };
+
+    const handleStatusToggle = async (userId: number, currentStatus: boolean) => {
+        const newStatus = !currentStatus;
+        if (!confirm(`¿${newStatus ? 'Activar' : 'Desactivar'} usuario?`)) return;
+
+        try {
+            const token = localStorage.getItem('auth_token');
+            const res = await fetch(`${API_URL}/api/admin/users/${userId}/status`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ is_active: newStatus })
+            });
+
+            if (res.ok) {
+                // Update local state
+                setUsers(users.map(u => u.id === userId ? { ...u, is_active: newStatus } : u));
+                alert(`Usuario ${newStatus ? 'activado' : 'desactivado'}`);
+            } else {
+                const data = await res.json();
+                alert(`Error: ${data.detail || 'No se pudo actualizar el estado'}`);
+            }
+        } catch (err) {
+            console.error('Status update error:', err);
+            alert('Error de conexión');
+        }
+    };
 
     if (error) {
         return (
@@ -167,18 +225,19 @@ export default function AdminPage() {
                                     <th className="p-4 font-medium">ID</th>
                                     <th className="p-4 font-medium">Usuario</th>
                                     <th className="p-4 font-medium">Email</th>
-                                    <th className="p-4 font-medium text-center">Admin</th>
+                                    <th className="p-4 font-medium text-center">Rol</th>
                                     <th className="p-4 font-medium text-center">Estado</th>
+                                    <th className="p-4 font-medium text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-800">
                                 {loading ? (
                                     <tr>
-                                        <td colSpan={5} className="p-8 text-center text-slate-500">Cargando datos...</td>
+                                        <td colSpan={6} className="p-8 text-center text-slate-500">Cargando datos...</td>
                                     </tr>
                                 ) : filteredUsers.length === 0 ? (
                                     <tr>
-                                        <td colSpan={5} className="p-8 text-center text-slate-500">No se encontraron usuarios.</td>
+                                        <td colSpan={6} className="p-8 text-center text-slate-500">No se encontraron usuarios.</td>
                                     </tr>
                                 ) : (
                                     filteredUsers.map(user => (
@@ -187,9 +246,11 @@ export default function AdminPage() {
                                             <td className="p-4 font-medium text-white">{user.full_name}</td>
                                             <td className="p-4 text-slate-400">{user.email}</td>
                                             <td className="p-4 text-center">
-                                                {user.is_superuser ?
+                                                {user.role === 'admin' ?
                                                     <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-500/10 text-amber-500 border border-amber-500/20">ADMIN</span>
-                                                    : <span className="text-slate-600">-</span>
+                                                    : user.role === 'vip' ?
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-500/10 text-purple-500 border border-purple-500/20">VIP</span>
+                                                        : <span className="text-slate-600">USER</span>
                                                 }
                                             </td>
                                             <td className="p-4 text-center">
@@ -202,6 +263,45 @@ export default function AdminPage() {
                                                         <XCircle size={14} />
                                                     </span>
                                                 }
+                                            </td>
+                                            <td className="p-4">
+                                                <div className="flex items-center justify-center gap-2">
+                                                    {/* VIP Button */}
+                                                    <button
+                                                        onClick={() => handleRoleChange(user.id, user.role === 'vip' ? 'user' : 'vip')}
+                                                        className={`px-2 py-1 rounded text-xs font-medium transition-colors ${user.role === 'vip'
+                                                                ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                                                                : 'bg-slate-800 text-slate-400 hover:bg-purple-500/10 hover:text-purple-400 border border-slate-700'
+                                                            }`}
+                                                        title={user.role === 'vip' ? 'Quitar VIP' : 'Hacer VIP'}
+                                                    >
+                                                        🎁 VIP
+                                                    </button>
+
+                                                    {/* Admin Button */}
+                                                    <button
+                                                        onClick={() => handleRoleChange(user.id, user.role === 'admin' ? 'user' : 'admin')}
+                                                        className={`px-2 py-1 rounded text-xs font-medium transition-colors ${user.role === 'admin'
+                                                                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                                                                : 'bg-slate-800 text-slate-400 hover:bg-amber-500/10 hover:text-amber-400 border border-slate-700'
+                                                            }`}
+                                                        title={user.role === 'admin' ? 'Quitar Admin' : 'Hacer Admin'}
+                                                    >
+                                                        👑 Admin
+                                                    </button>
+
+                                                    {/* Status Toggle */}
+                                                    <button
+                                                        onClick={() => handleStatusToggle(user.id, user.is_active)}
+                                                        className={`px-2 py-1 rounded text-xs font-medium transition-colors ${user.is_active
+                                                                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                                                                : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                                                            }`}
+                                                        title={user.is_active ? 'Desactivar' : 'Activar'}
+                                                    >
+                                                        {user.is_active ? '✓' : '✗'}
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))

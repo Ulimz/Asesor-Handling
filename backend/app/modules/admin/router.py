@@ -31,6 +31,7 @@ class AdminUserSchema(BaseModel):
     full_name: str
     is_active: bool
     is_superuser: bool
+    role: str = "user"  # "user" | "vip" | "admin"
     created_at_approx: datetime | None = None # We don't have created_at in User model yet, but UserProfile has.
 
     class Config:
@@ -73,3 +74,82 @@ def list_users(
         
     users = query.offset(skip).limit(limit).all()
     return users
+
+# --- Role Management ---
+
+class UpdateRoleRequest(BaseModel):
+    role: str  # "user" | "vip" | "admin"
+
+@router.put("/users/{user_id}/role")
+def update_user_role(
+    user_id: int,
+    request: UpdateRoleRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_superuser)
+):
+    # Validate role
+    valid_roles = ["user", "vip", "admin"]
+    if request.role not in valid_roles:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Rol inválido. Debe ser uno de: {', '.join(valid_roles)}"
+        )
+    
+    # Get target user
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Usuario no encontrado"
+        )
+    
+    # Prevent admin from removing their own admin privileges
+    if user.id == current_user.id and request.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No puedes quitarte tus propios privilegios de administrador"
+        )
+    
+    # Update role and is_superuser
+    user.role = request.role
+    user.is_superuser = (request.role == "admin")
+    
+    db.commit()
+    db.refresh(user)
+    
+    return {"message": f"Rol actualizado a '{request.role}'", "user": AdminUserSchema.from_orm(user)}
+
+# --- Status Management ---
+
+class UpdateStatusRequest(BaseModel):
+    is_active: bool
+
+@router.put("/users/{user_id}/status")
+def update_user_status(
+    user_id: int,
+    request: UpdateStatusRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_superuser)
+):
+    # Get target user
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Usuario no encontrado"
+        )
+    
+    # Prevent admin from deactivating themselves
+    if user.id == current_user.id and not request.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No puedes desactivar tu propia cuenta"
+        )
+    
+    # Update status
+    user.is_active = request.is_active
+    
+    db.commit()
+    db.refresh(user)
+    
+    return {"message": f"Usuario {'activado' if request.is_active else 'desactivado'}", "user": AdminUserSchema.from_orm(user)}
