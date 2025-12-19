@@ -350,6 +350,10 @@ export default function DashboardPage() {
             <PwaInstallGuide isOpen={showInstallGuide} onClose={() => setShowInstallGuide(false)} />
 
             {/* MobileNav Removed */}
+
+            <div className="fixed bottom-2 right-2 text-xs text-gray-500 opacity-50 pointer-events-none z-50">
+                v1.2 EasyJet Fix (R)
+            </div>
         </div >
     );
 }
