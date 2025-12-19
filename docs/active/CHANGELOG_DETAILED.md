@@ -24,6 +24,16 @@
     - Ejecución remota de scripts de carga (`railway run`).
     - Verificación de integridad de datos en la nube.
 
+### [09:50] 🐛 Fix Crítico: Lógica de Coincidencia Parcial (Safety Net)
+- **Problema**: EasyJet fallaba al cargar salarios base (usando valores genéricos del sector) a pesar de que los datos existían correctamente en DB.
+- **Causa**: El frontend enviaba niveles simplificados (ej. "Nivel 1") mientras que la DB de EasyJet tenía nombres verbose (ej. "Agente de Rampa - Nivel 1"). La búsqueda exacta fallaba.
+- **Lección Aprendida**: **Nunca confiar en coincidencia exacta de Strings** cuando se cruzan datos de UI (Simplificados) con Datos Legales (Extractos de BOE).
+- **Solución Global**: Implementada lógica de "Fallback Parcial" en `CalculatorService.py`.
+    1.  Intento Exacto: `level == "Nivel 1"`
+    2.  Intento Parcial: `level in "Agente... - Nivel 1"` (Contains)
+    3.  Fallback Sector: Si todo falla.
+- **Estado**: Desplegado y verificado. Aplica a todas las compañías como red de seguridad.
+
 ## 📅 Sesión: 18 Diciembre 2025
 
 ### [19:00] 🏛️ Consolidación de "Single Source of Truth" (2025)
