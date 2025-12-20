@@ -71,9 +71,11 @@ export default function OnboardingPage() {
 
             // Force hard reload to ensure ProfileContext initializes from scratch with the new profile
             window.location.href = '/dashboard';
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            // Handle error (maybe show it?)
+            // DEBUG: Show explicit error to user
+            alert(`ERROR CREANDO PERFIL: ${error.message || JSON.stringify(error)}`);
+            setError(`Error crítico: ${error.message}`);
         } finally {
             setIsLoading(false);
         }
