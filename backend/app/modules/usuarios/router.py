@@ -122,29 +122,41 @@ def get_my_profiles(db: Session = Depends(get_db), current_user: UserModel = Dep
 @router.post("/me/profiles", response_model=PydanticProfile)
 def create_profile(profile: ProfileCreate, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
     """Create a new professional profile."""
-    # Ensure only one is active if it's the first one
-    existing_count = db.query(UserProfile).filter(UserProfile.user_id == current_user.id).count()
-    is_first = existing_count == 0
+    print(f"📝 Creating Profile for User {current_user.id} ({current_user.email})")
+    print(f"   Data: {profile.model_dump()}")
     
-    db_profile = UserProfile(
-        user_id=current_user.id,
-        alias=profile.alias,
-        company_slug=profile.company_slug,
-        job_group=profile.job_group,
-        salary_level=profile.salary_level,
-        contract_percentage=profile.contract_percentage,
-        contract_type=profile.contract_type,
-        is_active=True if is_first else profile.is_active  # Auto-activate first profile
-    )
-    
-    if db_profile.is_active:
-        # Deactivate others
-        db.query(UserProfile).filter(UserProfile.user_id == current_user.id).update({"is_active": False})
-    
-    db.add(db_profile)
-    db.commit()
-    db.refresh(db_profile)
-    return db_profile
+    try:
+        # Ensure only one is active if it's the first one
+        existing_count = db.query(UserProfile).filter(UserProfile.user_id == current_user.id).count()
+        is_first = existing_count == 0
+        
+        db_profile = UserProfile(
+            user_id=current_user.id,
+            alias=profile.alias,
+            company_slug=profile.company_slug,
+            job_group=profile.job_group,
+            salary_level=profile.salary_level,
+            contract_percentage=profile.contract_percentage,
+            contract_type=profile.contract_type,
+            is_active=True if is_first else profile.is_active  # Auto-activate first profile
+        )
+        
+        if db_profile.is_active:
+            # Deactivate others
+            print(f"   ⚡ activating new profile, deactivating {existing_count} others")
+            db.query(UserProfile).filter(UserProfile.user_id == current_user.id).update({"is_active": False})
+        
+        db.add(db_profile)
+        db.commit()
+        db.refresh(db_profile)
+        print(f"   ✅ Profile Created ID: {db_profile.id}")
+        return db_profile
+    except Exception as e:
+        print(f"   ❌ CRITICAL ERROR creating profile: {e}")
+        import traceback
+        traceback.print_exc()
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.put("/me/profiles/{profile_id}", response_model=PydanticProfile)
 def update_profile(

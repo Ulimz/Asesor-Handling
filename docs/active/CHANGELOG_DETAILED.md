@@ -638,3 +638,7 @@
     - Ahora el RAG inyecta **TODA LA TABLA** del Grupo Profesional del usuario (todos los niveles) además de su fila específica.
 - **Beneficio**: El usuario puede preguntar "cuánto cobra mi jefe (nivel superior)" o "cuánto ganaba antes (nivel inferior)" y la IA tiene el dato exacto SQL para responder.
 
+### [16:30] 🔧 Debug: Logging Extendido (Perfiles)
+- **Acción**: Añadidos logs detallados en `POST /users/me/profiles` para diagnosticar fallos silenciosos en la creación de perfiles.
+
+
