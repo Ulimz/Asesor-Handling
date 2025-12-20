@@ -152,6 +152,20 @@ def create_profile(profile: ProfileCreate, db: Session = Depends(get_db), curren
         existing_count = db.query(UserProfile).filter(UserProfile.user_id == current_user.id).count()
         is_first = existing_count == 0
         
+        # Check for duplicates (Same user + Same company)
+        existing_profile = db.query(UserProfile).filter(
+            UserProfile.user_id == current_user.id,
+            UserProfile.company_slug == profile.company_slug
+        ).first()
+
+        if existing_profile:
+             companies_map = {"azul-handling": "Azul Handling", "easyjet": "EasyJet", "aviapartner": "Aviapartner"}
+             company_name = companies_map.get(profile.company_slug, profile.company_slug)
+             raise HTTPException(
+                 status_code=400, 
+                 detail=f"Ya tienes un perfil creado para {company_name}. Edítalo en lugar de crear uno nuevo."
+             )
+        
         db_profile = UserProfile(
             user_id=current_user.id,
             alias=profile.alias,
