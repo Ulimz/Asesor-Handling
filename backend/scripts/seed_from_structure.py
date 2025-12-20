@@ -73,6 +73,12 @@ def seed_from_template(template_path, companies_to_seed):
                              
                          amount = concept_def.get('base_value_2022', 0.0)
                          
+                         # Check for specific level values
+                         if 'level_values' in concept_def:
+                             group_levels = concept_def['level_values'].get(group_name, {})
+                             if level in group_levels:
+                                 amount = group_levels[level]
+                         
                          # Handle Tiers (Turnicidad) - Insert multiple rows or handling logic?
                          # For database simplicity, maybe insert base value and handle tiers in frontend?
                          # OR insert one row per tier? Let's check DB schema. 

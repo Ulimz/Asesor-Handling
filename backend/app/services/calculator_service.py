@@ -427,8 +427,8 @@ class CalculatorService:
         if not data:
             return ""
             
-        # Prioritize Key Concepts for width management
-        priority_concepts = ["SALARIO_BASE_ANUAL", "SALARIO_BASE_MENSUAL", "PLUS_NOCTURNIDAD", "HORA_EXTRA"]
+        # Prioritize Key Concepts for readability
+        priority_concepts = ["SALARIO_BASE", "SALARIO_BASE_ANUAL", "SALARIO_BASE_MENSUAL", "PLUS_NOCTURNIDAD", "HORA_EXTRA", "HORA_PERENTORIA"]
         sorted_concepts = sorted(list(concepts))
         
         # Move priority to front
@@ -437,12 +437,10 @@ class CalculatorService:
             if p in sorted_concepts:
                 final_columns.append(p)
                 sorted_concepts.remove(p)
+        
+        # Add ALL remaining concepts (User requested full details)
         final_columns.extend(sorted_concepts)
         
-        # Limit columns if too many (to prevent token overflow)
-        if len(final_columns) > 8:
-             final_columns = final_columns[:8]
-
         # Build Markdown
         md = f"""
 ### 📊 TABLA SALARIAL COMPLETA: {group.upper()} (2025)
@@ -451,8 +449,21 @@ Esta tabla contiene los valores oficiales para TODOS los niveles del grupo {grou
 | Nivel | {' | '.join(final_columns)} |
 | :--- | {' | '.join([':---'] * len(final_columns))} |
 """
-        # Sort levels naturally if possible, or alphabetically
-        for level_name in sorted(data.keys()):
+        # Sort levels naturally if possible
+        def logical_sort(lvl):
+            # Try to extract number for sorting "Nivel 4" vs "Nivel 10"
+            tokens = lvl.split()
+            for t in tokens:
+                if t.isdigit():
+                    return int(t)
+            return lvl
+
+        try:
+             sorted_levels = sorted(data.keys(), key=logical_sort)
+        except:
+             sorted_levels = sorted(data.keys())
+
+        for level_name in sorted_levels:
             row_str = f"| **{level_name}**"
             for col in final_columns:
                 val = data[level_name].get(col, 0.0)
