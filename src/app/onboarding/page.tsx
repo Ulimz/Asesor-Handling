@@ -69,7 +69,8 @@ export default function OnboardingPage() {
                 is_active: true
             });
 
-            router.push('/dashboard');
+            // Force hard reload to ensure ProfileContext initializes from scratch with the new profile
+            window.location.href = '/dashboard';
         } catch (error) {
             console.error(error);
             // Handle error (maybe show it?)

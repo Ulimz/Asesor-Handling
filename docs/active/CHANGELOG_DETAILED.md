@@ -4,7 +4,27 @@
 **Actualización**: OBLIGATORIA después de cada paso o comando relevante.
 
 
-## 📅 Sesión: 19 Diciembre 2025
+## 📅 Sesión: 19 Diciembre 2025 (Tarde)
+
+### [17:30] 🦅 Release EasyJet v1.2: Stabilización Financiera y UX
+- **Hito**: Despliegue exitoso de la Calculadora EasyJet con lógica invertida (Categoría/Nivel) funcionando en Producción.
+- **Problemáticas Resueltas**:
+    1.  **Frontend Payload Mismatch**: El select de nivel enviaba strings compuestos ("Agente de Rampa - Nivel 3") que el backend no entendía. Se implementó un parser específico para EasyJet en `SalaryCalculator.tsx` que divide el string antes de enviarlo.
+    2.  **Doble Contabilidad**: El backend sumaba el Salario Base dos veces (una como base, otra dentro de los "conceptos devengados"). Corregido en `calculator_service.py` excluyendo el base de la suma automática.
+    3.  **Scope Error (500)**: Variable `easyjet_auto_amount` definida dentro de un condicional, provocando caídas para otras compañías. Solucionado inicializando la variable globalmente.
+    4.  **UX Improvement**: Checkboxes específicos para "Plus Función Coordinador", "Conductor", etc., activados en el frontend para facilitar la selección.
+- **Blindaje**:
+    - Generado backup de estabilidad en `backups/easyjet_stable_v1.2`.
+- **Estado Actual**: **ESTABLE**. Cálculos verificados contra nómina real.
+
+### [17:40] 🔒 Blindaje: Backup y Documentación
+- **Acción**: Ejecutado backup manual de archivos críticos de EasyJet.
+- **Razón**: Asegurar un punto de retorno estable ante futuros cambios.
+- **Archivos Salvaguardados**: `easyjet.json`, `calculator_service.py`, componentes de Frontend.
+
+---
+
+## 📅 Sesión: 19 Diciembre 2025 (Mañana)
 
 ### [13:00] 🛡️ Convenio Sector: Implementación y Blindaje de Seguridad
 - **Hito**: Implementación completa del Convenio Sector General y sistema de mapeo para empresas adheridas.
@@ -603,3 +623,10 @@
 ### [22:27] 💾 Copia de Seguridad
 *   **Snapshot**: Creada copia completa en `backups/backup_20251218_222700`.
 *   **Estado**: Sistema estable, UI restaurada, Funciones Backend (IA/Calc) activas.
+
+### [16:00] 🐛 Fix: Onboarding y UI Perfiles
+- **Fix Onboarding**: Cambiado `router.push('/dashboard')` por `window.location.href = '/dashboard'` al finalizar el registro.
+    - **Motivo**: El cambio de ruta de cliente (Next.js) no disparaba la recarga del `ProfileProvider` (ubicado en `DashboardLayout`), mostrando "Sin Perfil" al usuario. La recarga forzada garantiza que el backend sirva el perfil recién creado.
+- **UI Tweaks**: Eliminado el botón "Añadir Nuevo Perfil" del `ProfileSwitcher` del header.
+    - **Motivo**: Limpieza de UI solicitada. La gestión ahora se centraliza en la página de Configuración.
+- **Despliegue**: Push a `main` (Fix Onboarding & UI).

@@ -83,17 +83,7 @@ export default function ProfileSwitcher() {
                                 )}
                             </div>
 
-                            <div className="p-2 border-t border-white/5 bg-slate-800/50">
-                                <button
-                                    onClick={() => {
-                                        setIsCreateModalOpen(true);
-                                        setIsOpen(false);
-                                    }}
-                                    className="w-full flex items-center justify-center gap-2 p-2 rounded-lg bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all text-sm font-medium"
-                                >
-                                    <Plus size={16} /> Nuevo Perfil
-                                </button>
-                            </div>
+                            {/* Create Profile button removed as per user request */}
                         </motion.div>
                     </>
                 )}

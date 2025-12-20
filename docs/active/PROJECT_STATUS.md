@@ -43,6 +43,7 @@ Este documento resume el propósito, arquitectura y estado actual del proyecto. 
 | **Alertas** | ✅ Completo | ✅ Completo | Feed de novedades |
 | **Reclamaciones** | ✅ Completo | ✅ Completo | Generador de escritos |
 | **IA/RAG** | ✅ Alta Precisión | ✅ Structured Injection | Prioridad absoluta a datos SQL |
+| **EasyJet** | ✅ Estructura Invertida | ✅ Fix Sumas v1.2 | **BLINDADO v1.2** |
 
 ## 📦 Hitos Recientes (Completados)
 

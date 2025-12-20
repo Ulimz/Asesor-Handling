@@ -2,18 +2,16 @@
 
 ## 🎯 Qué se hizo hoy
 
-### 1. EasyJet 2025 (Feature Complete)
-**Objetivo**: Implementar estructura salarial meticulosa para Calculadora y Chat.
+### 1. EasyJet 2025 (Blindado v1.2)
+**Objetivo**: Estabilizar Calculadora y Chat tras incidencias en producción.
 
-- ✅ **Estructura Canónica**: Definida en `ESTRUCTURA_CANONICA_EASYJET.md` y `easyjet.json`.
-- ✅ **Datos Financieros**: 
-    - Jefes de Área A/B/C diferenciados.
-    - Precios de Horas Perentorias por Nivel (1-7) y Grupo.
-    - Variables complejas (Fraccionada en tramos, Pluses Función).
+- ✅ **Estructura Invertida**: Implementada lógica Categoría -> Nivel en `calculator_service.py` y `SalaryCalculator.tsx`.
+- ✅ **Fix Sumas**: Corregido bug donde no se sumaba el Plus Progresión, y otro donde se duplicaba el Salario Base.
+- ✅ **UX Checkboxes**: Añadidos selectores para Pluses de Función específicos (Headset, Conductor).
 - ✅ **Producción**:
-    - Migración de esquema (`add variable_type`) ejecutada en Railway.
-    - Seeding de datos completado (516 filas).
-- ✅ **IA/RAG**: Chat actualizado con resumen financiero (`seed_vectors.py`).
+    - Build arreglado en Railway (force-static).
+    - Backup de seguridad creado en `backups/easyjet_stable_v1.2`.
+- ✅ **Scope Fix**: Resuelto error 500 por variable `easyjet_auto_amount` no inicializada.
 
 ### 2. Consolidación de "Single Source of Truth" (2025)
 **Objetivo**: Garantizar que tanto la calculadora como el chat usen los datos oficiales de 2025 extraídos de imágenes (Sector) y BOE (Azul).
