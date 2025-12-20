@@ -641,4 +641,11 @@
 ### [16:30] 🔧 Debug: Logging Extendido (Perfiles)
 - **Acción**: Añadidos logs detallados en `POST /users/me/profiles` para diagnosticar fallos silenciosos en la creación de perfiles.
 
+### [17:15] 🚀 Fix Critical: Creación de Perfil en Registro
+- **Problema**: El formulario de Registro pedía datos (Empresa, Categoría, Nivel) pero el Backend los guardaba solo en el Usuario (campos legacy) y **NO creaba un Perfil Laboral**.
+- **Consecuencia**: El usuario entraba y veía "Sin Perfil" a pesar de haber rellenado todo.
+- **Solución**: Modificado `POST /users/` para que, si recibe datos laborales, **automáticamente cree y active el primer Perfil**.
+- **Resultado**: El usuario recién registrado entra directo con su perfil listo y activo.
+
+
 

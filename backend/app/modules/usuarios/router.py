@@ -50,11 +50,33 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
+
+        # FIX: Create the Initial UserProfile immediately if data is provided
+        # The user provided company/group data in the register form, so we must adhere to it.
+        if db_user.company_slug and db_user.job_group and db_user.salary_level:
+             
+             print(f"🚀 AUTO-CREATING Initial Profile for {db_user.email}")
+             
+             initial_profile = UserProfile(
+                 user_id=db_user.id,
+                 alias=f"{db_user.company_slug.capitalize()} (Principal)", # Default alias
+                 company_slug=db_user.company_slug,
+                 job_group=db_user.job_group,
+                 salary_level=db_user.salary_level,
+                 contract_percentage=100, # Default
+                 contract_type=db_user.contract_type or "Fijo",
+                 is_active=True # This is the first and only profile
+             )
+             db.add(initial_profile)
+             db.commit()
+             print(f"   ✅ Initial Profile Created: ID {initial_profile.id}")
+
         return db_user
     except Exception as e:
         print(f"CRITICAL ERROR creating user: {e}")
         import traceback
         traceback.print_exc()
+        db.rollback()
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
 @router.post("/login")
