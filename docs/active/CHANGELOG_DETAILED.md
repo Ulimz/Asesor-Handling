@@ -630,3 +630,11 @@
 - **UI Tweaks**: Eliminado el botón "Añadir Nuevo Perfil" del `ProfileSwitcher` del header.
     - **Motivo**: Limpieza de UI solicitada. La gestión ahora se centraliza en la página de Configuración.
 - **Despliegue**: Push a `main` (Fix Onboarding & UI).
+
+### [16:15] 🧠 Improvement: RAG Comparativo (Sueldos entre Niveles)
+- **Problema**: La IA no sabía responder "¿Diferencia salarial entre nivel 1 y 2?" porque solo recibía el dato de UN solo nivel (el del usuario).
+- **Solución Inteligente**: 
+    - Implementado `get_group_salary_table_markdown` en `CalculatorService`.
+    - Ahora el RAG inyecta **TODA LA TABLA** del Grupo Profesional del usuario (todos los niveles) además de su fila específica.
+- **Beneficio**: El usuario puede preguntar "cuánto cobra mi jefe (nivel superior)" o "cuánto ganaba antes (nivel inferior)" y la IA tiene el dato exacto SQL para responder.
+

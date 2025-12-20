@@ -75,12 +75,23 @@ def chat_with_docs(
             calc_service = CalculatorService(db)
             
             # Inject data for the SPECIFIC user profile
-            structured_data_context = calc_service.get_formatted_salary_table(
+            # AND ALSO the full GROUP table for comparisons
+            
+            # 1. User specific table (High precision for "Mi sueldo")
+            user_table = calc_service.get_formatted_salary_table(
                 request.company_slug, 
                 group, 
                 level
             )
-            print(f"   💰 Injecting SQL Salary Table for {request.company_slug} / {group} / {level}")
+            
+            # 2. Group table (Context for "Diferencia nivel 1 y 2")
+            group_table = calc_service.get_group_salary_table_markdown(
+                request.company_slug,
+                group
+            )
+            
+            structured_data_context = f"{user_table}\n\n{group_table}"
+            print(f"   💰 Injecting SQL Salary Tables (User + Full Group) for {request.company_slug}")
             
         except Exception as e:
             print(f"Failed to inject structured data: {e}")

@@ -383,3 +383,85 @@ class CalculatorService:
             
         md += "\n*Estos datos provienen directamente de la calculadora y TIENEN PRIORIDAD sobre cualquier documento general.*"
         return md
+
+    def get_group_salary_table_markdown(self, company_slug: str, group: str) -> str:
+        """
+        Returns a Markdown table containing salary data for ALL levels in the specified group.
+        This enables the RAG to perform comparisons between levels (e.g. "Level 1 vs Level 3").
+        """
+        # MAPPING FIX: Sector Companies use 'convenio-sector'
+        target_slug = company_slug
+        if company_slug in SECTOR_COMPANIES:
+            target_slug = "convenio-sector"
+            
+        print(f"📊 Fetching GROUP table for {target_slug} / {group}")
+
+        # Fetch all levels for this group
+        # EasyJet Exception: Group is part of Level Name in DB? 
+        # No, in DB EasyJet has: Group="Servicios Auxiliares", Level="Agente de Rampa - Nivel 3"
+        # So filtering by Group should work fine.
+        
+        rows = self.db.query(SalaryTable).filter(
+            SalaryTable.company_id == target_slug,
+            SalaryTable.group == group
+        ).order_by(SalaryTable.level, SalaryTable.year.desc()).all()
+        
+        if not rows:
+            return ""
+
+        # Organize by Level -> Concept -> Amount
+        data = {}
+        concepts = set()
+        
+        for row in rows:
+            lvl = row.level
+            if lvl not in data:
+                data[lvl] = {}
+            # Keep only the latest year if duplicates exist (handled by order_by, but dict overwrites sequentially if multiple years, we want latest first... wait, list is ordered by year desc, so first one is latest)
+            # Actually if we iterate, we might overwrite with older years if we don't check.
+            # Let's simple check if concept exists.
+            if row.concept not in data[lvl]:
+                data[lvl][row.concept] = row.amount
+                concepts.add(row.concept)
+
+        if not data:
+            return ""
+            
+        # Prioritize Key Concepts for width management
+        priority_concepts = ["SALARIO_BASE_ANUAL", "SALARIO_BASE_MENSUAL", "PLUS_NOCTURNIDAD", "HORA_EXTRA"]
+        sorted_concepts = sorted(list(concepts))
+        
+        # Move priority to front
+        final_columns = []
+        for p in priority_concepts:
+            if p in sorted_concepts:
+                final_columns.append(p)
+                sorted_concepts.remove(p)
+        final_columns.extend(sorted_concepts)
+        
+        # Limit columns if too many (to prevent token overflow)
+        if len(final_columns) > 8:
+             final_columns = final_columns[:8]
+
+        # Build Markdown
+        md = f"""
+### 📊 TABLA SALARIAL COMPLETA: {group.upper()} (2025)
+Esta tabla contiene los valores oficiales para TODOS los niveles del grupo {group}. Úsala para comparaciones.
+
+| Nivel | {' | '.join(final_columns)} |
+| :--- | {' | '.join([':---'] * len(final_columns))} |
+"""
+        # Sort levels naturally if possible, or alphabetically
+        for level_name in sorted(data.keys()):
+            row_str = f"| **{level_name}**"
+            for col in final_columns:
+                val = data[level_name].get(col, 0.0)
+                if val == 0:
+                     row_str += " | -"
+                else:
+                     row_str += f" | {val:,.2f}€"
+            row_str += " |"
+            md += row_str + "\n"
+
+        return md
+
