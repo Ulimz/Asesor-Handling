@@ -9,7 +9,7 @@
         {
             "name": "Administrativos",
             "levels": [
-                "Nivel entrada",
+                "Nivel 1",
                 "Nivel 2",
                 "Nivel 3",
                 "Nivel 4",
@@ -42,7 +42,7 @@
         {
             "name": "Servicios Auxiliares",
             "levels": [
-                "Nivel entrada",
+                "Nivel 1",
                 "Nivel 2",
                 "Nivel 3",
                 "Nivel 4",
@@ -75,7 +75,7 @@
         {
             "name": "Técnicos Gestores",
             "levels": [
-                "Nivel entrada",
+                "Nivel 1",
                 "Nivel 2",
                 "Nivel 3",
                 "Nivel 4",
@@ -113,7 +113,7 @@
                 "is_proportional": true,
                 "level_values": {
                     "Técnicos Gestores": {
-                        "Nivel entrada": 28741.86,
+                        "Nivel 1": 28741.86,
                         "Nivel 2": 28798.05,
                         "Nivel 3": 29657.79,
                         "Nivel 4": 30250.95,
@@ -122,7 +122,7 @@
                         "Nivel 7": 33360.98
                     },
                     "Administrativos": {
-                        "Nivel entrada": 18816.45,
+                        "Nivel 1": 18816.45,
                         "Nivel 2": 22283.49,
                         "Nivel 3": 22953.50,
                         "Nivel 4": 23412.57,
@@ -131,7 +131,7 @@
                         "Nivel 7": 25819.57
                     },
                     "Servicios Auxiliares": {
-                        "Nivel entrada": 18633.14,
+                        "Nivel 1": 18633.14,
                         "Nivel 2": 22066.61,
                         "Nivel 3": 22730.09,
                         "Nivel 4": 23184.70,
@@ -271,7 +271,7 @@
                 "is_proportional": false,
                 "level_values": {
                     "Técnicos Gestores": {
-                        "Nivel entrada": 29.38,
+                        "Nivel 1": 29.38,
                         "Nivel 2": 29.44,
                         "Nivel 3": 30.32,
                         "Nivel 4": 30.92,
@@ -280,7 +280,7 @@
                         "Nivel 7": 34.10
                     },
                     "Administrativos": {
-                        "Nivel entrada": 19.23,
+                        "Nivel 1": 19.23,
                         "Nivel 2": 22.78,
                         "Nivel 3": 23.47,
                         "Nivel 4": 23.93,
@@ -289,7 +289,7 @@
                         "Nivel 7": 26.39
                     },
                     "Servicios Auxiliares": {
-                        "Nivel entrada": 19.05,
+                        "Nivel 1": 19.05,
                         "Nivel 2": 22.56,
                         "Nivel 3": 23.24,
                         "Nivel 4": 23.70,
@@ -307,7 +307,7 @@
                 "is_proportional": false,
                 "level_values": {
                     "Técnicos Gestores": {
-                        "Nivel entrada": 29.38,
+                        "Nivel 1": 29.38,
                         "Nivel 2": 29.44,
                         "Nivel 3": 30.32,
                         "Nivel 4": 30.92,
@@ -316,7 +316,7 @@
                         "Nivel 7": 34.10
                     },
                     "Administrativos": {
-                        "Nivel entrada": 19.23,
+                        "Nivel 1": 19.23,
                         "Nivel 2": 22.78,
                         "Nivel 3": 23.47,
                         "Nivel 4": 23.93,
@@ -325,7 +325,7 @@
                         "Nivel 7": 26.39
                     },
                     "Servicios Auxiliares": {
-                        "Nivel entrada": 19.05,
+                        "Nivel 1": 19.05,
                         "Nivel 2": 22.56,
                         "Nivel 3": 23.24,
                         "Nivel 4": 23.70,
@@ -343,7 +343,7 @@
                 "is_proportional": false,
                 "level_values": {
                     "Técnicos Gestores": {
-                        "Nivel entrada": 25.18,
+                        "Nivel 1": 25.18,
                         "Nivel 2": 25.23,
                         "Nivel 3": 25.99,
                         "Nivel 4": 26.51,
@@ -352,7 +352,7 @@
                         "Nivel 7": 29.23
                     },
                     "Administrativos": {
-                        "Nivel entrada": 16.48,
+                        "Nivel 1": 16.48,
                         "Nivel 2": 19.52,
                         "Nivel 3": 20.12,
                         "Nivel 4": 20.52,
@@ -361,7 +361,7 @@
                         "Nivel 7": 22.62
                     },
                     "Servicios Auxiliares": {
-                        "Nivel entrada": 16.32,
+                        "Nivel 1": 16.32,
                         "Nivel 2": 19.33,
                         "Nivel 3": 19.92,
                         "Nivel 4": 20.31,
