@@ -1,3 +1,12 @@
+### [2025-12-21] RAG System Upgrade v1.2 "Enterprise JSON Ready"
+- **PROMPT UPDATE**: Implementado nuevo prompt maestro en `prompts.py` optimizado para Gemini + JSON.
+  - Prioridad absoluta a datos estructurados `<tabla_salarial>` sobre texto.
+  - "Candado Salarial": Prohibición estricta de búsqueda web si existen tablas internas.
+  - Formato de respuesta con auditoría de cálculo.
+- **RAG ENGINE**: Actualizada inyección XML en `rag_engine.py`.
+  - Ahora las tablas salariales se inyectan con atributos explícitos: `<tabla_salarial año="2025" grupo="..." nivel="...">`.
+  - Esto garantiza que el modelo conozca el contexto exacto del dato estructurado.
+- **ESTABILIDAD**: Validación de sintaxis Python exitosa en módulos críticos.
 # 📝 Registro Detallado de Cambios (Granular)
 
 **Propósito**: Rastrear "al milímetro" cada cambio realizado en el proyecto (código, documentación, estructura) para mantener una memoria exacta del estado del sistema.
@@ -646,6 +655,27 @@
 - **Consecuencia**: El usuario entraba y veía "Sin Perfil" a pesar de haber rellenado todo.
 - **Solución**: Modificado `POST /users/` para que, si recibe datos laborales, **automáticamente cree y active el primer Perfil**.
 - **Resultado**: El usuario recién registrado entra directo con su perfil listo y activo.
+
+### [17:45] 🧠 RAG: Inyección de Tablas Completas (Contexto Global)
+- **Problema**: La IA fallaba en preguntas comparativas ("Difiencia entre Nivel 1 y 2") porque solo veía el nivel del usuario.
+- **Solución Inteligente**: 
+    - Actualizado `CalculatorService` para generar tablas Markdown con **TODOS** los niveles del grupo.
+    - Eliminado límite de columnas para mostrar todos los conceptos (Salario Base, Pluses, Variables).
+    - Inyección dinámica en `search_router.py`: Ahora el prompt recibe la "Tabla de Usuario" (precisión) Y la "Tabla de Grupo" (contexto).
+- **Verificación**: Script `test_rag_comparison.py` confirma que la tabla generada incluye múltiples niveles y el concepto "SALARIO_BASE".
+
+### [18:00] 🛡️ UX/Logic: Prevención de Perfiles Duplicados
+- **Problema**: El sistema permitía crear infinitos perfiles para la misma empresa ("Azul Handling", "Azul Handling"...).
+- **Solución**:
+    - Implementada validación en `POST /users/me/profiles` (`router.py`).
+    - Consulta previa a DB para verificar existencia de `company_slug` para ese `user_id`.
+    - **Rechazo Activo**: Retorna `400 Bad Request` con mensaje explicativo si ya existe.
+- **Resultado**: Base de datos más limpia y menos confusión para el usuario.
+
+### [18:15] 🔍 Análisis RAG: "Chapa" vs Datos
+- **Hallazgo**: La IA tiende a explicar fórmulas legales en lugar de dar el dato numérico directo ya inyectado.
+- **Causa**: Prompt contradictorio. Ordena "actuar como experto" y "realizar cálculos explícitos", lo que choca con la disponibilidad del dato pre-calculado en la tabla.
+- **Adelanto**: Se ha planificado la refactorización de Prompts para mañana (Intención `SALARY_DATA`).
 
 
 

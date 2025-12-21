@@ -377,12 +377,12 @@ Pregunta reescrita:"""
 
         return rewritten
 
-    def generate_answer(self, query: str, context_chunks: list, intent: IntentType = IntentType.GENERAL, user_context: dict = None, structured_data: str = None, db: Session = None):
+    def generate_answer(self, query: str, context_chunks: list, intent: IntentType = IntentType.GENERAL, user_context: dict = None, structured_data: str = None, history: list = [], db: Session = None):
         """
         Generate answer using Gemini based on provided context and intent
         """
         if not self.gen_model:
-            return "Error: GOOGLE_API_KEY no configurada en el servidor."
+            return {"text": "Error: GOOGLE_API_KEY no configurada en el servidor.", "audit": None}
 
         # --- KINSHIP TABLE INJECTION ---
         # If query contains family keywords, inject the official table
@@ -396,15 +396,33 @@ Pregunta reescrita:"""
             kinship_context = get_kinship_table_markdown()
             print("👨‍👩‍👧‍👦 Family intent detected: Injecting Kinship Table into context")
             
-        context_text = "\n\n---\n\n".join([f"**{c.get('article_ref', 'Documento')}**\n{c['content']}" for c in context_chunks])
+        # Build XML sections for RAG documents
+        xml_chunks = []
+        for c in context_chunks:
+             # Basic cleanup to avoid breaking XML
+             safe_content = c['content'].replace('<', '&lt;').replace('>', '&gt;')
+             xml_chunks.append(f"<documento source='{c.get('article_ref', 'Documento')}'>\n{safe_content}\n</documento>")
         
-        # Prepend Structured Data (Highest Priority)
+        docs_xml = "\n".join(xml_chunks)
+        
+        # Assemble <contexto_interno>
+        context_text = "<contexto_interno>\n"
+        
         if structured_data:
-             context_text = f"{structured_data}\n\n{context_text}"
-        
-        # Prepend Kinship Table if relevant
+             # Extract metadata for XML attributes
+             # Default to 2025 as dynamic retrieval is complex without deeper refactoring
+             # Ideally this comes from the CalculatorService, but user_context is a good proxy for intent.
+             safe_year = "2025" 
+             safe_group = user_context.get('job_group', 'Generico') if user_context else 'Generico'
+             safe_level = user_context.get('salary_level', 'Generico') if user_context else 'Generico'
+             
+             context_text += f"<tabla_salarial año='{safe_year}' grupo='{safe_group}' nivel='{safe_level}'>\n{structured_data}\n</tabla_salarial>\n"
+
         if kinship_context:
-            context_text = f"{kinship_context}\n\n{context_text}"
+            context_text += f"<tabla_parentesco>\n{kinship_context}\n</tabla_parentesco>\n"
+            
+        context_text += f"<documentos_rag>\n{docs_xml}\n</documentos_rag>\n"
+        context_text += "</contexto_interno>"
 
         
         # Truncate if context is too long (Gemini has token limits)
@@ -431,32 +449,50 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
                 Usa el valor exacto de la tabla para el Nivel {user_context.get('salary_level')} y Grupo {user_context.get('job_group')} del usuario.
                 """
         
-        final_prompt = f"""{system_prompt}
+        # --- HISTORY FORMATTING ---
+        history_text = ""
+        if history:
+            # Take last 6 messages to update context
+            recent_history = history[-6:] 
+            history_text = "HISTORIAL DE CONVERSACIÓN RECIENTE:\n"
+            for msg in recent_history:
+                role = "User" if msg.get('role') == 'user' else "Assistant"
+                content = msg.get('content', '').replace('\n', ' ')
+                history_text += f"- {role}: {content}\n"
+            history_text += "\n"
 
-{user_info}
+        # Assemble <contexto_interno>
+        # Truncate if context is too long (Gemini has token limits)
+        if len(context_text) > MAX_CONTEXT_CHARS:
+            print(f"[WARN] Context truncated from {len(context_text)} to {MAX_CONTEXT_CHARS} chars")
+            context_text = context_text[:MAX_CONTEXT_CHARS] + "\n\n...[contexto truncado por longitud]"
+        
+        # Select Prompt Template based on Intent
+        system_prompt = PROMPT_TEMPLATES.get(intent, PROMPT_TEMPLATES[IntentType.GENERAL])
+        
+        # Inject User Context if available
+        user_info = ""
+        if user_context:
+            user_info = f"""
+DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
+- Nombre: {user_context.get('preferred_name', 'Usuario')}
+- Grupo Laboral: {user_context.get('job_group', 'No especificado')}
+- Nivel Salarial: {user_context.get('salary_level', 'No especificado')}
+- Tipo Contrato: {user_context.get('contract_type', 'No especificado')}
 
-        ADVERTENCIA DE SEGURIDAD Y PRIVACIDAD (PII):
-        1. Este sistema procesa consultas de usuarios reales. Si en el CONTEXTO o la PREGUNTA aparecen nombres reales, DNI, números de teléfono o datos personales identificables, IGNÓRALOS y NO los incluyas en la respuesta.
-        2. Si el usuario te da su propio nombre, puedes usarlo para dirigirte a él, pero NO almacenes ni repitas otros datos sensibles.
-        3. Mantén la respuesta centrada en la normativa laboral.
-
-CONTEXTO PROPORCIONADO:
-{context_text}
-
-PREGUNTA:
-{query}
-
-RESPUESTA (Si es un dato de tabla, dalo directmente sin fórmulas):"""
-        try:
-            # Lógica Híbrida REAL:
-            # Siempre pasamos el contexto local, pero habilitamos la herramienta de búsqueda
-            # para que el modelo decida si necesita complementar la información.
-            
-            # Prompt más flexible que permite usar búsqueda externa HÍBRIDA
-            final_prompt = f"""
+                REGLA DE ORO DE DINERO (PRIORIDAD MÁXIMA): 
+                Los datos bajo el título 'DATOS OFICIALES DE TABLA SALARIAL' son 100% CORRECTOS y provienen de la calculadora oficial.
+                SÍ hay cualquier contradicción entre el texto de los artículos (Convenio) y los valores de la tabla oficial, PREVALECE SIEMPRE LA TABLA.
+                Usa el valor exacto de la tabla para el Nivel {user_context.get('salary_level')} y Grupo {user_context.get('job_group')} del usuario.
+                """
+        
+        # Prompt más flexible que permite usar búsqueda externa HÍBRIDA
+        final_prompt = f"""
             {system_prompt}
 
             {user_info}
+            
+            {history_text}
             
             CONTEXTO INTERNO (Prioridad MÁXIMA - "La Biblia"):
             {context_text}
@@ -490,7 +526,7 @@ RESPUESTA (Si es un dato de tabla, dalo directmente sin fórmulas):"""
                         }],
                         "tools": [
                             {"google_search": {}},
-                            {"function_declarations": [self.calculator_tool_schema]}
+                            # {"function_declarations": [self.calculator_tool_schema]}
                         ],
                         "safetySettings": [
                             {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_ONLY_HIGH"},
@@ -514,10 +550,58 @@ RESPUESTA (Si es un dato de tabla, dalo directmente sin fórmulas):"""
                                 # Append a small indicator if external search was used
                                 text_response += "\n\n(ℹ️ Información complementada con búsqueda externa)"
                             
-                            return text_response
+                            # --- AUDIT PHASE (Elite Upgrade) ---
+                            # 1. Audit the response
+                            from app.services.auditor_service import auditor_service
+                            from app.utils.audit_logger import log_audit_event
                             
-                        except (KeyError, IndexError):
-                             # CHECK FOR FUNCTION CALL
+                            print("🕵️ Auditing response...")
+                            audit_result = auditor_service.audit_response(
+                                query=query,
+                                response_text=text_response,
+                                context_text=context_text
+                            )
+                            
+                            is_approved = audit_result.get("aprobado", False)
+                            risk_level = audit_result.get("nivel_riesgo", "UNKNOWN")
+                            
+                            # 2. Log it securely
+                            log_audit_event(
+                                query=query,
+                                intent=intent,
+                                response=text_response,
+                                context=context_text,
+                                auditor_result=audit_result
+                            )
+                            
+                            # 3. Enforce Block (Safety Guard)
+                            if not is_approved and risk_level == "ALTO":
+                                print(f"🛑 REJECTED by Auditor: {audit_result.get('razon')}")
+                                return {
+                                    "text": "Lo siento, mi auditor interno ha bloqueado esta respuesta por seguridad jurídica (Posible inexactitud detectada). Por favor, reformula la pregunta o contacta con RRHH.",
+                                    "audit": {"verified": False, "risk_level": "ALTO", "reason": audit_result.get("razon", "Blocked")}
+                                }
+                            
+                            # Return structured object
+                            return {
+                                "text": text_response,
+                                "audit": {
+                                    "verified": is_approved,
+                                    "risk_level": risk_level,
+                                    "reason": audit_result.get("razon", "OK")
+                                }
+                            }
+                            
+                        except (KeyError, IndexError) as e:
+                             print(f"Error parsing Gemini response: {e}")
+                             return {"text": "Error interno al procesar la respuesta.", "audit": None}
+                             
+                except Exception as e:
+                     print(f"API Error: {e}")
+                     return {"text": "Error de conexión con el servicio de IA.", "audit": None}
+            
+            return {"text": "No se ha configurado la API Key de Google.", "audit": None}
+
                              try:
                                  # Gemini 1.5/2.0 REST structure for function call
                                  candidates = result.get('candidates', [])

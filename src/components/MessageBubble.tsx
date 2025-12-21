@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, BookOpen, Sparkles, User, ChevronDown, ChevronUp } from 'lucide-react';
+import { Bot, BookOpen, Sparkles, User, ChevronDown, ChevronUp, ShieldCheck } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+
+import { AuditStatus } from '@/lib/ai-service';
 
 interface KnowledgeItem {
     id: string;
@@ -15,9 +17,10 @@ interface MessageBubbleProps {
     content: string;
     role: 'user' | 'assistant';
     sources?: KnowledgeItem[];
+    audit?: AuditStatus;
 }
 
-export default function MessageBubble({ content, role, sources }: MessageBubbleProps) {
+export default function MessageBubble({ content, role, sources, audit }: MessageBubbleProps) {
     const isUser = role === 'user';
     const [showSources, setShowSources] = useState(false);
 
@@ -113,6 +116,19 @@ export default function MessageBubble({ content, role, sources }: MessageBubbleP
                                 )}
                             </AnimatePresence>
                         </div>
+                    )}
+                    {/* Auditor Shield Badge */}
+                    {!isUser && audit && audit.verified && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="mt-2 flex items-center gap-1.5 w-fit bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full"
+                        >
+                            <ShieldCheck size={14} className="text-emerald-500" />
+                            <span className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wide">
+                                Verificado Legalmente
+                            </span>
+                        </motion.div>
                     )}
                 </div>
             </div>

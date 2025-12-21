@@ -1,7 +1,19 @@
-import { CompanyId } from '@/data/knowledge-base';
+import { CompanyId, KnowledgeItem } from '@/data/knowledge-base';
 import { Article } from '@/data/documents/types';
 import { API_URL } from '@/config/api';
 
+export interface AuditStatus {
+    verified: boolean;
+    risk_level: string;
+    reason: string;
+}
+
+export interface RefinedResponse {
+    answer: string;
+    sources: KnowledgeItem[];
+    followUpQuestions: string[];
+    audit?: AuditStatus;
+}
 interface SearchResult {
     answer: string;
     sources: { category: string; topic: string; content: string }[];
@@ -38,7 +50,7 @@ export async function askAI(messages: Message[], companyId?: CompanyId, userCont
             content: m.content
         }));
 
-        const res = await fetch(`${API_URL}/api/articulos/search/chat`, {
+        const res = await fetch(`${API_URL} /api/articulos / search / chat`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -52,7 +64,7 @@ export async function askAI(messages: Message[], companyId?: CompanyId, userCont
         });
 
         if (!res.ok) {
-            throw new Error(`Error del servidor: ${res.statusText}`);
+            throw new Error(`Error del servidor: ${res.statusText} `);
         }
 
         const data = await res.json();

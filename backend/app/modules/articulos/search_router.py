@@ -22,9 +22,15 @@ class ChatRequest(BaseModel):
     history: List[dict] = []
     user_context: Optional[dict] = None
 
+class AuditStatus(BaseModel):
+    verified: bool
+    risk_level: str
+    reason: str
+
 class ChatResponse(BaseModel):
     answer: str
     sources: List[dict]
+    audit: Optional[AuditStatus] = None
 
 @router.get("/")
 def search_articulos(
@@ -110,18 +116,29 @@ def chat_with_docs(
     # 1. Search relevant chunks (increased limit to capture tables)
     results = rag_engine.search(query=final_query, company_slug=target_slug, db=db, limit=12)
     
-    # 2. Generate answer using Gemini with specific Intent
-    # (Removed early return: if no results, we still    # 2. Generate answer using Gemini with specific Intent
-    answer = rag_engine.generate_answer(
+    # 4. Generate Answer (RAG)
+    # Returns dict {"text": str, "audit": dict}
+    gen_result = rag_engine.generate_answer(
         query=request.query, 
         context_chunks=results, 
         intent=intent,
-        user_context=request.user_context,
+        user_context=request.user_context, # Pass user_context here
         structured_data=structured_data_context,
+        history=request.history,
         db=db
     )
     
+    # Handle legacy string return just in case
+    if isinstance(gen_result, str):
+        final_answer = gen_result
+        audit_data = None
+    else:
+        final_answer = gen_result.get("text", "Error generanda respuesta")
+        audit_data = gen_result.get("audit")
+
     return {
-        "answer": answer,
-        "sources": results
+        "answer": final_answer,
+        "sources": results,
+        "audit": audit_data
     }
+
