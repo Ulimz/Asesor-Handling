@@ -15,6 +15,7 @@ from app.constants import (
 )
 from app.prompts import PROMPT_TEMPLATES, IntentType
 from app.services.calculator_service import CalculatorService
+from app.services.query_expander import QueryExpander
 from app.schemas.salary import CalculationRequest
 from sqlalchemy.orm import Session # Typed typing
 
@@ -22,6 +23,9 @@ class RagEngine:
     def __init__(self):
         # Lazy loading: model will be loaded on first use
         self._model = None
+        
+        # Initialize Query Expander (Capa 1: Hybrid RAG)
+        self.query_expander = QueryExpander()
         
         # Initialize Gemini (free tier) if key is present
         api_key = os.getenv("GOOGLE_API_KEY")
@@ -127,8 +131,21 @@ class RagEngine:
                 })
             return formatted_results
         
+        # ===== CAPA 1: QUERY EXPANSION (Hybrid RAG) =====
+        # Expand query to legal keywords using Gemini Flash
+        expansion = self.query_expander.expand(query, company_slug)
+        expanded_query = self.query_expander.get_expanded_query_text(expansion)
+        
+        print(f"🔍 Query Expansion:")
+        print(f"   Original: '{query}'")
+        print(f"   Intent: {expansion['intent']}")
+        print(f"   Expanded: '{expanded_query}'")
+        
+        # Use expanded query for embedding generation
+        search_text = expanded_query if expanded_query else query
+        
         # Generate query embedding
-        query_embedding = self.generate_embedding(query)
+        query_embedding = self.generate_embedding(search_text)
         
         # PgVector cosine similarity search with eager loading
         # Using <=> operator for cosine distance (lower is better)
