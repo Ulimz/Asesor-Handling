@@ -610,12 +610,10 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
                              print(f"Error parsing Gemini response: {e}")
                              return {"text": "Error interno al procesar la respuesta.", "audit": None}
                              
-                except Exception as e:
-                     print(f"API Error: {e}")
-                     return {"text": "Error de conexión con el servicio de IA.", "audit": None}
-            
-            return {"text": "No se ha configurado la API Key de Google.", "audit": None}
-
-            return f"Error generando respuesta: {str(e)}"
+            except Exception as e:
+                print(f"API Error: {e}")
+                return {"text": "Error de conexión con el servicio de IA.", "audit": None}
+        
+        return {"text": "No se ha configurado la API Key de Google.", "audit": None}
 
 rag_engine = RagEngine()
