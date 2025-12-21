@@ -867,7 +867,21 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
         result: CalculationResult,
     ) -> str:
         """Formatea la respuesta del cálculo."""
+        
+        # MEJORA 4: Formato diferente para consultas simples
+        if data.is_simple_query:
+            return f"""El {data.level_destination_label} cobra **{result.level_destination_value:,.2f}€** anuales.
 
+📊 **Detalle:**
+- Salario base anual: {result.level_destination_value:,.2f}€
+- Salario mensual (14 pagas): {(result.level_destination_value / 14):,.2f}€
+
+Campo: {result.field_name}
+Empresa: {data.company}
+Año: {data.year}
+"""
+        
+        # Formato para comparaciones
         return f"""La diferencia salarial es de **{result.difference:,.2f}€** anuales.
 
 📊 **Detalle:**
