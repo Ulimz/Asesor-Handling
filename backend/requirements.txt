@@ -19,3 +19,4 @@ lxml
 tenacity
 passlib[argon2]
 argon2-cffi
+requests
