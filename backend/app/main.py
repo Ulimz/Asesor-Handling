@@ -22,6 +22,10 @@ from app.modules.usuarios import models as user_models
 # Crear tablas en la base de datos
 Base.metadata.create_all(bind=engine)
 
+# Auto-migration: Check and patch missing columns (Schema Drift)
+from app.db.schema_patch import patch_database
+patch_database()
+
 app = FastAPI(title="Asistente Handling API", description="Backend legal modular para el sector handling aeroportuario español.")
 
 # Configuración CORS segura

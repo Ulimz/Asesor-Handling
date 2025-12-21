@@ -54,6 +54,7 @@ class SalaryTable(Base):
     level = Column(String, index=True) # "Nivel A", "Nivel 1"
     concept = Column(String) # "Salario Base", "Plus Convenio", "Plus Transporte"
     amount = Column(Float) # 1500.00
+    variable_type = Column(String, nullable=True) # "hour", "day", "month"
 
 class SalaryConceptDefinition(Base):
     """Definición de conceptos variables dinámicos (metadata)"""
