@@ -50,7 +50,7 @@ export async function askAI(messages: Message[], companyId?: CompanyId, userCont
             content: m.content
         }));
 
-        const res = await fetch(`${API_URL} /api/articulos / search / chat`, {
+        const res = await fetch(`${API_URL}/api/articulos/search/chat`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
