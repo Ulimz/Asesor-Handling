@@ -90,6 +90,11 @@ class LegalAnchors:
                     (LegalDocument.company.ilike('general'))
                 )
             
+            # 4. Para SALARY, priorizar chunks grandes (tablas suelen ser grandes)
+            if intent == "SALARY":
+                from sqlalchemy import func
+                query = query.order_by(func.length(DocumentChunk.content).desc())
+            
             anchors = query.limit(limit).all()
 
             if anchors:
