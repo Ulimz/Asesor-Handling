@@ -7,6 +7,7 @@ import google.generativeai as genai
 import os
 import requests
 import json
+from datetime import datetime
 from app.constants import (
     EMBEDDING_MODEL_NAME,
     EMBEDDING_DIMENSION,
@@ -17,6 +18,7 @@ from app.prompts import PROMPT_TEMPLATES, IntentType
 from app.services.calculator_service import CalculatorService
 from app.services.query_expander import QueryExpander
 from app.services.legal_anchors import LegalAnchors
+from app.services.hybrid_calculator import HybridSalaryCalculator, SalaryData, CalculationResult
 from app.schemas.salary import CalculationRequest
 from sqlalchemy.orm import Session # Typed typing
 
@@ -37,8 +39,14 @@ class RagEngine:
         if api_key:
             genai.configure(api_key=api_key)
             # Use 2.0-flash and direct REST call for grounding to bypass SDK tool validation issues
-            # Use 2.0-flash and direct REST call for grounding to bypass SDK tool validation issues
             self.gen_model = genai.GenerativeModel('gemini-2.0-flash')
+            
+            # ✅ FASE 2: Initialize Hybrid Calculator
+            self.hybrid_calculator = HybridSalaryCalculator(
+                gemini_model=genai.GenerativeModel('gemini-2.0-flash-exp')
+            )
+        else:
+            self.hybrid_calculator = None
 
     # --- TOOL DEFINITIONS ---
     @property
@@ -666,5 +674,102 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
                 return {"text": "Error de conexión con el servicio de IA.", "audit": None}
         
         return {"text": "No se ha configurado la API Key de Google.", "audit": None}
+    
+    # ✅ FASE 2: Métodos de Calculadora Híbrida
+    
+    def _handle_calculation(
+        self,
+        query: str,
+        expansion: dict,
+        anchor_results: list,
+        company_slug: str,
+    ) -> dict:
+        """Maneja queries de cálculo con calculadora híbrida."""
+        
+        if not self.hybrid_calculator:
+            logger.warning("Hybrid calculator not initialized")
+            return {"calculation": None}
+
+        if not anchor_results:
+            logger.warning("No hay tablas para calcular")
+            return {
+                "answer": "No encontré tablas salariales para realizar el cálculo.",
+                "sources": [],
+                "calculation": None,
+            }
+
+        table_chunk = anchor_results[0]
+
+        # Año: intentar leer del chunk, fallback al año actual
+        try:
+            chunk_year = table_chunk.chunk_metadata.get("year")
+            if isinstance(chunk_year, int):
+                year = chunk_year
+            else:
+                year = datetime.now().year
+        except Exception:
+            year = datetime.now().year
+
+        salary_data = self.hybrid_calculator.extract_salary_data(
+            table_content=table_chunk.content,
+            query=query,
+            company=company_slug or "general",
+            year=year,
+        )
+
+        if not salary_data:
+            logger.error("No se pudieron extraer datos de la tabla")
+            return {
+                "answer": "No pude extraer los datos necesarios de la tabla.",
+                "sources": [table_chunk],
+                "calculation": None,
+            }
+
+        result = self.hybrid_calculator.calculate(salary_data)
+
+        if not result:
+            logger.error("Error en cálculo")
+            return {
+                "answer": "Hubo un error al realizar el cálculo.",
+                "sources": [table_chunk],
+                "calculation": None,
+            }
+
+        if not self.hybrid_calculator.validate_result(salary_data, result):
+            logger.error("Validación falló")
+            return {
+                "answer": "El cálculo no pasó la validación de coherencia.",
+                "sources": [table_chunk],
+                "calculation": None,
+            }
+
+        answer = self._format_calculation_answer(salary_data, result)
+
+        return {
+            "answer": answer,
+            "sources": [table_chunk],
+            "calculation": result.to_dict(),
+        }
+
+    def _format_calculation_answer(
+        self,
+        data: SalaryData,
+        result: CalculationResult,
+    ) -> str:
+        """Formatea la respuesta del cálculo."""
+
+        return f"""La diferencia salarial es de **{result.difference:,.2f}€** anuales.
+
+📊 **Detalle:**
+- {data.level_origin_label}: {result.level_origin_value:,.2f}€/año
+- {data.level_destination_label}: {result.level_destination_value:,.2f}€/año
+- Diferencia: {result.difference:,.2f}€
+- Incremento: {result.percentage:.2f}%
+
+Campo comparado: {result.field_name}
+Empresa: {data.company}
+Año: {data.year}
+"""
+
 
 rag_engine = RagEngine()
