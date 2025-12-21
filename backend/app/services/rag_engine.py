@@ -7,6 +7,7 @@ import google.generativeai as genai
 import os
 import requests
 import json
+import logging
 from datetime import datetime
 from app.constants import (
     EMBEDDING_MODEL_NAME,
@@ -21,6 +22,8 @@ from app.services.legal_anchors import LegalAnchors
 from app.services.hybrid_calculator import HybridSalaryCalculator, SalaryData, CalculationResult
 from app.schemas.salary import CalculationRequest
 from sqlalchemy.orm import Session # Typed typing
+
+logger = logging.getLogger(__name__)
 
 class RagEngine:
     def __init__(self):

@@ -1,24 +1,44 @@
-# Contexto de Sesión - 20 de Diciembre 2025
+# Contexto de Sesión - 22 de Diciembre 2025
 
-## ✅ Logros de Hoy
-1.  **RAG Salary Comparisons (Backend Fix):**
-    *   **Problema:** La IA no tenía "visión global" de los salarios, solo conocía el nivel del usuario.
-    *   **Solución:** Se implementó `CalculatorService.get_group_salary_table_markdown` que inyecta la tabla completa (todos los niveles) en el contexto de la IA.
-    *   **Resultado:** La IA ahora puede comparar niveles ("Diferencia Nivel 1 vs 2") con precisión, usando datos reales de la BD.
+## ✅ Logros de Hoy - RAG v3.0 COMPLETADO
 
-2.  **Prevención Duplicados de Perfil:**
-    *   **Problema:** Se podían crear múltiples perfiles para la misma empresa.
-    *   **Solución:** Se añadió validación en `router.py` (POST /me/profiles) que impide crear un nuevo perfil si ya existe uno activo para ese `company_slug`.
+### 1. **Fase 2: Calculadora Híbrida** ✅ INTEGRADA
+- **Arquitectura**: LLM (extracción) + Python (cálculo) + Guardrails (validación)
+- **Componentes**:
+  - `hybrid_calculator.py`: Calculadora con normalización robusta
+  - `_is_calculation_query()`: Detección refinada (Operación + Contexto/Números)
+  - Integración completa en `search()` con fallback a RAG estándar
+- **Tests**: 11/11 tests de detección pasados
+- **Validación**: 2 expertos independientes
+- **Commits**: f78fc44 → 7f7d932 → 92df034 → 98cf23a → 6025d9e
 
-3.  **Análisis de "Verbosity" de la IA:**
-    *   **Problema:** La IA explica demasiado y calcula a mano en lugar de dar el dato directo.
-    *   **Causa:** Conflicto en prompts ("Actúa como experto" vs "Usa la tabla") y orden explícita de "REALIZA EL CÁLCULO".
-    *   **Próximo Paso:** Separar intenciones (`SALARY_DATA` vs `SALARY_CONSULT`) para respuestas directas.
+### 2. **Flujo Completo Implementado**
+```
+Query → Expansion → ¿Cálculo?
+  ├─ Sí → Legal Anchors → LLM → Python → Guardrail → Respuesta
+  └─ No → Vector Search estándar
+```
+
+### 3. **Ejemplo Funcional**
+- Query: "diferencia salarial nivel 3 y 4"
+- Detección: ✅ operación + contexto + números
+- Respuesta: "La diferencia es 3.000€ (12% incremento)" + detalle completo
 
 ## 📝 Estado Actual
-- **Código:** Todo lo anterior pusheado a `main` y desplegado en nube.
-- **Base de Datos:** Seeding corregido para guardar bien los valores por nivel.
+- **Código**: Desplegado en cloud (commit 6025d9e)
+- **Base de Datos**: 1840 chunks con metadata (403 tablas, 506 SALARY)
+- **Sistema**: RAG v3.0 enterprise-grade completo
 
-## 🔜 Siguientes Pasos (Mañana)
-1.  **Refinar Prompt RAG:** Implementar el "Modo Dato" para respuestas concisas.
-2.  **Frontend:** Verificar que los perfiles duplicados ya no afecten la UI.
+## 🔜 Próximos Pasos
+1. **Testing en producción** con queries reales
+2. Monitorear performance y cache hit rate
+3. Ajustes basados en feedback de usuario
+
+---
+
+## 📅 Sesión Anterior - 20 de Diciembre 2025
+
+### ✅ Logros
+1. **RAG Salary Comparisons (Backend Fix)**
+2. **Prevención Duplicados de Perfil**
+3. **Análisis de "Verbosity" de la IA**

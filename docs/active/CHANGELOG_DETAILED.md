@@ -1,3 +1,27 @@
+### [2025-12-22] RAG v3.0 - Fase 2: Calculadora Híbrida ✅ COMPLETADA E INTEGRADA
+- **HITO**: Sistema de cálculo híbrido (LLM + Python + Guardrails) completamente integrado en el flujo de búsqueda.
+- **ARQUITECTURA**: 
+  - LLM (Gemini Flash Exp): Extracción contextual de valores de tablas salariales
+  - Python: Cálculo matemático con precisión absoluta
+  - Guardrails: Validación matemática con tolerancia 0.01
+- **COMPONENTES IMPLEMENTADOS**:
+  1. `hybrid_calculator.py`: Calculadora con dataclasses, normalización robusta y validación
+  2. `_is_calculation_query()`: Detección refinada (Operación + Contexto/Números)
+  3. `_handle_calculation()`: Orquestación del flujo de cálculo
+  4. `_format_calculation_answer()`: Formato de respuesta detallado
+- **INTEGRACIÓN EN search()**:
+  - Detección automática de queries de cálculo
+  - Recuperación de tablas vía Legal Anchors
+  - Ejecución de cálculo híbrido
+  - Fallback a RAG estándar si falla
+- **TESTS**: 11/11 tests de detección pasados
+- **VALIDACIÓN**: 2 expertos independientes
+- **COMMITS**: f78fc44 (Fase 1) → 7f7d932 (Calculator) → 92df034 (Tests) → 98cf23a (Integration) → 6025d9e (Tests Integration)
+- **EJEMPLO**:
+  - Query: "diferencia salarial nivel 3 y 4"
+  - Respuesta: "La diferencia es 3.000€ (12% incremento)" con detalle completo
+- **ESTADO**: ✅ Desplegado en cloud, listo para testing en producción
+
 ### [2025-12-21] RAG System Upgrade v1.2 "Enterprise JSON Ready"
 - **PROMPT UPDATE**: Implementado nuevo prompt maestro en `prompts.py` optimizado para Gemini + JSON.
   - Prioridad absoluta a datos estructurados `<tabla_salarial>` sobre texto.
