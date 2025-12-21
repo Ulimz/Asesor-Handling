@@ -725,7 +725,16 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
         Detecta si la query requiere cálculo.
         
         Mejora del experto: Requiere (Operación) Y (Contexto o Números)
-        para evitar falsos positivos como "diferencia entre vacaciones y permisos"
+        Mejora adicional: Requiere mención de DOS niveles para comparación
+        
+        Ejemplos que SÍ detecta:
+        - "diferencia salarial nivel 3 y 4"
+        - "incremento entre nivel 2 y nivel 3"
+        - "comparar nivel 1 vs nivel 2"
+        
+        Ejemplos que NO detecta:
+        - "cuanto cobra nivel 4" (solo un nivel)
+        - "diferencia entre vacaciones" (sin contexto salarial)
         """
         q = query.lower()
         
@@ -733,7 +742,7 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
         op_keywords = [
             'diferencia', 'cuanto más', 'cuanto menos', 'cuánto más', 'cuánto menos',
             'incremento', 'aumento', 'reducción', 'comparar', 'vs', 'versus',
-            'calcular', 'calcula'
+            'calcular', 'calcula', 'entre'
         ]
         
         # 2. Keywords de contexto (Sobre qué calculamos)
@@ -742,13 +751,32 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
             'retribución', 'bruto', 'neto', 'anual', 'mensual'
         ]
         
-        # Lógica: Debe tener (Operación) Y (Contexto o Números explícitos)
+        # 3. Verificar que menciona DOS niveles/grupos
+        # Buscar patrones como "nivel 3 y 4", "nivel 3 y nivel 4", "grupo A y B"
+        import re
+        
+        # Patrones de comparación explícita
+        comparison_patterns = [
+            r'nivel\s+\d+\s+y\s+\d+',  # "nivel 3 y 4"
+            r'nivel\s+\d+\s+y\s+nivel\s+\d+',  # "nivel 3 y nivel 4"
+            r'grupo\s+\w+\s+y\s+\w+',  # "grupo A y B"
+            r'nivel\s+\d+\s+vs\s+\d+',  # "nivel 3 vs 4"
+            r'nivel\s+\d+\s+versus\s+\d+',  # "nivel 3 versus 4"
+            r'entre\s+nivel\s+\d+\s+y\s+\d+',  # "entre nivel 3 y 4"
+        ]
+        
+        has_comparison = any(re.search(pattern, q) for pattern in comparison_patterns)
+        
+        # Lógica: Debe tener (Operación) Y (Contexto o Números) Y (Comparación explícita)
         has_op = any(kw in q for kw in op_keywords)
         has_context = any(kw in q for kw in context_keywords)
         has_numbers = any(char.isdigit() for char in q)  # "nivel 3" tiene dígito
         
-        # Solo disparamos cálculo si hay intención de operar Y (contexto financiero O números)
-        return has_op and (has_context or has_numbers)
+        # Solo disparamos cálculo si hay:
+        # - Intención de operar
+        # - Contexto financiero O números
+        # - Comparación explícita de dos niveles
+        return has_op and (has_context or has_numbers) and has_comparison
     
     def _handle_calculation(
         self,
