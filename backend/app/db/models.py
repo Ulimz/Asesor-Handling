@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean, Float, JSON, Index
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import relationship, declarative_base
+from sqlalchemy.orm import relationship
 from pgvector.sqlalchemy import Vector
 from datetime import datetime
 
@@ -33,29 +33,30 @@ class DocumentChunk(Base):
     
     # ✅ FASE 1: Metadata Schema (Híbrido)
     doc_id = Column(String, nullable=True, index=True)  # ID lógico del documento
-    metadata = Column(JSONB, nullable=False, default=dict)  # Metadata estructurada
+    chunk_metadata = Column(JSONB, nullable=False, default=dict)  # Metadata estructurada
     
     # Relationship
     document = relationship("LegalDocument", back_populates="chunks")
     
     # ✅ ÍNDICES OPTIMIZADOS para búsqueda determinista
-    __table_args__ = (
-        # Índices individuales con casting
-        Index('idx_metadata_type', metadata['type'].astext),
-        Index('idx_metadata_company', metadata['company'].astext),
-        Index('idx_metadata_year', metadata['year'].astext.cast(Integer)),
-        
-        # Índice compuesto para queries frecuentes
-        Index(
-            'idx_company_intent_type',
-            metadata['company'].astext,
-            metadata['intent'],
-            metadata['type'].astext,
-        ),
-        
-        # Índice para version_hash
-        Index('idx_version_hash', metadata['version_hash'].astext),
-    )
+    # NOTA: Los índices se crearán DESPUÉS de la migración
+    # __table_args__ = (
+    #     # Índices individuales con casting
+    #     Index('idx_metadata_type', metadata['type'].astext),
+    #     Index('idx_metadata_company', metadata['company'].astext),
+    #     Index('idx_metadata_year', metadata['year'].astext.cast(Integer)),
+    #     
+    #     # Índice compuesto para queries frecuentes
+    #     Index(
+    #         'idx_company_intent_type',
+    #         metadata['company'].astext,
+    #         metadata['intent'],
+    #         metadata['type'].astext,
+    #     ),
+    #     
+    #     # Índice para version_hash
+    #     Index('idx_version_hash', metadata['version_hash'].astext),
+    # )
 
 class UserClaim(Base):
     """Reclamaciones generadas por usuarios"""

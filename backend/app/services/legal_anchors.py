@@ -30,11 +30,11 @@ class LegalAnchors:
         ✅ MEJORA: Ordenar por ID desc para obtener el más reciente
         """
         chunk = db.query(DocumentChunk).filter(
-            DocumentChunk.metadata['company'].astext == company
+            DocumentChunk.chunk_metadata['company'].astext == company
         ).order_by(DocumentChunk.id.desc()).first()
         
-        if chunk and chunk.metadata:
-            return chunk.metadata.get('version_hash', 'default')
+        if chunk and chunk.chunk_metadata:
+            return chunk.chunk_metadata.get('version_hash', 'default')
         
         return 'default'
     
@@ -84,51 +84,51 @@ class LegalAnchors:
         try:
             # ✅ DEL EXPERTO: Array contains
             query = db.query(DocumentChunk).filter(
-                DocumentChunk.metadata['intent'].contains([intent])
+                DocumentChunk.chunk_metadata['intent'].contains([intent])
             )
             
             # ✅ DEL EXPERTO: Filtros específicos por intent
             if intent == "SALARY":
                 query = query.filter(
-                    DocumentChunk.metadata['type'].astext == 'table'
+                    DocumentChunk.chunk_metadata['type'].astext == 'table'
                 )
             elif intent == "DISMISSAL":
                 query = query.filter(
-                    DocumentChunk.metadata['type'].astext == 'regulation'
+                    DocumentChunk.chunk_metadata['type'].astext == 'regulation'
                 )
             elif intent == "LEAVE":
                 query = query.filter(
-                    DocumentChunk.metadata['type'].astext.in_(['article', 'table'])
+                    DocumentChunk.chunk_metadata['type'].astext.in_(['article', 'table'])
                 )
             
             # ✅ DEL EXPERTO: Manejo correcto de company_slug None
             if company_slug:
                 query = query.filter(
                     or_(
-                        DocumentChunk.metadata['company'].astext == company_slug,
-                        DocumentChunk.metadata['company'].astext == 'general'
+                        DocumentChunk.chunk_metadata['company'].astext == company_slug,
+                        DocumentChunk.chunk_metadata['company'].astext == 'general'
                     )
                 )
             else:
                 query = query.filter(
-                    DocumentChunk.metadata['company'].astext == 'general'
+                    DocumentChunk.chunk_metadata['company'].astext == 'general'
                 )
             
             # ✅ DEL EXPERTO: Filtro por año
             query = query.filter(
-                DocumentChunk.metadata['year'].astext.cast(Integer) == target_year
+                DocumentChunk.chunk_metadata['year'].astext.cast(Integer) == target_year
             )
             
             # ✅ DEL EXPERTO: Filtro por version_hash
             query = query.filter(
-                DocumentChunk.metadata['version_hash'].astext == version
+                DocumentChunk.chunk_metadata['version_hash'].astext == version
             )
             
             # ✅ DEL EXPERTO: Boolean casting
             query = query.filter(
-                DocumentChunk.metadata['is_primary'].astext.cast(Boolean) == True
+                DocumentChunk.chunk_metadata['is_primary'].astext.cast(Boolean) == True
             ).order_by(
-                DocumentChunk.metadata['chunk_size'].astext.cast(Integer).desc()
+                DocumentChunk.chunk_metadata['chunk_size'].astext.cast(Integer).desc()
             )
             
             anchors = query.limit(limit).all()

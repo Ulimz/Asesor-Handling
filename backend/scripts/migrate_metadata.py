@@ -179,7 +179,7 @@ def main():
             metadata = migrate_chunk_metadata(chunk, chunk.document)
 
             # ✅ DEL EXPERTO: Actualizar columna Y metadata
-            chunk.metadata = metadata
+            chunk.chunk_metadata = metadata
             chunk.doc_id = metadata["doc_id"]
             
             migrated += 1
@@ -197,14 +197,14 @@ def main():
         logger.info("\n📊 Estadísticas por tipo:")
         for chunk_type in ['table', 'article', 'regulation', 'text']:
             count = db.query(DocumentChunk).filter(
-                DocumentChunk.metadata['type'].astext == chunk_type
+                DocumentChunk.chunk_metadata['type'].astext == chunk_type
             ).count()
             logger.info(f"   - {chunk_type}: {count}")
 
         logger.info("\n📊 Estadísticas por intent:")
         for intent in ['SALARY', 'LEAVE', 'DISMISSAL', 'GENERAL']:
             count = db.query(DocumentChunk).filter(
-                DocumentChunk.metadata['intent'].contains([intent])
+                DocumentChunk.chunk_metadata['intent'].contains([intent])
             ).count()
             logger.info(f"   - {intent}: {count}")
 
