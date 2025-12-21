@@ -16,6 +16,7 @@ from app.constants import (
 from app.prompts import PROMPT_TEMPLATES, IntentType
 from app.services.calculator_service import CalculatorService
 from app.services.query_expander import QueryExpander
+from app.services.legal_anchors import LegalAnchors
 from app.schemas.salary import CalculationRequest
 from sqlalchemy.orm import Session # Typed typing
 
@@ -26,6 +27,9 @@ class RagEngine:
         
         # Initialize Query Expander (Capa 1: Hybrid RAG)
         self.query_expander = QueryExpander()
+        
+        # Initialize Legal Anchors (Capa 2: Hybrid RAG)
+        self.legal_anchors = LegalAnchors()
         
         # Initialize Gemini (free tier) if key is present
         api_key = os.getenv("GOOGLE_API_KEY")
@@ -133,13 +137,21 @@ class RagEngine:
         
         # ===== CAPA 1: QUERY EXPANSION (Hybrid RAG) =====
         # Expand query to legal keywords using Gemini Flash
-        expansion = self.query_expander.expand(query, company_slug)
+        expansion = self.query_expander.expand(query)
         expanded_query = self.query_expander.get_expanded_query_text(expansion)
+        intent = expansion['intent']
+        requiere_tablas = expansion['requiere_tablas']
         
         print(f"🔍 Query Expansion:")
         print(f"   Original: '{query}'")
-        print(f"   Intent: {expansion['intent']}")
+        print(f"   Intent: {intent}")
+        print(f"   Requiere tablas: {requiere_tablas}")
         print(f"   Expanded: '{expanded_query}'")
+        
+        # FILTRO CHIT-CHAT: Ahorra costes de embeddings y retrieval
+        if intent == "GENERAL" and not requiere_tablas and len(query.split()) < 4:
+            print("💬 Chit-chat detectado. Saltando retriever.")
+            return []  # El orquestador manejará la respuesta cordial
         
         # Use expanded query for embedding generation
         search_text = expanded_query if expanded_query else query
@@ -269,11 +281,33 @@ class RagEngine:
                     results.append(ar)
         # -----------------------------------------------------
 
-        # Format results
+        # ===== CAPA 2B: LEGAL ANCHORS (Deterministic Retrieval) =====
+        # Forzar inyección de documentos críticos según el Intent
+        anchor_results = []
+        if requiere_tablas or intent in ["LEAVE", "SALARY", "DISMISSAL"]:
+            print(f"⚓ Inyectando Legal Anchors para Intent: {intent}")
+            anchor_results = self.legal_anchors.get_anchors(intent, db, company_slug, limit=2)
         
+        # ===== CAPA 2C: DEDUPLICACIÓN (Evitar chunks duplicados) =====
+        # Prioridad: Anclas > Vector Search > Article Search > Salary Search
+        all_chunks = anchor_results + results  # Anclas primero
+        
+        unique_chunks = []
+        seen_ids = set()
+        
+        for chunk in all_chunks:
+            if chunk.id not in seen_ids:
+                unique_chunks.append(chunk)
+                seen_ids.add(chunk.id)
+        
+        # Limitar al número solicitado
+        unique_chunks = unique_chunks[:limit]
+        
+        print(f"📊 Resultados finales: {len(unique_chunks)} chunks únicos (de {len(all_chunks)} totales)")
+
         # Format results
         formatted_results = []
-        for chunk in results:
+        for chunk in unique_chunks:
             formatted_results.append({
                 "id": chunk.id,
                 "content": chunk.content,
