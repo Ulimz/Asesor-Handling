@@ -13,4 +13,4 @@ class ConvenioCreate(ConvenioBase):
 class Convenio(ConvenioBase):
     id: int
     class Config:
-        orm_mode = True
+        from_attributes = True

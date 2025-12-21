@@ -12,4 +12,4 @@ class CompanyCreate(CompanyBase):
 class Company(CompanyBase):
     id: int
     class Config:
-        orm_mode = True
+        from_attributes = True

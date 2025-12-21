@@ -15,4 +15,4 @@ class ReclamacionCreate(ReclamacionBase):
 class Reclamacion(ReclamacionBase):
     id: int
     class Config:
-        orm_mode = True
+        from_attributes = True

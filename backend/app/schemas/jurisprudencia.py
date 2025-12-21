@@ -15,4 +15,4 @@ class JurisprudenciaCreate(JurisprudenciaBase):
 class Jurisprudencia(JurisprudenciaBase):
     id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
