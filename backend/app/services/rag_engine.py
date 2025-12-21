@@ -514,44 +514,58 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
                - Si usas info interna, cita el artículo.
             """
 
-            # Use Direct REST call for ALL generations to ensure Tool availability
-            # This bypasses the SDK validation issues we faced.
-            api_key = os.getenv("GOOGLE_API_KEY")
-            if api_key:
-                try:
-                    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
-                    payload = {
-                        "contents": [{
-                            "parts": [{"text": final_prompt}]
-                        }],
-                        "tools": [
-                            {"google_search": {}},
-                            # {"function_declarations": [self.calculator_tool_schema]}
-                        ],
-                        "safetySettings": [
-                            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_ONLY_HIGH"},
-                            {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_ONLY_HIGH"},
-                            {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_ONLY_HIGH"},
-                            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_ONLY_HIGH"}
-                        ]
-                    }
-                    headers = {'Content-Type': 'application/json'}
-                    response = requests.post(url, headers=headers, data=json.dumps(payload))
-                    
-                    if response.status_code == 200:
-                        result = response.json()
+        # Use Direct REST call for ALL generations to ensure Tool availability
+        # This bypasses the SDK validation issues we faced.
+        api_key = os.getenv("GOOGLE_API_KEY")
+        if api_key:
+            try:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
+                payload = {
+                    "contents": [{
+                        "parts": [{"text": final_prompt}]
+                    }],
+                    "tools": [
+                        {"google_search": {}},
+                        # {"function_declarations": [self.calculator_tool_schema]}
+                    ],
+                    "safetySettings": [
+                        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_ONLY_HIGH"},
+                        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_ONLY_HIGH"},
+                        {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_ONLY_HIGH"},
+                        {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_ONLY_HIGH"},
+                    ]
+                }
+                
+                # Make the request
+                headers = {'Content-Type': 'application/json'}
+                response = requests.post(url, headers=headers, data=json.dumps(payload))
+                
+                if response.status_code == 200:
+                    result = response.json()
+                    candidates = result.get('candidates', [])
+                    if candidates:
+                        content_parts = candidates[0].get('content', {}).get('parts', [])
+                        
+                        # Check for function call
+                        function_call = None
+                        for part in content_parts:
+                            if 'functionCall' in part:
+                                function_call = part['functionCall']
+                                break
+                        
+                        if function_call:
+                             # ... function call logic ...
+                             pass 
+                             
+                        # Get text response
                         try:
-                            # Try to get text from the first candidate
-                            text_response = result['candidates'][0]['content']['parts'][0]['text']
+                            text_response = content_parts[0].get('text', '')
                             
-                            # Check for grounding metadata (citations) to confirm search usage
-                            grounding_metadata = result['candidates'][0].get('groundingMetadata', {})
-                            if grounding_metadata:
-                                # Append a small indicator if external search was used
-                                text_response += "\n\n(ℹ️ Información complementada con búsqueda externa)"
+                            # Clean up
+                            if not text_response:
+                                text_response = "Lo siento, no he podido generar una respuesta."
                             
-                            # --- AUDIT PHASE (Elite Upgrade) ---
-                            # 1. Audit the response
+                            # --- AUDIT PHASE ---
                             from app.services.auditor_service import auditor_service
                             from app.utils.audit_logger import log_audit_event
                             
@@ -565,7 +579,7 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
                             is_approved = audit_result.get("aprobado", False)
                             risk_level = audit_result.get("nivel_riesgo", "UNKNOWN")
                             
-                            # 2. Log it securely
+                            # Log it
                             log_audit_event(
                                 query=query,
                                 intent=intent,
@@ -574,7 +588,7 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
                                 auditor_result=audit_result
                             )
                             
-                            # 3. Enforce Block (Safety Guard)
+                            # Enforce Block
                             if not is_approved and risk_level == "ALTO":
                                 print(f"🛑 REJECTED by Auditor: {audit_result.get('razon')}")
                                 return {
