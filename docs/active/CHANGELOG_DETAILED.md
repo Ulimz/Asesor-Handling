@@ -14,13 +14,21 @@
   - Recuperación de tablas vía Legal Anchors
   - Ejecución de cálculo híbrido
   - Fallback a RAG estándar si falla
+- **MEJORAS SENIOR-LEVEL (4/4)**:
+  1. ✅ Inferencia determinista en Python (`_extract_levels_from_table()`, `_infer_comparison_level()`)
+  2. ✅ Validación estricta de JSON (type checking, prevención de alucinaciones)
+  3. ✅ Logging mejorado para QA (niveles disponibles, inferidos, extracciones incompletas)
+  4. ✅ Modo consulta simple ("cuánto cobra X" → respuesta directa sin comparación)
 - **TESTS**: 11/11 tests de detección pasados
 - **VALIDACIÓN**: 2 expertos independientes
-- **COMMITS**: f78fc44 (Fase 1) → 7f7d932 (Calculator) → 92df034 (Tests) → 98cf23a (Integration) → 6025d9e (Tests Integration)
-- **EJEMPLO**:
-  - Query: "diferencia salarial nivel 3 y 4"
-  - Respuesta: "La diferencia es 3.000€ (12% incremento)" con detalle completo
-- **ESTADO**: ✅ Desplegado en cloud, listo para testing en producción
+- **COMMITS**: f78fc44 (Fase 1) → 7f7d932 (Calculator) → 92df034 (Tests) → 98cf23a (Integration) → 6025d9e (Tests Integration) → ebee37f (Fix logger) → 38f04d6 (Require two levels) → a740302 (Intelligent inference) → **d84f512 (Senior-level improvements)** ⭐
+- **QUERIES SOPORTADAS**:
+  - "cuánto cobra nivel 4" → "28.000€/año" (consulta simple)
+  - "diferencia nivel 3 y 4" → "3.000€ (12%)" (comparación explícita)
+  - "cuánto más cobra nivel 4" → inferencia automática de nivel 3
+  - Maneja niveles no consecutivos: Nivel 4B, Grupo II, Categoría 7.2
+- **ESTADO**: ✅ Production-Ready, desplegado en cloud, listo para testing con usuarios reales
+- **CALIDAD**: Senior-Level Engineering validado por expertos
 
 ### [2025-12-21] RAG System Upgrade v1.2 "Enterprise JSON Ready"
 - **PROMPT UPDATE**: Implementado nuevo prompt maestro en `prompts.py` optimizado para Gemini + JSON.
