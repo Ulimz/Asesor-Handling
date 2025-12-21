@@ -156,6 +156,46 @@ class RagEngine:
         print(f"   Requiere tablas: {requiere_tablas}")
         print(f"   Expanded: '{expanded_query}'")
         
+        # ✨ FASE 2: Detectar si es query de cálculo
+        is_calculation = self._is_calculation_query(query)
+        if is_calculation:
+            print(f"🧮 Calculation query detected!")
+            
+            # Obtener tablas relevantes usando Legal Anchors
+            anchor_results = self.legal_anchors.get_anchors(
+                intent=intent,
+                company_slug=company_slug,
+                db=db,
+                limit=3
+            )
+            
+            if anchor_results:
+                print(f"   Found {len(anchor_results)} anchor tables for calculation")
+                
+                # Intentar cálculo
+                calc_result = self._handle_calculation(
+                    query=query,
+                    expansion=expansion,
+                    anchor_results=anchor_results,
+                    company_slug=company_slug
+                )
+                
+                # Si el cálculo fue exitoso, retornar
+                if calc_result.get('calculation'):
+                    print("   ✅ Calculation successful, returning result")
+                    return [{
+                        'id': anchor_results[0].id,
+                        'content': calc_result['answer'],
+                        'article_ref': 'Cálculo Híbrido',
+                        'document': anchor_results[0].document,
+                        'calculation': calc_result['calculation'],
+                        'score': 1.0  # Perfect score for calculations
+                    }]
+                else:
+                    print("   ⚠️ Calculation failed, falling back to standard RAG")
+            else:
+                print("   ⚠️ No anchor tables found, falling back to standard RAG")
+        
         # FILTRO CHIT-CHAT: Ahorra costes de embeddings y retrieval
         if intent == "GENERAL" and not requiere_tablas and len(query.split()) < 4:
             print("💬 Chit-chat detectado. Saltando retriever.")
@@ -676,6 +716,36 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
         return {"text": "No se ha configurado la API Key de Google.", "audit": None}
     
     # ✅ FASE 2: Métodos de Calculadora Híbrida
+    
+    def _is_calculation_query(self, query: str) -> bool:
+        """
+        Detecta si la query requiere cálculo.
+        
+        Mejora del experto: Requiere (Operación) Y (Contexto o Números)
+        para evitar falsos positivos como "diferencia entre vacaciones y permisos"
+        """
+        q = query.lower()
+        
+        # 1. Keywords de operación (Intención de cálculo)
+        op_keywords = [
+            'diferencia', 'cuanto más', 'cuanto menos', 'cuánto más', 'cuánto menos',
+            'incremento', 'aumento', 'reducción', 'comparar', 'vs', 'versus',
+            'calcular', 'calcula'
+        ]
+        
+        # 2. Keywords de contexto (Sobre qué calculamos)
+        context_keywords = [
+            'nivel', 'grupo', 'salario', 'sueldo', 'cobrar', 'paga', 'plus', 
+            'retribución', 'bruto', 'neto', 'anual', 'mensual'
+        ]
+        
+        # Lógica: Debe tener (Operación) Y (Contexto o Números explícitos)
+        has_op = any(kw in q for kw in op_keywords)
+        has_context = any(kw in q for kw in context_keywords)
+        has_numbers = any(char.isdigit() for char in q)  # "nivel 3" tiene dígito
+        
+        # Solo disparamos cálculo si hay intención de operar Y (contexto financiero O números)
+        return has_op and (has_context or has_numbers)
     
     def _handle_calculation(
         self,
