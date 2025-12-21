@@ -117,12 +117,16 @@ QUERY DEL USUARIO:
 {query}
 
 TAREA:
-Extrae SOLO los valores numéricos relevantes para responder la query.
+Extrae los valores numéricos relevantes para responder la query.
 
-IMPORTANTE:
-- Identifica los niveles mencionados en la query
-- Extrae el salario base anual de cada nivel
-- Identifica el campo comparado (salario base, plus, etc.)
+IMPORTANTE - INFERENCIA INTELIGENTE:
+1. Identifica los niveles mencionados en la query
+2. **CASO ESPECIAL**: Si la query pide una diferencia/comparación ("cuánto más", "diferencia", "incremento") 
+   pero SOLO menciona un nivel (ej: "Nivel 4"), ASUME que la comparación es con el nivel inmediatamente 
+   inferior (ej: Nivel 3).
+3. Si no existe nivel inferior, compara con el nivel 1 (base).
+4. Extrae el salario base anual de cada nivel
+5. Identifica el campo comparado (salario base, plus, etc.)
 
 RESPONDE EN JSON ESTRICTO:
 
@@ -132,6 +136,15 @@ EJEMPLO DE SALIDA VÁLIDA:
   "level_destination": 28000,
   "field_name": "salario base anual",
   "level_origin_label": "Nivel 3",
+  "level_destination_label": "Nivel 4"
+}}
+
+EJEMPLO CON INFERENCIA (query: "cuánto más cobra nivel 4"):
+{{
+  "level_origin": 25000,
+  "level_destination": 28000,
+  "field_name": "salario base anual",
+  "level_origin_label": "Nivel 3 (inferido)",
   "level_destination_label": "Nivel 4"
 }}
 

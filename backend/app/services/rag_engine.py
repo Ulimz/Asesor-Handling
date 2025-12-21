@@ -720,6 +720,14 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
     
     # ✅ FASE 2: Métodos de Calculadora Híbrida
     
+    def _normalize_text(self, text: str) -> str:
+        """Quita tildes y pasa a minúsculas para comparación robusta."""
+        import unicodedata
+        return ''.join(
+            c for c in unicodedata.normalize('NFD', text)
+            if unicodedata.category(c) != 'Mn'
+        ).lower()
+    
     def _is_calculation_query(self, query: str) -> bool:
         """
         Detecta si la query requiere cálculo.
@@ -736,19 +744,20 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
         - "cuanto cobra nivel 4" (solo un nivel)
         - "diferencia entre vacaciones" (sin contexto salarial)
         """
-        q = query.lower()
+        # Normalizar query (quitar tildes: cuánto -> cuanto)
+        q = self._normalize_text(query)
         
-        # 1. Keywords de operación (Intención de cálculo)
+        # 1. Keywords de operación (Intención de cálculo) - SIN TILDES
         op_keywords = [
-            'diferencia', 'cuanto más', 'cuanto menos', 'cuánto más', 'cuánto menos',
-            'incremento', 'aumento', 'reducción', 'comparar', 'vs', 'versus',
-            'calcular', 'calcula', 'entre'
+            'diferencia', 'cuanto mas', 'cuanto menos',  # sin tildes
+            'incremento', 'aumento', 'reduccion',  # sin tildes
+            'comparar', 'vs', 'versus', 'calcular', 'calcula', 'entre'
         ]
         
-        # 2. Keywords de contexto (Sobre qué calculamos)
+        # 2. Keywords de contexto (Sobre qué calculamos) - SIN TILDES
         context_keywords = [
             'nivel', 'grupo', 'salario', 'sueldo', 'cobrar', 'paga', 'plus', 
-            'retribución', 'bruto', 'neto', 'anual', 'mensual'
+            'retribucion', 'bruto', 'neto', 'anual', 'mensual'  # sin tildes
         ]
         
         # 3. Verificar que menciona DOS niveles/grupos
