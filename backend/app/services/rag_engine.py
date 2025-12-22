@@ -735,6 +735,15 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
         has_context = any(kw in q for kw in context_keywords)
         has_numbers = any(char.isdigit() for char in q)  # "nivel 3" tiene dígito
         
+        # FIX RED TEAM: Permitir "Simple Queries" (ej: "cuanto cobra el nivel 3")
+        # Si tiene contexto salarial fuerte + numero, es cálculo aunque no haya "vs"
+        # Expanded keywords to match user language (cobra vs cobrar)
+        simple_keywords = ['cobra', 'cobrar', 'sueldo', 'salario', 'pagar', 'paga', 'ganar', 'gana', 'nomin', 'nómin']
+        is_simple_salary = has_context and has_numbers and any(kw in q for kw in simple_keywords)
+        
+        if is_simple_salary:
+            return True
+            
         # Solo disparamos cálculo si hay:
         # - Intención de operar
         # - Contexto financiero O números

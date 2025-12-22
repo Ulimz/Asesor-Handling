@@ -91,11 +91,42 @@ def seed_single_document(json_file: Path, db: Session) -> Optional[int]:
                 # Use zero vector as fallback
                 embedding = [0.0] * EMBEDDING_DIMENSION
             
+            # --- METADATA TAGGING (FIX RED TEAM) ---
+            chunk_type = "text"
+            is_primary = False
+            
+            # 1. Detect Tables
+            # Check for Markdown tables (| col |) or HTML tables
+            # Loose check: must have multiple pipes or <table tag
+            if "<table" in content.lower() or content.count("|") > 4: 
+                chunk_type = "table"
+                
+            # 2. Detect Primary Articles (Tablas Salariales, Convenio)
+            article_ref_upper = article_ref.upper()
+            if "ANEXO" in article_ref_upper or "TABLA" in article_ref_upper or "CAPÍTULO ECONÓMICO" in article_ref_upper:
+                is_primary = True
+            
+            # Additional heuristic: If it's a table and mentions levels/salary, it's primary for calculation
+            if chunk_type == "table" and any(kw in content.lower() for kw in ["nivel", "salario", "retribución", "euros", "€"]):
+                is_primary = True
+            
+            chunk_metadata = {
+                "type": chunk_type,
+                "is_primary": str(is_primary).lower(), # "true" / "false"
+                "company": company,
+                "ref": article_ref
+            }
+            # ----------------------------------------
+
             chunk = DocumentChunk(
                 document_id=doc.id,
                 content=content,
                 embedding=embedding,
-                article_ref=article_ref
+                article_ref=article_ref,
+                # Inject Metadata for Postgres/PGVector
+                chunk_metadata=chunk_metadata,
+                # Also populate the legacy 'doc_id' if needed or just leave null
+                doc_id=f"{doc.id}_{article_ref}" 
             )
             chunks.append(chunk)
         
