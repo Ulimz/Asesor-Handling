@@ -22,8 +22,19 @@ from app.services.legal_anchors import LegalAnchors
 from app.services.hybrid_calculator import HybridSalaryCalculator, SalaryData, CalculationResult
 from app.schemas.salary import CalculationRequest
 from sqlalchemy.orm import Session # Typed typing
+import re
 
 logger = logging.getLogger(__name__)
+
+# ✅ MEJORA EXPERTA: Keywords para pre-clasificación laboral
+LEGAL_KEYWORDS = {
+    "vacaciones", "permiso", "permisos", "rotacion", "rotación",
+    "turnos", "turno", "jornada", "festivos", "festivo",
+    "horas", "hora", "bajas", "baja", "licencias", "licencia",
+    "antiguedad", "antigüedad", "pluses", "plus",
+    "categoria", "categoría", "nivel", "salario", "nomina", "nómina",
+    "retribucion", "retribuciones", "convenio", "estatuto", "tabla"
+}
 
 class RagEngine:
     def __init__(self):
@@ -124,6 +135,33 @@ class RagEngine:
             
         return IntentType.GENERAL
 
+    def _preclassify_by_profile(self, query: str, company_slug: str) -> dict | None:
+        """
+        Pre-clasifica la query usando perfil del usuario (company_slug) y keywords.
+        Si el usuario tiene empresa asignada y pregunta sobre temas laborales,
+        forzamos el contexto laboral ANTES de que el LLM decida.
+        """
+        if not company_slug:
+            return None
+
+        # Normalización robusta (palabras + patrones tipo 4x4)
+        q = query.lower()
+        tokens = set(re.findall(r"[a-záéíóúüñ]+|\d+x\d+", q))
+        
+        # Intersección
+        matched = tokens & LEGAL_KEYWORDS
+        
+        if matched:
+            logger.info(f"⚡ Pre-clasificación Laboral activada: {matched}")
+            return {
+                "intent_override": True,
+                "requiere_tablas": True,
+                "domain": "LABORAL",
+                "matched_keywords": list(matched),
+                "trigger": "keyword_match"
+            }
+        return None
+
     def search(self, query: str, company_slug: str = None, db: Session = None, limit: int = 10):
         """
         Semantic search using PgVector cosine similarity.
@@ -163,37 +201,40 @@ class RagEngine:
         is_calculation = self._is_calculation_query(query)
         if is_calculation:
             print(f"🧮 Calculation query detected!")
-            
-            # Obtener tablas relevantes usando Legal Anchors
+        # 3. Legal Anchors (Capa 2) - Determinista
+        anchor_results = []
+        if expansion.get("requiere_tablas") or expansion.get("domain") == "LABORAL" or intent in ["LEAVE", "SALARY", "DISMISSAL"]:
+            # ✅ MEJORA: Pasar SIEMPRE company_slug para filtrar por convenio del usuario
+            logger.info(f"Legal Anchors: buscando anchors para {expansion['intent']} en {company_slug}")
             anchor_results = self.legal_anchors.get_anchors(
-                intent=intent,
-                company_slug=company_slug,
+                intent=expansion['intent'],
                 db=db,
+                company_slug=company_slug, # Clave: el usuario define el contexto
                 limit=3
             )
             
+            # Si encontramos anchors, añadirlos al contexto para RAG
             if anchor_results:
-                print(f"   Found {len(anchor_results)} anchor tables for calculation")
+                logger.info(f"✅ Anchors encontrados: {len(anchor_results)}")
                 
-                # Intentar cálculo
-                calc_result = self._handle_calculation(
-                    query=query,
-                    expansion=expansion,
-                    anchor_results=anchor_results,
-                    company_slug=company_slug
-                )
-                
-                # Si el cálculo fue exitoso, retornar
-                if calc_result.get('calculation'):
-                    print("   ✅ Calculation successful, returning result")
-                    return [{
-                        'id': anchor_results[0].id,
-                        'content': calc_result['answer'],
-                        'article_ref': 'Cálculo Híbrido',
-                        'document': anchor_results[0].document,
-                        'calculation': calc_result['calculation'],
-                        'score': 1.0  # Perfect score for calculations
-                    }]
+                # Detectar cálculo si tenemos anchors
+                if self._is_calculation_query(query):
+                    calc = self._handle_calculation(
+                        query=query,
+                        expansion=expansion,
+                        anchor_results=anchor_results,
+                        company_slug=company_slug
+                    )
+                    
+                    if calc.get("calculation"):
+                         return [{
+                            "id": anchor_results[0].id,
+                            "content": calc["answer"],
+                            "article_ref": "Cálculo",
+                            "document": anchor_results[0].document,
+                            "calculation": calc["calculation"],
+                            'score': 1.0  # Perfect score for calculations
+                        }]
                 else:
                     print("   ⚠️ Calculation failed, falling back to standard RAG")
             else:
@@ -690,13 +731,38 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
                                 auditor_result=audit_result
                             )
                             
-                            # Enforce Block
-                            if not is_approved and risk_level == "ALTO":
-                                print(f"🛑 REJECTED by Auditor: {audit_result.get('razon')}")
-                                return {
-                                    "text": "Lo siento, mi auditor interno ha bloqueado esta respuesta por seguridad jurídica (Posible inexactitud detectada). Por favor, reformula la pregunta o contacta con RRHH.",
-                                    "audit": {"verified": False, "risk_level": "ALTO", "reason": audit_result.get("razon", "Blocked")}
-                                }
+                            # Enforce Block - Con excepción para fuentes oficiales
+                            should_block = not is_approved and risk_level == "ALTO"
+                            
+                            # ✅ MEJORA AUDITOR: Si tenemos contexto laboral oficial, no bloqueamos, solo advertimos.
+                            has_official_context = False
+                            if "Según el Convenio" in text_response or "Según el Estatuto" in text_response:
+                                has_official_context = True
+                                
+                            # Si era un intent laboral validado (LEAVE/SALARY) y tenemos anchors, confiamos más
+                            if intent in ["LEAVE", "SALARY", "DISMISSAL"] and context_chunks:
+                                has_official_context = True
+
+                            if should_block:
+                                if has_official_context:
+                                    print(f"⚠️ Auditor Flagged (ALTO) but Official Context found. Downgrading to WARNING.")
+                                    # Añadimos disclaimer en lugar de bloquear
+                                    text_response += "\n\n> ⚠️ *Nota: Esta información se basa en el convenio aplicable a tu perfil. Para casos particulares complejos, consulta con RRHH.*"
+                                    # Marcamos como 'verified' con warning para que pase al frontend
+                                    return {
+                                        "text": text_response,
+                                        "audit": {
+                                            "verified": True, 
+                                            "risk_level": "MEDIO", 
+                                            "reason": f"Auto-approved by Official Context override. Original: {audit_result.get('razon')}"
+                                        }
+                                    }
+                                else:
+                                    print(f"🛑 REJECTED by Auditor: {audit_result.get('razon')}")
+                                    return {
+                                        "text": "Lo siento, mi auditor interno ha bloqueado esta respuesta por seguridad jurídica (Posible inexactitud detectada). Por favor, reformula la pregunta o contacta con RRHH.",
+                                        "audit": {"verified": False, "risk_level": "ALTO", "reason": audit_result.get("razon", "Blocked")}
+                                    }
                             
                             # Return structured object
                             return {
