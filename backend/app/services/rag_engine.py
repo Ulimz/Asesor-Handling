@@ -120,12 +120,11 @@ class RagEngine:
         Now includes Profile-Based Pre-classification to prevent 'GENERAL' intent degradation.
         """
         # 0. Pre-classification by Profile
+        pre_classification = None
         if company_slug:
-             pre = self._preclassify_by_profile(query, company_slug)
-             if pre:
-                 # If profile says it's LABORAL, we default to LEAVE but refine below
-                 # This prevents GENERAL from being returned later
-                 pass
+             pre_classification = self._preclassify_by_profile(query, company_slug)
+             # Note: We don't return early here because we want to check standard intents too
+             # but we save the result to use it as an override layer at step 4.
 
         q = query.lower()
         
@@ -135,7 +134,6 @@ class RagEngine:
             
         # 2. Leave / Tine / Sickness (Incapacidad Temporal)
         if any(k in q for k in ['vacaciones', 'permiso', 'día libre', 'boda', 'nacimiento', 'hospitalización', 'excedencia', 'reducción', 'baja', 'enfermedad', 'accidente', 'médico', 'it', 'incapacidad']):
-            # Exception: if it's explicitly "baja voluntaria", it was already caught by DISMISSAL
             return IntentType.LEAVE
             
         # 3. Salary / Money (Only if not already categorized above)
@@ -143,13 +141,11 @@ class RagEngine:
             return IntentType.SALARY
 
         # 4. Profile-Based Override for ambiguous cases (e.g. "rotacion 4x4", "jornada")
-        if company_slug:
-             pre = self._preclassify_by_profile(query, company_slug)
-             if pre:
-                 logger.info(f"🛡️ detect_intent: Override GENERAL -> LEAVE/SALARY due to Employment Profile")
-                 if "salario" in q or "nomina" in q or "cobrar" in q or "plus" in q:
-                     return IntentType.SALARY
-                 return IntentType.LEAVE
+        if pre_classification:
+             logger.info(f"🛡️ detect_intent: Override GENERAL -> LEAVE/SALARY due to Employment Profile")
+             if "salario" in q or "nomina" in q or "cobrar" in q or "plus" in q:
+                 return IntentType.SALARY
+             return IntentType.LEAVE
             
         return IntentType.GENERAL
 
@@ -259,20 +255,15 @@ class RagEngine:
                 print("   ⚠️ No anchor tables found, falling back to standard RAG")
         
         # FILTRO CHIT-CHAT: Ahorra costes de embeddings y retrieval
-        if intent == "GENERAL" and not requiere_tablas and len(query.split()) < 4:
-            print("💬 Chit-chat detectado. Saltando retriever.")
-            return []  # El orquestador manejará la respuesta cordial
-        
-        # Use expanded query for embedding generation
+        if intent == "GENERAL" and not requiere_tablas and len(query.split()) < 2:
+             print("💬 Chit-chat detectado (muy corto). Saltando retriever.")
+             return []
+
         search_text = expanded_query if expanded_query else query
-        
-        # Generate query embedding
         query_embedding = self.generate_embedding(search_text)
         
-        # PgVector cosine similarity search with eager loading
-        # Using <=> operator for cosine distance (lower is better)
+        # Búsqueda Vectorial Base
         from sqlalchemy.orm import joinedload
-        
         stmt = select(DocumentChunk).join(LegalDocument).options(
             joinedload(DocumentChunk.document)  # Eager load to prevent N+1 queries
         ).order_by(
@@ -280,7 +271,6 @@ class RagEngine:
         )
         
         if company_slug:
-            # Filter by specific company OR global documents (company IS NULL or 'general' case-insensitive)
             stmt = stmt.filter(
                 (LegalDocument.company == company_slug) | 
                 (LegalDocument.company.is_(None)) |
@@ -288,12 +278,13 @@ class RagEngine:
             )
 
         stmt = stmt.limit(limit)
-        
-        results = db.execute(stmt).scalars().all()
-        results = list(results) # Convert to list to allow appending
+        base_results = list(db.execute(stmt).scalars().all())
 
-        # --- SPECIFIC ARTICLE RETRIEVAL (Estatuto / Convenio) ---
-        # If query explicitly mentions "Artículo X", prioritize searching for that article ref.
+        # Lista final acumulativa para mantener orden
+        final_results_list = []
+        seen_ids = set()
+
+        # 1. Búsqueda de Artículo Específico (Prioridad Alta)
         import re
         art_match = re.search(r'art[ií]culo\s+(\d+)', query, re.IGNORECASE)
         estatuto_match = re.search(r'estatuto', query, re.IGNORECASE)
@@ -301,36 +292,26 @@ class RagEngine:
         if art_match:
             art_num = art_match.group(1)
             print(f"📜 Article reference detected: {art_num}")
-            
-            # Base filter for article
             art_filter = DocumentChunk.article_ref.ilike(f'%Art%culo {art_num}%')
-            
-            # If "Estatuto" is mentioned, restrict to Estatuto docs
             doc_filter = None
             if estatuto_match:
                  print(f"   ⚖️  'Estatuto' detected, narrowing search.")
                  doc_filter = LegalDocument.title.ilike('%Estatuto%')
             elif company_slug:
-                 # Otherwise prioritize Company + General
                  doc_filter = (LegalDocument.company == company_slug) | (LegalDocument.company.ilike('general'))
             
             if doc_filter is not None:
-                priority_stmt = select(DocumentChunk).join(LegalDocument).filter(
-                    doc_filter & art_filter
-                ).limit(3)
-                
+                priority_stmt = select(DocumentChunk).join(LegalDocument).filter(doc_filter & art_filter).limit(3)
                 priority_results = list(db.execute(priority_stmt).scalars().all())
                 
-                # Add priority results immediately
-                existing_ids = {r.id for r in results}
+                # Añadimos directamente a lista final
                 for pr in priority_results:
-                    if pr.id not in existing_ids:
-                        print(f"   ⭐⭐ SPECIFIC ARTICLE Force-added: {pr.article_ref} ({pr.document.title})")
-                        results.insert(0, pr) # Insert at TOP
-                        existing_ids.add(pr.id)
+                    if pr.id not in seen_ids:
+                        print(f"   ⭐⭐ SPECIFIC ARTICLE Force-added: {pr.article_ref}")
+                        final_results_list.append(pr)
+                        seen_ids.add(pr.id)
 
-        # --- HYBRID SEARCH: FORCE ANEXOS FOR SALARY QUERIES ---
-        # Vector search can miss tables (Anexos). If query is about salary, force fetch Anexos.
+        # 2. Búsqueda Híbrida de Tablas/Anexos (Si es Salario)
         salary_keywords = ['precio', 'salario', 'retribución', 'retribucion', 'paga', 'sueldo', 
                           'complemento', 'plus', 'extraordinaria', 'perentoria',
                           'nocturna', 'festiva', 'tabla', 'anexo', 'euros', '€']
@@ -340,7 +321,6 @@ class RagEngine:
         if is_salary_query and company_slug:
             print(f"💰 Salary intent detected in search: forcing retrieval of ANEXOs/Tablas")
             
-            # 1. PRIORITY: Fetch BIG chunks from ANEXOs/TABLAS (Tables are usually large)
             priority_stmt = select(DocumentChunk).join(LegalDocument).filter(
                 (LegalDocument.company == company_slug) &
                 ((DocumentChunk.article_ref.ilike('%ANEXO%')) | (DocumentChunk.article_ref.ilike('%TABLA%')))
@@ -348,7 +328,6 @@ class RagEngine:
                 func.length(DocumentChunk.content).desc()
             )
             
-            # EXCLUSION LOGIC: Avoid PMR tables unless user asks for them
             if "pmr" not in query.lower():
                  priority_stmt = priority_stmt.filter(
                      ~DocumentChunk.article_ref.ilike('%PMR%'),
@@ -356,64 +335,69 @@ class RagEngine:
                  )
 
             priority_stmt = priority_stmt.limit(3)
+            anexo_results = list(db.execute(priority_stmt).scalars().all())
             
-            priority_results = list(db.execute(priority_stmt).scalars().all())
+            for ar in anexo_results:
+                if ar.id not in seen_ids:
+                    print(f"   ⭐⭐ PRIORITY Force-added: {ar.article_ref}")
+                    final_results_list.append(ar)
+                    seen_ids.add(ar.id)
             
-            # Add priority results immediately
-            existing_ids = {r.id for r in results}
-            for pr in priority_results:
-                if pr.id not in existing_ids:
-                    print(f"   ⭐⭐ PRIORITY Force-added: {pr.article_ref}")
-                    results.append(pr)
-                    existing_ids.add(pr.id)
-
-            # 2. General Fallback: Other Anexos/Tablas
+            # General Fallback
             anexo_stmt = select(DocumentChunk).join(LegalDocument).filter(
                 (LegalDocument.company == company_slug) &
                 ((DocumentChunk.article_ref.ilike('%ANEXO%')) | (DocumentChunk.article_ref.ilike('%TABLA%')))
             )
-
             if "pmr" not in query.lower():
-                 anexo_stmt = anexo_stmt.filter(
-                     ~DocumentChunk.article_ref.ilike('%PMR%'),
-                     ~DocumentChunk.content.ilike('%PMR%')
-                 )
-
-            anexo_stmt = anexo_stmt.limit(10) 
+                 anexo_stmt = anexo_stmt.filter(~DocumentChunk.article_ref.ilike('%PMR%'))
             
-            anexo_results = db.execute(anexo_stmt).scalars().all()
-            
-            # Add ONLY if not already in results
-            existing_ids = {r.id for r in results}
-            for ar in anexo_results:
-                if ar.id not in existing_ids:
-                    print(f"   ➕ Force-added: {ar.article_ref}")
-                    results.append(ar)
-        # -----------------------------------------------------
+            anexo_fallback_results = db.execute(anexo_stmt.limit(5)).scalars().all()
+            for ar in anexo_fallback_results:
+                if ar.id not in seen_ids:
+                     final_results_list.append(ar)
+                     seen_ids.add(ar.id)
 
-        # ===== CAPA 2B: LEGAL ANCHORS (Deterministic Retrieval) =====
-        # Forzar inyección de documentos críticos según el Intent
+        # 3. Anchors (Determinista)
         anchor_results = []
-        if requiere_tablas or intent in ["LEAVE", "SALARY", "DISMISSAL"]:
+        if requiere_tablas or intent in ["LEAVE", "SALARY", "DISMISSAL"] or expansion.get("domain") == "LABORAL":
             print(f"⚓ Inyectando Legal Anchors para Intent: {intent}")
             anchor_results = self.legal_anchors.get_anchors(intent, db, company_slug, limit=2)
-        
-        # ===== CAPA 2C: DEDUPLICACIÓN (Evitar chunks duplicados) =====
-        # Prioridad: Anclas > Vector Search > Article Search > Salary Search
-        all_chunks = anchor_results + results  # Anclas primero
-        
-        unique_chunks = []
-        seen_ids = set()
-        
-        for chunk in all_chunks:
-            if chunk.id not in seen_ids:
-                unique_chunks.append(chunk)
-                seen_ids.add(chunk.id)
+            
+             # Insert anchors AT THE TOP if we have them
+            for ar in reversed(anchor_results): # Reverse to keep order when inserting at 0
+                 if ar.id not in seen_ids:
+                     print(f"   ⚓ ANCHOR Injected: {ar.article_ref}")
+                     final_results_list.insert(0, ar)
+                     seen_ids.add(ar.id)
+            
+            # Detectar cálculo si tenemos anchors
+            if anchor_results and self._is_calculation_query(query):
+                calc = self._handle_calculation(
+                    query=query,
+                    expansion=expansion,
+                    anchor_results=anchor_results,
+                    company_slug=company_slug
+                )
+                if calc.get("calculation"):
+                        return [{
+                        "id": anchor_results[0].id,
+                        "content": calc["answer"],
+                        "article_ref": "Cálculo",
+                        "document": anchor_results[0].document,
+                        "calculation": calc["calculation"],
+                        'score': 1.0
+                    }]
+
+        # 4. Añadir resultados vectoriales base (relleno)
+        for br in base_results:
+            if br.id not in seen_ids:
+                final_results_list.append(br)
+                seen_ids.add(br.id)
         
         # Limitar al número solicitado
-        unique_chunks = unique_chunks[:limit]
+        unique_chunks = final_results_list[:limit]
         
-        print(f"📊 Resultados finales: {len(unique_chunks)} chunks únicos (de {len(all_chunks)} totales)")
+        print(f"📊 Resultados finales: {len(unique_chunks)} chunks únicos")
 
         # Format results
         formatted_results = []
@@ -437,6 +421,8 @@ class RagEngine:
         
         Example: "y si tengo 4x4?" + Context [User: "Vacaciones en Azul"] -> "Vacaciones en rotación 4x4"
         """
+        # ✅ CORRECCIÓN: Evitar crash si history es None
+        history = history or []
         
         # FAST PATH: If query clearly indicates continuation, merge immediately without LLM
         clean_q = current_query.strip().lower()
@@ -533,8 +519,6 @@ Pregunta reescrita:"""
         if 'descanso' in rewritten_lower and ('turno' in rewritten_lower or 'turnos' in rewritten_lower):
             rewritten = f"{rewritten} jornada descanso entre jornadas 12 horas doce horas Artículo 34 Estatuto"
             print(f"🛌 Rest/Shift query detected, enhanced with: jornada, 12 horas, doce horas, Artículo 34")
-
-        return rewritten
 
         return rewritten
 
@@ -677,126 +661,6 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
 
         # Use Direct REST call for ALL generations to ensure Tool availability
         # This bypasses the SDK validation issues we faced.
-        api_key = os.getenv("GOOGLE_API_KEY")
-        if api_key:
-            try:
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
-                payload = {
-                    "contents": [{
-                        "parts": [{"text": final_prompt}]
-                    }],
-                    "tools": [
-                        {"google_search": {}},
-                        # {"function_declarations": [self.calculator_tool_schema]}
-                    ],
-                    "safetySettings": [
-                        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_ONLY_HIGH"},
-                        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_ONLY_HIGH"},
-                        {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_ONLY_HIGH"},
-                        {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_ONLY_HIGH"},
-                    ]
-                }
-                
-                # Make the request
-                headers = {'Content-Type': 'application/json'}
-                response = requests.post(url, headers=headers, data=json.dumps(payload))
-                
-                if response.status_code == 200:
-                    result = response.json()
-                    candidates = result.get('candidates', [])
-                    if candidates:
-                        content_parts = candidates[0].get('content', {}).get('parts', [])
-                        
-                        # Check for function call
-                        function_call = None
-                        for part in content_parts:
-                            if 'functionCall' in part:
-                                function_call = part['functionCall']
-                                break
-                        
-                        if function_call:
-                             # ... function call logic ...
-                             pass 
-                             
-                        # Get text response
-                        try:
-                            text_response = content_parts[0].get('text', '')
-                            
-                            # Clean up
-                            if not text_response:
-                                text_response = "Lo siento, no he podido generar una respuesta."
-                            
-                            # --- AUDIT PHASE ---
-                            from app.services.auditor_service import auditor_service
-                            from app.utils.audit_logger import log_audit_event
-                            
-                            print("🕵️ Auditing response...")
-                            audit_result = auditor_service.audit_response(
-                                query=query,
-                                response_text=text_response,
-                                context_text=context_text
-                            )
-                            
-                            is_approved = audit_result.get("aprobado", False)
-                            risk_level = audit_result.get("nivel_riesgo", "UNKNOWN")
-                            
-                            # Log it
-                            log_audit_event(
-                                query=query,
-                                intent=intent,
-                                response=text_response,
-                                context=context_text,
-                                auditor_result=audit_result
-                            )
-                            
-                            # Enforce Block - Con excepción para fuentes oficiales
-                            should_block = not is_approved and risk_level == "ALTO"
-                            
-                            # ✅ MEJORA AUDITOR: Si tenemos contexto laboral oficial, no bloqueamos, solo advertimos.
-                            has_official_context = False
-                            if "Según el Convenio" in text_response or "Según el Estatuto" in text_response:
-                                has_official_context = True
-                                
-                            # Si era un intent laboral validado (LEAVE/SALARY) y tenemos anchors, confiamos más
-                            if intent in ["LEAVE", "SALARY", "DISMISSAL"] and context_chunks:
-                                has_official_context = True
-
-                            if should_block:
-                                if has_official_context:
-                                    print(f"⚠️ Auditor Flagged (ALTO) but Official Context found. Downgrading to WARNING.")
-                                    # Añadimos disclaimer en lugar de bloquear
-                                    text_response += "\n\n> ⚠️ *Nota: Esta información se basa en el convenio aplicable a tu perfil. Para casos particulares complejos, consulta con RRHH.*"
-                                    # Marcamos como 'verified' con warning para que pase al frontend
-                                    return {
-                                        "text": text_response,
-                                        "audit": {
-                                            "verified": True, 
-                                            "risk_level": "MEDIO", 
-                                            "reason": f"Auto-approved by Official Context override. Original: {audit_result.get('razon')}"
-                                        }
-                                    }
-                                else:
-                                    print(f"🛑 REJECTED by Auditor: {audit_result.get('razon')}")
-                                    return {
-                                        "text": "Lo siento, mi auditor interno ha bloqueado esta respuesta por seguridad jurídica (Posible inexactitud detectada). Por favor, reformula la pregunta o contacta con RRHH.",
-                                        "audit": {"verified": False, "risk_level": "ALTO", "reason": audit_result.get("razon", "Blocked")}
-                                    }
-                            
-                            # Return structured object
-                            return {
-                                "text": text_response,
-                                "audit": {
-                                    "verified": is_approved,
-                                    "risk_level": risk_level,
-                                    "reason": audit_result.get("razon", "OK")
-                                }
-                            }
-                            
-                        except (KeyError, IndexError) as e:
-                             print(f"Error parsing Gemini response: {e}")
-                             return {"text": "Error interno al procesar la respuesta.", "audit": None}
-                             
-            except Exception as e:
                 print(f"API Error: {e}")
                 return {"text": "Error de conexión con el servicio de IA.", "audit": None}
         
