@@ -762,41 +762,65 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
                 "calculation": None,
             }
 
-        # FIX: Buscar explícitamente un chunk de tipo TABLA
-        table_chunk = None
+        # FIX ROBUSTO: Iterar sobre anchors y PROBAR si podemos extraer datos
+        # No basta con que parezca una tabla, tiene que contener los niveles que buscamos.
+        salary_data = None
+        target_chunk = None
+
         for anchor in anchor_results:
+            # Filtro básico de tipo (ya existente)
             is_table = anchor.chunk_metadata.get("type") == "table"
             is_anexo = "anexo" in anchor.article_ref.lower() or "tabla" in anchor.article_ref.lower()
-            if is_table or is_anexo:
-                table_chunk = anchor
-                break
+            
+            if not (is_table or is_anexo):
+                continue
+
+            # Intentar extracción con este anchor
+            try:
+                chunk_year = anchor.chunk_metadata.get("year")
+                year = chunk_year if isinstance(chunk_year, int) else datetime.now().year
+                
+                logger.info(f"🔎 Probando extracción en anchor: {anchor.article_ref}")
+                
+                candidate_data = self.hybrid_calculator.extract_salary_data(
+                    table_content=anchor.content,
+                    query=query,
+                    company=company_slug or "general",
+                    year=year,
+                )
+                
+                if candidate_data:
+                    logger.info(f"✅ Extracción exitosa en: {anchor.article_ref}")
+                    salary_data = candidate_data
+                    target_chunk = anchor
+                    break # ÉXITO
+                else:
+                    logger.warning(f"❌ Falló extracción en: {anchor.article_ref} (probablemente faltan niveles)")
+
+            except Exception as e:
+                logger.error(f"Error parseando anchor {anchor.id}: {e}")
+                continue
         
-        if not table_chunk:
-            logger.warning("Ninguno de los anchors parece ser una tabla salarial válida. Usando el primero como fallback.")
-            table_chunk = anchor_results[0]
-
-        # Año: intentar leer del chunk, fallback al año actual
-        try:
-            chunk_year = table_chunk.chunk_metadata.get("year")
-            if isinstance(chunk_year, int):
-                year = chunk_year
-            else:
-                year = datetime.now().year
-        except Exception:
-            year = datetime.now().year
-
-        salary_data = self.hybrid_calculator.extract_salary_data(
-            table_content=table_chunk.content,
-            query=query,
-            company=company_slug or "general",
-            year=year,
-        )
+        # Si después del loop nada funcionó, intentamos el fallback del primero (por si acaso)
+        if not salary_data:
+            logger.warning("Ningún anchor permitió la extracción. Fallback a lógica original con [0]")
+            target_chunk = anchor_results[0]
+            # (Aquí podríamos reintentar o simplemente fallar, pero mantenemos el flujo para que devuelva el error estándar)
+            # Re-run extraction execution to generate the failure logs/return cleanly
+            chunk_year = target_chunk.chunk_metadata.get("year")
+            year = chunk_year if isinstance(chunk_year, int) else datetime.now().year
+            salary_data = self.hybrid_calculator.extract_salary_data(
+                table_content=target_chunk.content,
+                query=query,
+                company=company_slug or "general",
+                year=year,
+            )
 
         if not salary_data:
-            logger.error("No se pudieron extraer datos de la tabla")
+            logger.error("No se pudieron extraer datos de ninguna tabla")
             return {
-                "answer": "No pude extraer los datos necesarios de la tabla.",
-                "sources": [table_chunk],
+                "answer": "No pude extraer los datos necesarios de la tabla disponible.",
+                "sources": [target_chunk] if target_chunk else [],
                 "calculation": None,
             }
 
@@ -806,7 +830,7 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
             logger.error("Error en cálculo")
             return {
                 "answer": "Hubo un error al realizar el cálculo.",
-                "sources": [table_chunk],
+                "sources": [target_chunk],
                 "calculation": None,
             }
 
