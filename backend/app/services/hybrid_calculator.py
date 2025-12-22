@@ -161,23 +161,37 @@ class HybridSalaryCalculator:
         available_levels = self._extract_levels_from_table(table_content)
         logger.info(f"Niveles disponibles en tabla: {available_levels}")
         
-        # Extraer nivel mencionado en query
-        level_match = re.search(r'nivel\s+(\d+)', query.lower())
-        if not level_match:
+        # MEJORA 1 & FIX: Extraer TODOS los niveles para comparaciones explícitas
+        level_matches = re.findall(r'nivel\s+(\d+)', query.lower())
+        unique_levels = sorted(list(set(int(m) for m in level_matches)))
+
+        if not unique_levels:
             logger.warning(f"No se encontró nivel en query: {query}")
             return None
         
-        mentioned_level = int(level_match.group(1))
-        logger.info(f"Nivel mencionado en query: {mentioned_level}")
-        
-        # MEJORA 4: Si es consulta simple, solo extraer ese nivel
-        if is_simple:
+        logger.info(f"Niveles detectados en query: {unique_levels}")
+
+        # MEJORA 4: Si es consulta simple, solo extraer el nivel mencionado (si hay solo uno)
+        if is_simple and len(unique_levels) == 1:
+            mentioned_level = unique_levels[0]
             logger.info("Consulta simple detectada: solo se extraerá el nivel mencionado")
             level_origin = mentioned_level
             level_destination = mentioned_level
             level_origin_label = f"Nivel {mentioned_level}"
             level_destination_label = f"Nivel {mentioned_level}"
+        
+        # Caso: Comparación explícita (2 o más niveles)
+        elif len(unique_levels) >= 2:
+            level_origin = unique_levels[0]
+            level_destination = unique_levels[1]
+            level_origin_label = f"Nivel {level_origin}"
+            level_destination_label = f"Nivel {level_destination}"
+            logger.info(f"Comparación explícita activada: {level_origin} vs {level_destination}")
+
+        # Caso: Inferencia (1 nivel mencionado, pero no es simple query)
         else:
+            mentioned_level = unique_levels[0]
+            
             # MEJORA 1: Inferir nivel de comparación en Python
             inferred_level = self._infer_comparison_level(mentioned_level, available_levels)
             

@@ -499,11 +499,13 @@ Pregunta reescrita:"""
         is_salary_query = any(keyword in rewritten_lower for keyword in salary_keywords)
         is_it_query = any(keyword in rewritten_lower for keyword in it_keywords)
         
-        if is_salary_query and not is_it_query and 'anexo' not in rewritten_lower:
+        # FIX: Permitir enriquecimiento SIMULTÁNEO (Dinero + Baja)
+        if is_salary_query and 'anexo' not in rewritten_lower:
             rewritten = f"{rewritten} ANEXO tabla salarial retribución"
             print(f"💰 Salary query detected (post-merge), enhanced to search in ANEXOS")
             rewritten_lower = rewritten.lower() # Update for next check
-        elif is_it_query:
+            
+        if is_it_query:
             rewritten = f"{rewritten} incapacidad temporal IT complemento baja"
             print(f"🏥 Sickness query detected, enhanced with synonyms: IT, incapacidad, complemento")
             rewritten_lower = rewritten.lower()
@@ -760,7 +762,18 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
                 "calculation": None,
             }
 
-        table_chunk = anchor_results[0]
+        # FIX: Buscar explícitamente un chunk de tipo TABLA
+        table_chunk = None
+        for anchor in anchor_results:
+            is_table = anchor.chunk_metadata.get("type") == "table"
+            is_anexo = "anexo" in anchor.article_ref.lower() or "tabla" in anchor.article_ref.lower()
+            if is_table or is_anexo:
+                table_chunk = anchor
+                break
+        
+        if not table_chunk:
+            logger.warning("Ninguno de los anchors parece ser una tabla salarial válida. Usando el primero como fallback.")
+            table_chunk = anchor_results[0]
 
         # Año: intentar leer del chunk, fallback al año actual
         try:

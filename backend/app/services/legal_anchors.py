@@ -124,14 +124,25 @@ class LegalAnchors:
                 DocumentChunk.chunk_metadata['version_hash'].astext == version
             )
             
-            # ✅ DEL EXPERTO: Boolean casting
-            query = query.filter(
+            # ✅ DE MI CÓDIGO: Guardar estado base antes de filtro estricto
+            base_query = query
+
+            # INTENTO 1: Filtro estricto is_primary=True
+            anchors = base_query.filter(
                 DocumentChunk.chunk_metadata['is_primary'].astext.cast(Boolean) == True
             ).order_by(
                 DocumentChunk.chunk_metadata['chunk_size'].astext.cast(Integer).desc()
-            )
+            ).limit(limit).all()
             
-            anchors = query.limit(limit).all()
+            # INTENTO 2: Fallback (Relaxed Mode)
+            if not anchors:
+                logger.warning(
+                    f"LegalAnchors: No primary anchors found for {intent}. "
+                    f"Activating Fallback (ignoring is_primary)."
+                )
+                anchors = base_query.order_by(
+                    DocumentChunk.chunk_metadata['chunk_size'].astext.cast(Integer).desc()
+                ).limit(limit).all()
             
             # ✅ DE MI CÓDIGO: Guardar en caché
             self._cache[cache_key] = anchors
