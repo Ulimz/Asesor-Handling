@@ -70,24 +70,54 @@ class HybridSalaryCalculator:
         """
         self.model = gemini_model
 
+    def _roman_to_int(self, roman: str) -> int:
+        """Convierte números romanos a enteros (básico 1-10)."""
+        roman = roman.upper().strip()
+        mapping = {
+            'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5,
+            'VI': 6, 'VII': 7, 'VIII': 8, 'IX': 9, 'X': 10
+        }
+        return mapping.get(roman, 0)
+
     def _extract_levels_from_table(self, table_content: str) -> List[int]:
         """
         MEJORA 1: Extrae niveles disponibles en la tabla (Python, no LLM).
+        Soporta dígitos (1, 2) y Romanos (I, II).
         
         Returns:
             Lista de niveles ordenados (ej: [1, 2, 3, 4, 5])
         """
-        # Buscar patrones: "Nivel 3", "Grupo 4", "Categoría 5"
-        patterns = [
+        # Buscar patrones: "Nivel 3", "Grupo 4", "Nivel III"
+        patterns_digit = [
             r'nivel\s+(\d+)',
             r'grupo\s+(\d+)',
             r'categor[ií]a\s+(\d+)',
+            r'n\s*(\d+)', # N1, N 2
+            r'level\s+(\d+)',
+        ]
+        
+        patterns_roman = [
+            r'nivel\s+([ivx]+)\b',
+            r'grupo\s+([ivx]+)\b',
+            r'categor[ií]a\s+([ivx]+)\b',
+            r'n\s*([ivx]+)\b',
         ]
         
         levels = set()
-        for pattern in patterns:
-            matches = re.findall(pattern, table_content.lower())
+        table_lower = table_content.lower()
+        
+        # 1. Extraer Dígitos
+        for pattern in patterns_digit:
+            matches = re.findall(pattern, table_lower)
             levels.update(int(m) for m in matches)
+            
+        # 2. Extraer Romanos
+        for pattern in patterns_roman:
+            matches = re.findall(pattern, table_lower)
+            for m in matches:
+                val = self._roman_to_int(m)
+                if val > 0:
+                    levels.add(val)
         
         return sorted(list(levels))
 
@@ -149,7 +179,7 @@ class HybridSalaryCalculator:
         """
         Usa LLM para extraer datos relevantes de la tabla.
         MEJORA 1: Inferencia en Python
-        MEJORA 2: Validación estricta
+        MEJORA 2: Validación estricta / Tolerante
         MEJORA 3: Logging mejorado
         MEJORA 4: Modo simple query
         """
@@ -159,7 +189,7 @@ class HybridSalaryCalculator:
         
         # MEJORA 1: Extraer niveles disponibles en Python
         available_levels = self._extract_levels_from_table(table_content)
-        logger.info(f"Niveles disponibles en tabla: {available_levels}")
+        logger.info(f"Niveles disponibles en tabla (Norm): {available_levels}")
         
         # MEJORA 1 & FIX: Extraer TODOS los niveles para comparaciones explícitas
         level_matches = re.findall(r'nivel\s+(\d+)', query.lower())
@@ -171,18 +201,20 @@ class HybridSalaryCalculator:
         
         logger.info(f"Niveles detectados en query: {unique_levels}")
 
-        # MEJORA RED TEAM 2: Validación Estricta de Niveles "Fantasma"
+        # MEJORA RED TEAM 2 (RELAXED): Validación de Niveles "Fantasma"
         # Filtrar niveles de la query que NO existen en la tabla
         valid_unique_levels = [l for l in unique_levels if l in available_levels]
         
         if len(valid_unique_levels) < len(unique_levels):
+            # FIX EXPERTO: No abortar, solo advertir. El LLM puede ser más listo que nuestro regex.
             invalid_levels = set(unique_levels) - set(valid_unique_levels)
-            logger.warning(f"🚨 RED TEAM: Niveles fantasma detectados y descartados: {invalid_levels}")
-            # Si nos quedamos sin niveles válidos, abortar
-            if not valid_unique_levels:
-                logger.error("Ninguno de los niveles solicitados existe en la tabla.")
-                return None
-            unique_levels = valid_unique_levels
+            logger.warning(
+                f"🚨 RED TEAM WARNING: Niveles {invalid_levels} no encontrados explícitamente en tabla. "
+                "Procediendo con fallback a LLM (puede haber mapeo implícito)."
+            )
+            # NO ABORTAMOS. Confiamos en que el LLM encuentre "Nivel III" cuando pedimos "3".
+        else:
+            logger.info("✅ Validación de niveles OK.")
 
         # Recalcular lógica de origen/destino con niveles validados
         if is_simple and len(unique_levels) == 1:
