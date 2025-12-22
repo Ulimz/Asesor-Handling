@@ -661,8 +661,12 @@ DATOS DEL USUARIO (Personaliza la respuesta para este perfil):
 
         # Use Direct REST call for ALL generations to ensure Tool availability
         # This bypasses the SDK validation issues we faced.
-                print(f"API Error: {e}")
-                return {"text": "Error de conexión con el servicio de IA.", "audit": None}
+        try:
+            response = self.gen_model.generate_content(final_prompt)
+            return {"text": response.text, "audit": None}
+        except Exception as e:
+            print(f"API Error: {e}")
+            return {"text": "Error de conexión con el servicio de IA.", "audit": None}
         
         return {"text": "No se ha configurado la API Key de Google.", "audit": None}
     
