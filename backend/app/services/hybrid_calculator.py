@@ -171,7 +171,20 @@ class HybridSalaryCalculator:
         
         logger.info(f"Niveles detectados en query: {unique_levels}")
 
-        # MEJORA 4: Si es consulta simple, solo extraer el nivel mencionado (si hay solo uno)
+        # MEJORA RED TEAM 2: Validación Estricta de Niveles "Fantasma"
+        # Filtrar niveles de la query que NO existen en la tabla
+        valid_unique_levels = [l for l in unique_levels if l in available_levels]
+        
+        if len(valid_unique_levels) < len(unique_levels):
+            invalid_levels = set(unique_levels) - set(valid_unique_levels)
+            logger.warning(f"🚨 RED TEAM: Niveles fantasma detectados y descartados: {invalid_levels}")
+            # Si nos quedamos sin niveles válidos, abortar
+            if not valid_unique_levels:
+                logger.error("Ninguno de los niveles solicitados existe en la tabla.")
+                return None
+            unique_levels = valid_unique_levels
+
+        # Recalcular lógica de origen/destino con niveles validados
         if is_simple and len(unique_levels) == 1:
             mentioned_level = unique_levels[0]
             logger.info("Consulta simple detectada: solo se extraerá el nivel mencionado")
@@ -180,7 +193,6 @@ class HybridSalaryCalculator:
             level_origin_label = f"Nivel {mentioned_level}"
             level_destination_label = f"Nivel {mentioned_level}"
         
-        # Caso: Comparación explícita (2 o más niveles)
         elif len(unique_levels) >= 2:
             level_origin = unique_levels[0]
             level_destination = unique_levels[1]
@@ -188,28 +200,46 @@ class HybridSalaryCalculator:
             level_destination_label = f"Nivel {level_destination}"
             logger.info(f"Comparación explícita activada: {level_origin} vs {level_destination}")
 
-        # Caso: Inferencia (1 nivel mencionado, pero no es simple query)
         else:
             mentioned_level = unique_levels[0]
-            
-            # MEJORA 1: Inferir nivel de comparación en Python
             inferred_level = self._infer_comparison_level(mentioned_level, available_levels)
             
             if inferred_level is None:
-                # MEJORA 3: Logging para QA
-                logger.warning(
-                    f"No se pudo inferir nivel de comparación. "
-                    f"Nivel mencionado: {mentioned_level}, Disponibles: {available_levels}"
-                )
+                logger.warning(f"No se pudo inferir nivel de comparación para {mentioned_level}")
                 return None
-            
-            logger.info(f"Nivel inferido para comparación: {inferred_level}")
             
             level_origin = inferred_level
             level_destination = mentioned_level
             level_origin_label = f"Nivel {inferred_level} (inferido)"
             level_destination_label = f"Nivel {mentioned_level}"
+
+        # MEJORA RED TEAM 1: Detección Dinámica de Concepto (Calculadora Tuerta fix)
+        concept_target = "salario base anual" # Default
+        q_lower = query.lower()
         
+        # Mapa de conceptos comunes en convenios
+        concept_map = {
+            "transporte": "plus transporte",
+            "nocturnidad": "plus hora nocturna",
+            "festivo": "plus hora festiva",
+            "festiva": "plus hora festiva",
+            "domingo": "plus hora domingo",
+            "trienio": "antigüedad / trienios",
+            "antiguedad": "antigüedad",
+            "manutencion": "plus manutención",
+            "comida": "plus manutención",
+            "hora extra": "hora extraordinaria",
+            "variable": "retribución variable",
+            "objetivos": "retribución variable"
+        }
+        
+        for key, val in concept_map.items():
+            if key in q_lower:
+                concept_target = val
+                break
+        
+        logger.info(f"🎯 RED TEAM: Concepto objetivo detectado: '{concept_target}'")
+
         # Ahora usar LLM SOLO para extraer valores numéricos
         prompt = f"""
 Eres un asistente experto en análisis de tablas salariales.
@@ -218,22 +248,26 @@ TABLA SALARIAL:
 {table_content}
 
 TAREA:
-Extrae SOLO los valores numéricos del salario base anual para:
+Extrae SOLO los valores numéricos correspondientes al concepto: "{concept_target}" para:
 - Nivel {level_origin}
 - Nivel {level_destination}
 
+IMPORTANTE:
+- Si el concepto es mensual, anualízalo o úsalo tal cual pero sé consistente.
+- Si no encuentras el valor exacto, devuelve null.
+
 RESPONDE EN JSON ESTRICTO:
 {{
-  "level_{level_origin}": número (solo el valor numérico),
-  "level_{level_destination}": número (solo el valor numérico),
-  "field_name": "salario base anual"
+  "level_{level_origin}": número (solo el valor numérico o null),
+  "level_{level_destination}": número (solo el valor numérico o null),
+  "field_name": "{concept_target}"
 }}
 
 EJEMPLO:
 {{
   "level_3": 25000,
   "level_4": 28000,
-  "field_name": "salario base anual"
+  "field_name": "{concept_target}"
 }}
 
 TU RESPUESTA DEBE SER SOLO UN JSON VÁLIDO, SIN EXPLICACIONES.

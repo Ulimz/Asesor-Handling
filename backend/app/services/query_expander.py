@@ -148,8 +148,12 @@ class QueryExpander:
             return fallback_result
 
     def _clean_keyword(self, keyword: str) -> str:
-        """Helper para limpiar keywords (minúsculas, espacios extra)."""
-        return keyword.strip().lower()
+        """Helper para limpiar keywords (minúsculas, espacios extra, puntuación)."""
+        # Eliminar caracteres no alfanuméricos del inicio/final (puntuación)
+        clean = keyword.strip()
+        # Eliminar interrogaciones y puntos finales que rompen búsqueda exacta
+        clean = clean.rstrip("?.!,;:")
+        return clean.lower()
 
     def get_expanded_query_text(self, expansion: Dict) -> str:
         """

@@ -160,7 +160,7 @@ class RagEngine:
 
         # Normalización robusta (palabras + patrones tipo 4x4)
         q = query.lower()
-        tokens = set(re.findall(r"[a-záéíóúüñ]+|\d+x\d+", q))
+        tokens = set(re.findall(r"[a-záéíóúüñ]+|\d+|\d+x\d+", q))
         
         # Intersección
         matched = tokens & LEGAL_KEYWORDS
