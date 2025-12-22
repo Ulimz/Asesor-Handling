@@ -114,10 +114,19 @@ class RagEngine:
     def generate_embedding(self, text: str):
         return self.model.encode(text)
 
-    def detect_intent(self, query: str) -> IntentType:
+    def detect_intent(self, query: str, company_slug: str = None) -> IntentType:
         """
         Detect user intent based on keywords.
+        Now includes Profile-Based Pre-classification to prevent 'GENERAL' intent degradation.
         """
+        # 0. Pre-classification by Profile
+        if company_slug:
+             pre = self._preclassify_by_profile(query, company_slug)
+             if pre:
+                 # If profile says it's LABORAL, we default to LEAVE but refine below
+                 # This prevents GENERAL from being returned later
+                 pass
+
         q = query.lower()
         
         # 1. Dismissal / Resignation (baja voluntaria)
@@ -132,6 +141,15 @@ class RagEngine:
         # 3. Salary / Money (Only if not already categorized above)
         if any(k in q for k in ['precio', 'salario', 'cobrar', 'retribución', 'paga', 'sueldo', 'plus', 'hora', 'festiva', 'nocturnidad', 'tabla', 'anexo', 'euros', '€']):
             return IntentType.SALARY
+
+        # 4. Profile-Based Override for ambiguous cases (e.g. "rotacion 4x4", "jornada")
+        if company_slug:
+             pre = self._preclassify_by_profile(query, company_slug)
+             if pre:
+                 logger.info(f"🛡️ detect_intent: Override GENERAL -> LEAVE/SALARY due to Employment Profile")
+                 if "salario" in q or "nomina" in q or "cobrar" in q or "plus" in q:
+                     return IntentType.SALARY
+                 return IntentType.LEAVE
             
         return IntentType.GENERAL
 

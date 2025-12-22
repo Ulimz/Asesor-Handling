@@ -56,8 +56,8 @@ def chat_with_docs(
     if request.company_slug and request.company_slug not in VALID_COMPANIES:
         raise HTTPException(status_code=400, detail=f"Invalid company_slug. Must be one of: {', '.join(VALID_COMPANIES)}")
 
-    # 1.5 Detect Intent
-    intent = rag_engine.detect_intent(final_query)
+    # 1.5 Detect Intent (Now Profile-Aware)
+    intent = rag_engine.detect_intent(final_query, company_slug=request.company_slug)
     print(f"🧠 Detected Intent: {intent}")
 
     # --- HYBRID RAG: TOOL CALLING (Structured Data) ---
